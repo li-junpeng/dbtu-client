@@ -1,3 +1,6 @@
+// 全局样式
+import '@/assets/css-style/base.scss'
+
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 

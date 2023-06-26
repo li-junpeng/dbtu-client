@@ -12,12 +12,21 @@ html,
   min-width: 1366px;
 }
 
+#app {
+  background-color: var(--dbtu-background-color);
+}
+
 a,
 p,
 span,
 div {
-  font-size: 12px;
+  font-size: 14px;
   font-family: "Microsoft YaHei UI", serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
 .dbtu-float-left {

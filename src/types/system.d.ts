@@ -24,6 +24,7 @@ interface SystemSettingTabItem {
   icon: never
   // 默认 = 'inherit'
   iconSize?: number
+  component: string
 }
 
 // 系统设置tab页内容

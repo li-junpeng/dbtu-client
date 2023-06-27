@@ -5,14 +5,16 @@
  * @date 2023-06-27 15-29
 -->
 <script setup lang="ts">
-import { ref } from 'vue'
+import { defineAsyncComponent, ref, shallowRef, watch } from 'vue'
 import { ElDialog, ElIcon } from 'element-plus'
-// svg icons
+// region svg icons
 import IconTheme from '@/icons/svg/theme.vue'
 import IconProxy from '@/icons/svg/proxy.vue'
 import IconKeymap from '@/icons/svg/keymap.vue'
 import IconReset from '@/icons/svg/reset.vue'
 import IconSecurity from '@/icons/svg/security.vue'
+// endregion svg icons
+import { StringUtils } from '@/common/utils/StringUtils'
 
 defineOptions({
   name: 'SystemSettingDialog'
@@ -20,17 +22,20 @@ defineOptions({
 
 const visible = ref(false)
 
-const activeTab = ref<SystemSettingTabKey>('theme')
+// region 左侧tab
+const activeTab = ref<SystemSettingTabItem | null>(null)
 const navTabs = [
   {
     key: 'theme',
     title: '主题',
-    icon: IconTheme
+    icon: IconTheme,
+    component: './setting-theme.vue'
   },
   {
     key: 'proxy',
     title: '代理服务器',
-    icon: IconProxy
+    icon: IconProxy,
+    component: './setting-proxy-server.vue'
   },
   {
     key: 'keymap',
@@ -50,19 +55,37 @@ const navTabs = [
  * @param tab 切换后的tab
  */
 const onChangeTab = (tab: SystemSettingTabItem) => {
-  activeTab.value = tab.key
+  activeTab.value = tab
 }
+// endregion 左侧tab
+
+// region 动态加载组件
+const pageModules = import.meta.glob('./*.vue')
+const contentComponent = shallowRef()
+const loadComponent = () => {
+  const path = activeTab.value?.component
+  pageModules[path]().then(() => {
+    contentComponent.value = defineAsyncComponent(pageModules[path])
+  })
+}
+watch(() => activeTab, () => {
+  loadComponent()
+}, {deep: true})
+// endregion 动态加载组件
 
 /**
  * 打开对话框
  *
- * @param tab 打开对话框时默认选中的tab
+ * @param tabKey 打开对话框时默认选中的tab的key
  */
-const onOpen = (tab?: SystemSettingTabKey) => {
-  if (tab) {
-    activeTab.value = tab
+const onOpen = (tabKey?: SystemSettingTabKey) => {
+  let tabItem = StringUtils.isNotEmpty(tabKey as string)
+    ? navTabs.find(tab => tab.key === tabKey)
+    : navTabs[0]
+  if (!tabItem) {
+    tabItem = navTabs[0]
   }
-
+  activeTab.value = tabItem
   visible.value = true
 }
 
@@ -88,7 +111,7 @@ defineExpose({
             :key="tab.key"
             class="nav-tab__item"
             :class="{
-            'is-active': activeTab === tab.key
+            'is-active': activeTab?.key === tab.key
           }"
             @click="onChangeTab(tab)"
           >
@@ -109,7 +132,7 @@ defineExpose({
 
       <!-- 右侧内容 -->
       <div class="setting-page">
-
+        <component :is="contentComponent"/>
       </div>
     </div>
   </el-dialog>

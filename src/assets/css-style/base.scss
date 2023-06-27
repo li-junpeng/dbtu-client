@@ -59,9 +59,15 @@ a {
   transform: translate(-50%, -50%);
 }
 
+:root {
+  --dbtu-theme-color: #3574f0;
+}
+
 .dbtu-common-theme {
   --el-bg-color: var(--dbtu-background-color);
   --el-text-color-primary: var(--dbtu-font-color);
+  --el-text-color-regular: var(--dbtu-font-color);
   --el-font-size-large: var(--dbtu-font-size-large);
   --el-border-radius-small: var(--dbtu-border-radius);
+  --el-color-primary: var(--dbtu-theme-color);
 }

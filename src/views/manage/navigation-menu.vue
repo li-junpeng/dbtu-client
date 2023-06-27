@@ -71,8 +71,12 @@ onMounted(() => {
       align-items: center;
       gap: 8px;
 
-      &.is-active,
-      &:hover {
+      &.is-active {
+        color: var(--dbtu-font-color-light);
+        background-color: var(--dbtu-theme-color);
+      }
+
+      &:not(.is-active):hover {
         color: var(--dbtu-font-color-light);
         background-color: var(--dbtu-hover-color);
       }

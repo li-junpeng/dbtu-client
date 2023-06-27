@@ -1,10 +1,10 @@
 export const ObjectUtils = {
 
-  isEmpty(obj: object): boolean {
-    return obj === null || Object.keys(obj).length === 0
+  isEmpty(obj: object | null | undefined): boolean {
+    return obj === null || obj === undefined || Object.keys(obj).length === 0
   },
 
-  isNotEmpty(obj: object): boolean {
+  isNotEmpty(obj: object | null | undefined): boolean {
     return !ObjectUtils.isEmpty(obj)
   }
 

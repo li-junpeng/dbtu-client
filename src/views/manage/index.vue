@@ -4,8 +4,16 @@ import { RouterView } from 'vue-router'
 import PageHeader from './header.vue'
 import NavigationMenu from './navigation-menu.vue'
 
+import { useSystemSettingStore } from '@/stores/SystemSettingStore'
+import { onMounted } from 'vue'
+
 defineOptions({
   name: 'ManagePage'
+})
+
+const systemSettingStore = useSystemSettingStore()
+onMounted(() => {
+  systemSettingStore.updateTheme()
 })
 </script>
 

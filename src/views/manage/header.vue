@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { ElIcon } from 'element-plus'
 import DefaultAvatarImg from '@/assets/images/avatars/avatar-30.png'
 // icons
@@ -9,6 +9,8 @@ import IconGithub from '@/icons/svg/app-github.vue'
 import IconNotify from '@/icons/svg/notify.vue'
 // store
 import { useUserInfoStore } from '@/stores/UserInfoStore'
+// 组件
+import SystemSettingDialog from '@/components/system-setting/index.vue'
 
 defineOptions({
   name: 'PageHeader'
@@ -29,6 +31,12 @@ const userAvatar = computed(() => {
 const toLogin = () => {
   // TODO 登录对话框
   // userStore.user.avatar = 'https://himg.bdimg.com/sys/portraitn/item/public.1.d15d503.gXcNg-Jk2k_k8sFtxRYr4w'
+}
+
+// 系统设置对话框实例
+const systemSettingDialogRef = ref()
+const openSystemSettingDialog = () => {
+  systemSettingDialogRef.value?.onOpen()
 }
 </script>
 
@@ -64,7 +72,10 @@ const toLogin = () => {
         <span>消息</span>
       </div>
 
-      <div class="right-box__item">
+      <div
+        class="right-box__item"
+        @click="openSystemSettingDialog"
+      >
         <el-icon :size="18">
           <IconSetting/>
         </el-icon>
@@ -87,6 +98,8 @@ const toLogin = () => {
 
     </div>
   </div>
+
+  <system-setting-dialog ref="systemSettingDialogRef"/>
 </template>
 
 <style lang="scss" scoped>

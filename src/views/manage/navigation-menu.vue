@@ -1,21 +1,49 @@
+<!--
+ * 左侧导航组件
+ *
+ * @author Junpeng.Li
+ * @date 2023-06-27 11:16
+-->
 <script setup lang="ts">
-import { RouterLink, useRoute } from 'vue-router'
+import { onMounted, ref, watch } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
+import { ElIcon } from 'element-plus'
 
 defineOptions({
   name: 'NavigationMenu'
 })
 
+// 获取路由定义
+const router = useRouter()
+const menus = router.getRoutes().find(route => route.path === '/')?.children
+
+// 监听路由变化, 动态修改菜单激活项
+const currentRoutePath = ref<string>('')
 const route = useRoute()
-console.log(route)
+watch(() => route, (newRoute) => {
+  currentRoutePath.value = newRoute.path
+}, {deep: true})
+onMounted(() => {
+  currentRoutePath.value = route.path
+})
 </script>
 
 <template>
   <div class="navigation-menu">
     <div class="menu-box">
-      <router-link to="/connection" class="menu-item">连接管理</router-link>
-      <router-link to="/team" class="menu-item is-active">团队管理</router-link>
-      <a class="menu-item">操作日志</a>
-      <a class="menu-item">回收站</a>
+      <router-link
+        v-for="menu in menus"
+        :key="menu.name"
+        :to="menu.path"
+        class="menu-item" :class="{
+          'is-active': currentRoutePath === menu.path
+        }"
+      >
+        <el-icon :size="16">
+          <component :is="menu.meta?.['icon']"/>
+        </el-icon>
+        <span>{{ menu.meta?.['title'] }}</span>
+      </router-link>
     </div>
   </div>
 </template>
@@ -38,6 +66,9 @@ console.log(route)
       cursor: pointer;
       margin-bottom: 5px;
       border-radius: var(--dbtu-border-radius);
+      display: flex;
+      align-items: center;
+      gap: 8px;
 
       &.is-active,
       &:hover {

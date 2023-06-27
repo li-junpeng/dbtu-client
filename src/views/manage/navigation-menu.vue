@@ -35,7 +35,8 @@ onMounted(() => {
         v-for="menu in menus"
         :key="menu.name"
         :to="menu.path"
-        class="menu-item" :class="{
+        class="menu-item"
+        :class="{
           'is-active': currentRoutePath === menu.path
         }"
       >
@@ -72,6 +73,7 @@ onMounted(() => {
 
       &.is-active,
       &:hover {
+        color: var(--dbtu-font-color-light);
         background-color: var(--dbtu-hover-color);
       }
     }

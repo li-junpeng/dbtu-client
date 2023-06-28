@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { StringUtils } from '@/common/utils/StringUtils'
 import { TinyColor } from '@ctrl/tinycolor'
+import { FONT_SIZE_DEFAULT, FONT_SIZE_MAX, FONT_SIZE_MIN } from '@/common/constants/SystemConstant'
 
 export const useSystemSettingStore = defineStore('useSystemSettingStore', {
   state: () => {
@@ -78,8 +79,14 @@ export const useSystemSettingStore = defineStore('useSystemSettingStore', {
         return
       }
 
-      if (size === null || StringUtils.isEmpty(size + '') || size < 0) {
-        size = DEFAULT_FONT_SIZE
+      if (size === null || StringUtils.isEmpty(size + '')) {
+        size = FONT_SIZE_DEFAULT
+      }
+
+      if (size < FONT_SIZE_MIN) {
+        size = FONT_SIZE_MIN
+      } else if (size > FONT_SIZE_MAX) {
+        size = FONT_SIZE_MAX
       }
 
       $root.style.setProperty('--dbtu-font-size', `${size}px`)
@@ -94,7 +101,6 @@ export const useSystemSettingStore = defineStore('useSystemSettingStore', {
   }
 })
 
-const DEFAULT_FONT_SIZE = 14
 /**
  * 获取系统设置（默认值）
  *
@@ -105,7 +111,7 @@ const getDefaultSetting = (): SystemSetting => {
     theme: {
       mode: 'dark',
       color: '#3574f0',
-      fontSize: DEFAULT_FONT_SIZE
+      fontSize: FONT_SIZE_DEFAULT
     }
   }
 }

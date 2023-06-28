@@ -73,6 +73,7 @@ onMounted(() => {
 
       &.is-active {
         color: var(--el-color-white);
+        transition: all var(--dbtu-transition-duration);
         background-color: var(--dbtu-theme-color);
       }
 

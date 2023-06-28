@@ -28,3 +28,15 @@
     text-align: left !important;
   }
 }
+
+.el-select-dropdown {
+
+  .el-select-dropdown__item {
+    padding: 0 20px 0 15px;
+
+    &.hover,
+    &:hover {
+      background-color: var(--dbtu-hover-color);
+    }
+  }
+}

@@ -60,6 +60,10 @@ a {
   transform: translate(-50%, -50%);
 }
 
+/**
+ * The css style variable here is not the final result.
+ * Which is modified according to the theme Settings in the 'SystemSettingStore.ts' file
+ */
 :root {
   --dbtu-transition-duration: .3s;
 
@@ -73,19 +77,23 @@ a {
 
 .dbtu-common-theme {
   --el-bg-color: var(--dbtu-background-color-dark);
+  --el-bg-color-overlay: var(--dbtu-background-color);
 
   --el-text-color-primary: var(--dbtu-font-color);
   --el-text-color-regular: var(--dbtu-font-color);
+
   --el-font-size-large: var(--dbtu-font-size-large);
 
   --el-border-radius-base: var(--dbtu-border-radius);
   --el-border-radius-small: var(--dbtu-border-radius);
   --el-border-color: var(--dbtu-border-color);
   --el-border-color-hover: var(--dbtu-theme-color);
+  --el-border-color-light: var(--dbtu-background-color-dark);
 
   --el-color-primary: var(--dbtu-theme-color);
   --el-color-primary-light-3: var(--dbtu-theme-hover-color);
   --el-color-primary-dark-2: var(--dbtu-theme-active-color);
+
   --el-fill-color-blank: var(--dbtu-background-color-dark);
   --el-fill-color-light: var(--dbtu-theme-color);
 }

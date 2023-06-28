@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { ElButton, ElInput, ElSelect, ElOption } from 'element-plus'
-import { Plus as IconPlus } from '@element-plus/icons-vue'
+import { Plus as IconPlus, Search as IconSearch } from '@element-plus/icons-vue'
 import { DatabaseTypes } from '@/common/constants/ConnectionConstant'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
 
@@ -30,7 +30,7 @@ const dbTypes = ArrayUtils.unshift<any>(
         <el-button type="primary" :icon="IconPlus">新建连接</el-button>
         <el-select
           v-model="searchParams.dbType"
-          style="width: 240px"
+          style="width: 180px"
         >
           <el-option
             v-for="item in dbTypes"
@@ -42,6 +42,7 @@ const dbTypes = ArrayUtils.unshift<any>(
         <el-input
           v-model="searchParams.name"
           placeholder="输入连接名查询"
+          :prefix-icon="IconSearch"
           style="width: 300px"
           clearable
         />

@@ -13,7 +13,7 @@ import ThemeWhiteImg from '@/assets/images/theme/white.svg'
 import ThemeDarkImg from '@/assets/images/theme/dark.svg'
 // endregion theme images
 import { useSystemSettingStore } from '@/stores/SystemSettingStore'
-import { ThemeColors } from '@/common/constants/SystemConstant'
+import { ThemeColors, FONT_SIZE_MIN, FONT_SIZE_MAX } from '@/common/constants/SystemConstant'
 
 interface ThemeModeItem {
   key: ThemeMode
@@ -92,6 +92,7 @@ watch(() => themeData.fontSize, (size) => {
           <el-icon
             v-if="color === themeData.color"
             :size="16"
+            color="var(--el-color-white)"
           >
             <IconSelect/>
           </el-icon>
@@ -102,9 +103,9 @@ watch(() => themeData.fontSize, (size) => {
       <el-slider
         non-passive
         v-model="themeData.fontSize"
-        style="width: 330px"
-        :min="12"
-        :max="32"
+        style="width: 330px; --el-slider-runway-bg-color: var(--dbtu-background-color)"
+        :min="FONT_SIZE_MIN"
+        :max="FONT_SIZE_MAX"
       />
     </el-form-item>
   </el-form>

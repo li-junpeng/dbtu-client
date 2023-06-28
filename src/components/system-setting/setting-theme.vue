@@ -6,7 +6,7 @@
 -->
 <script setup lang="ts">
 import { reactive, watch } from 'vue'
-import { ElForm, ElFormItem, ElRadioGroup, ElRadio, ElIcon } from 'element-plus'
+import { ElForm, ElFormItem, ElIcon, ElInputNumber, ElRadio, ElRadioGroup, ElSlider } from 'element-plus'
 import { Select as IconSelect } from '@element-plus/icons-vue'
 // region theme images
 import ThemeWhiteImg from '@/assets/images/theme/white.svg'
@@ -48,6 +48,11 @@ watch(() => themeData.mode, (mode) => {
 // 修改主题颜色
 watch(() => themeData.color, (color) => {
   systemSettingStore.updateThemeColor(color)
+})
+
+// 修改字体大小
+watch(() => themeData.fontSize, (size) => {
+  systemSettingStore.updateThemeFontSize(size)
 })
 </script>
 
@@ -92,6 +97,14 @@ watch(() => themeData.color, (color) => {
           </el-icon>
         </div>
       </div>
+    </el-form-item>
+    <el-form-item label="字体大小">
+      <el-slider
+        v-model="themeData.fontSize"
+        style="width: 330px"
+        :min="12"
+        :max="32"
+      />
     </el-form-item>
   </el-form>
 </template>

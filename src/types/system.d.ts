@@ -15,12 +15,18 @@ interface UserInfo {
 
 type ThemeMode = 'light' | 'dark'
 
+/**
+ * 系统设置配置项
+ */
 interface SystemSetting {
+  // 主题 & 外观
   theme: {
     // 主题模式
     mode: ThemeMode
     // 主题颜色
     color: string
+    // 字体大小
+    fontSize: number
   }
 }
 

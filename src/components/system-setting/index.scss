@@ -4,8 +4,8 @@
   display: inline-block;
   line-height: 36px;
   color: var(--dbtu-font-color);
-  background-color: var(--dbtu-background-color-dark);
-  width: 175px;
+  background-color: var(--dbtu-background-color);
+  width: 200px;
   font-size: var(--el-font-size-large);
 }
 
@@ -19,10 +19,10 @@
     display: flex;
     flex-direction: column;
     padding: 10px 0;
-    background-color: var(--dbtu-background-color-dark);
+    background-color: var(--dbtu-background-color);
 
     .nav-tab {
-      width: 175px;
+      width: 200px;
       height: 100%;
       list-style: none;
       color: var(--dbtu-font-color);
@@ -50,7 +50,7 @@
             border-top: 18px solid transparent;
             border-bottom: 18px solid transparent;
             border-left: 10px solid transparent;
-            border-right: 10px solid var(--dbtu-background-color);
+            border-right: 10px solid var(--dbtu-background-color-dark);
           }
         }
 

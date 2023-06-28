@@ -20,7 +20,7 @@ a,
 p,
 span,
 div {
-  font-size: 14px;
+  font-size: var(--dbtu-font-size);
   font-family: "Microsoft YaHei UI", serif;
 }
 
@@ -60,14 +60,24 @@ a {
 }
 
 :root {
+  --dbtu-font-size: 14px;
+  --dbtu-font-size-large: calc(var(--dbtu-font-size) + 2px);
+
   --dbtu-theme-color: #3574f0;
 }
 
 .dbtu-common-theme {
-  --el-bg-color: var(--dbtu-background-color);
+  --el-bg-color: var(--dbtu-background-color-dark);
   --el-text-color-primary: var(--dbtu-font-color);
   --el-text-color-regular: var(--dbtu-font-color);
   --el-font-size-large: var(--dbtu-font-size-large);
+
+  --el-border-radius-base: var(--dbtu-border-radius);
   --el-border-radius-small: var(--dbtu-border-radius);
+  --el-border-color: var(--dbtu-border-color);
+  --el-border-color-hover: var(--dbtu-theme-color);
+
   --el-color-primary: var(--dbtu-theme-color);
+  --el-fill-color-blank: var(--dbtu-background-color-dark);
+  --el-fill-color-light: var(--dbtu-theme-color);
 }

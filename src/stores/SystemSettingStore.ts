@@ -24,6 +24,7 @@ export const useSystemSettingStore = defineStore('useSystemSettingStore', {
     updateTheme() {
       this.updateThemeMode()
       this.updateThemeColor()
+      this.updateThemeFontSize()
     },
 
     /**
@@ -57,6 +58,31 @@ export const useSystemSettingStore = defineStore('useSystemSettingStore', {
 
       // @ts-ignore
       $root.style.setProperty('--dbtu-theme-color', color)
+    },
+
+    /**
+     * 修改显示字体
+     *
+     * @param size 字号（不带单位，缺省单位为：px）
+     */
+    updateThemeFontSize(size?: number) {
+      if (size === null || size === undefined) {
+        size = this.setting.theme.fontSize
+      }
+
+      const $root = document.querySelector(':root')
+      if (!$root) {
+        return
+      }
+
+      if (size === null || StringUtils.isEmpty(size + '') || size < 0) {
+        size = DEFAULT_FONT_SIZE
+      }
+
+      console.log(size)
+
+      // @ts-ignore
+      $root.style.setProperty('--dbtu-font-size', `${size}px`)
     }
 
   },
@@ -68,6 +94,7 @@ export const useSystemSettingStore = defineStore('useSystemSettingStore', {
   }
 })
 
+const DEFAULT_FONT_SIZE = 14
 /**
  * 获取系统设置（默认值）
  *
@@ -77,7 +104,8 @@ const getDefaultSetting = (): SystemSetting => {
   return {
     theme: {
       mode: 'dark',
-      color: '#3574f0'
+      color: '#3574f0',
+      fontSize: DEFAULT_FONT_SIZE
     }
   }
 }

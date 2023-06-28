@@ -53,7 +53,7 @@ onMounted(() => {
 .navigation-menu {
   width: 200px;
   height: 100%;
-  border-right: 1px solid var(--dbtu-border-color);
+  border-right: 1px solid var(--dbtu-background-color-dark);
 
   .menu-box {
     color: var(--dbtu-font-color);

@@ -18,4 +18,13 @@
   }
 }
 
+.el-input-number__text-left {
+  &.is-without-controls .el-input__wrapper {
+    padding-left: 11px !important;
+    padding-right: 11px !important;
+  }
 
+  .el-input__inner {
+    text-align: left !important;
+  }
+}

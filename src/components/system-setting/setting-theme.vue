@@ -5,6 +5,7 @@
  * @date 2023-06-27 21:
 -->
 <script setup lang="ts">
+import { reactive, watch } from 'vue'
 import { ElForm, ElFormItem, ElRadioGroup, ElRadio, ElIcon } from 'element-plus'
 import { Select as IconSelect } from '@element-plus/icons-vue'
 // region theme images
@@ -12,7 +13,7 @@ import ThemeWhiteImg from '@/assets/images/theme/white.svg'
 import ThemeDarkImg from '@/assets/images/theme/dark.svg'
 // endregion theme images
 import { useSystemSettingStore } from '@/stores/SystemSettingStore'
-import { reactive, watch } from 'vue'
+import { ThemeColors } from '@/common/constants/SystemConstant'
 
 interface ThemeModeItem {
   key: ThemeMode
@@ -26,7 +27,7 @@ defineOptions({
 
 const themeList: ThemeModeItem[] = [
   {
-    key: 'white',
+    key: 'light',
     title: '浅色',
     image: ThemeWhiteImg
   },
@@ -36,8 +37,6 @@ const themeList: ThemeModeItem[] = [
     image: ThemeDarkImg
   }
 ]
-const themeColors = ['#3574f0', '#fa7600', '#61cba0', '#f86a56', '#674dcc', '#5bbfd4', '#e2578d']
-
 const systemSettingStore = useSystemSettingStore()
 const themeData = reactive(systemSettingStore.getSetting().theme)
 
@@ -77,7 +76,7 @@ watch(() => themeData.color, (color) => {
     <el-form-item label="主题颜色">
       <div class="theme-color-list">
         <div
-          v-for="color in themeColors"
+          v-for="color in ThemeColors"
           :key="color"
           :style="{
             '--dbtu-theme-color': color

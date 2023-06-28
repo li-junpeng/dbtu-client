@@ -13,7 +13,7 @@ interface UserInfo {
   avatar: string
 }
 
-type ThemeMode = 'white' | 'dark'
+type ThemeMode = 'light' | 'dark'
 
 interface SystemSetting {
   theme: {

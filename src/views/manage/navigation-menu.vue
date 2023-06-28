@@ -72,7 +72,7 @@ onMounted(() => {
       gap: 8px;
 
       &.is-active {
-        color: var(--dbtu-font-color-light);
+        color: var(--el-color-white);
         background-color: var(--dbtu-theme-color);
       }
 

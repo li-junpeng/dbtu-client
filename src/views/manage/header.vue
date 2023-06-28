@@ -143,7 +143,7 @@ $avatar-image-size: 30px;
       gap: 5px;
 
       &:hover {
-        color: var(--dbtu-font-color-light);
+        color: var(--dbtu-theme-color);
       }
     }
   }

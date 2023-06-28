@@ -41,6 +41,7 @@
         &.is-active {
           background-color: var(--dbtu-theme-color);
           position: relative;
+          color: var(--el-color-white);
 
           &:after {
             content: '';

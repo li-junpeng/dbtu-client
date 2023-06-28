@@ -6,7 +6,7 @@
 -->
 <script setup lang="ts">
 import { reactive, watch } from 'vue'
-import { ElForm, ElFormItem, ElIcon, ElInputNumber, ElRadio, ElRadioGroup, ElSlider } from 'element-plus'
+import { ElForm, ElFormItem, ElIcon, ElRadio, ElRadioGroup, ElSlider } from 'element-plus'
 import { Select as IconSelect } from '@element-plus/icons-vue'
 // region theme images
 import ThemeWhiteImg from '@/assets/images/theme/white.svg'

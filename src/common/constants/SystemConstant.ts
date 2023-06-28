@@ -22,6 +22,6 @@ export const ThemeColors = [
 // 页面字体的默认值
 export const FONT_SIZE_DEFAULT = 14
 // 字体支持的最小值
-export const FONT_SIZE_MIN = 12
+export const FONT_SIZE_MIN = 10
 // 字体支持的最大值
 export const FONT_SIZE_MAX = 18

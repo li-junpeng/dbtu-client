@@ -73,6 +73,7 @@ a {
   --dbtu-theme-color: #409eff;
   --dbtu-theme-hover-color: #79bbff;
   --dbtu-theme-active-color: #337ecc;
+  --dbtu-theme-disabled-color: #a0cfff;
 }
 
 .dbtu-common-theme {
@@ -92,6 +93,7 @@ a {
 
   --el-color-primary: var(--dbtu-theme-color);
   --el-color-primary-light-3: var(--dbtu-theme-hover-color);
+  --el-color-primary-light-5: var(--dbtu-theme-disabled-color);
   --el-color-primary-dark-2: var(--dbtu-theme-active-color);
 
   --el-fill-color-blank: var(--dbtu-background-color-dark);

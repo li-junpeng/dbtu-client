@@ -58,10 +58,12 @@ export const useSystemSettingStore = defineStore('useSystemSettingStore', {
         return
       }
 
+      const $style = $root.style
       const themeColors = generateThemeColors(color as string)
-      $root.style.setProperty('--dbtu-theme-color', color)
-      $root.style.setProperty('--dbtu-theme-active-color', themeColors.active)
-      $root.style.setProperty('--dbtu-theme-hover-color', themeColors.hover)
+      $style.setProperty('--dbtu-theme-color', color)
+      $style.setProperty('--dbtu-theme-active-color', themeColors.active)
+      $style.setProperty('--dbtu-theme-hover-color', themeColors.hover)
+      $style.setProperty('--dbtu-theme-disabled-color', themeColors.disabled)
     },
 
     /**
@@ -126,6 +128,8 @@ const generateThemeColors = (themeColor: string): {
   active: string,
   // hover color
   hover: string
+  // disabled color
+  disabled: string
 } => {
   // 注意: `TinyColor`是element-plus依赖的, 如果把element-plus卸载了, 请自行安装`TinyColor`
   // `TinyColor`安装和使用说明参考: https://tinycolor.vercel.app/docs
@@ -134,6 +138,7 @@ const generateThemeColors = (themeColor: string): {
     // 参考element-plus中的el-button实现
     // 源码url: https://github.com/element-plus/element-plus/blob/dev/packages/components/button/src/button-custom.ts
     active: _color.mix('#141414', 20).toString(),
-    hover: _color.tint(30).toString()
+    hover: _color.tint(30).toString(),
+    disabled: _color.tint(50).toString()
   }
 }

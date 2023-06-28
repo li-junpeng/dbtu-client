@@ -66,11 +66,14 @@ a {
   --dbtu-font-size: 14px;
   --dbtu-font-size-large: calc(var(--dbtu-font-size) + 2px);
 
-  --dbtu-theme-color: #3574f0;
+  --dbtu-theme-color: #409eff;
+  --dbtu-theme-hover-color: #79bbff;
+  --dbtu-theme-active-color: #337ecc;
 }
 
 .dbtu-common-theme {
   --el-bg-color: var(--dbtu-background-color-dark);
+
   --el-text-color-primary: var(--dbtu-font-color);
   --el-text-color-regular: var(--dbtu-font-color);
   --el-font-size-large: var(--dbtu-font-size-large);
@@ -81,6 +84,8 @@ a {
   --el-border-color-hover: var(--dbtu-theme-color);
 
   --el-color-primary: var(--dbtu-theme-color);
+  --el-color-primary-light-3: var(--dbtu-theme-hover-color);
+  --el-color-primary-dark-2: var(--dbtu-theme-active-color);
   --el-fill-color-blank: var(--dbtu-background-color-dark);
   --el-fill-color-light: var(--dbtu-theme-color);
 }

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { StringUtils } from '@/common/utils/StringUtils'
+import { TinyColor } from '@ctrl/tinycolor'
 
 export const useSystemSettingStore = defineStore('useSystemSettingStore', {
   state: () => {
@@ -51,13 +52,15 @@ export const useSystemSettingStore = defineStore('useSystemSettingStore', {
         color = this.setting.theme.color
       }
 
-      const $root = document.querySelector(':root')
-      if (!$root) {
+      const $root = document.querySelector(':root') as HTMLElement
+      if (!$root || !color) {
         return
       }
 
-      // @ts-ignore
+      const themeColors = generateThemeColors(color as string)
       $root.style.setProperty('--dbtu-theme-color', color)
+      $root.style.setProperty('--dbtu-theme-active-color', themeColors.active)
+      $root.style.setProperty('--dbtu-theme-hover-color', themeColors.hover)
     },
 
     /**
@@ -70,7 +73,7 @@ export const useSystemSettingStore = defineStore('useSystemSettingStore', {
         size = this.setting.theme.fontSize
       }
 
-      const $root = document.querySelector(':root')
+      const $root = document.querySelector(':root') as HTMLElement
       if (!$root) {
         return
       }
@@ -79,7 +82,6 @@ export const useSystemSettingStore = defineStore('useSystemSettingStore', {
         size = DEFAULT_FONT_SIZE
       }
 
-      // @ts-ignore
       $root.style.setProperty('--dbtu-font-size', `${size}px`)
     }
 
@@ -105,5 +107,27 @@ const getDefaultSetting = (): SystemSetting => {
       color: '#3574f0',
       fontSize: DEFAULT_FONT_SIZE
     }
+  }
+}
+
+/**
+ * 根据主题颜色，自动生成active、hover的颜色值
+ *
+ * @param themeColor 需要生成的原始颜色
+ */
+const generateThemeColors = (themeColor: string): {
+  // active color
+  active: string,
+  // hover color
+  hover: string
+} => {
+  // 注意: `TinyColor`是element-plus依赖的, 如果把element-plus卸载了, 请自行安装`TinyColor`
+  // `TinyColor`安装和使用说明参考: https://tinycolor.vercel.app/docs
+  const _color = new TinyColor(themeColor)
+  return {
+    // 参考element-plus中的el-button实现
+    // 源码url: https://github.com/element-plus/element-plus/blob/dev/packages/components/button/src/button-custom.ts
+    active: _color.mix('#141414', 20).toString(),
+    hover: _color.tint(30).toString()
   }
 }

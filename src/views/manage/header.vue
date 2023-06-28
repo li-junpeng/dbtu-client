@@ -108,7 +108,7 @@ $avatar-image-size: 30px;
 .page-header {
   width: 100%;
   height: 60px;
-  border-bottom: 1px solid var(--dbtu-divide-borer-color);
+  border-bottom: 2px solid var(--dbtu-divide-borer-color);
   color: var(--dbtu-font-color);
   display: flex;
   align-items: center;

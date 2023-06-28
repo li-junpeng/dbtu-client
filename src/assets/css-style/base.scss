@@ -14,6 +14,7 @@ html,
 
 #app {
   background-color: var(--dbtu-background-color);
+  transition: all var(--dbtu-transition-duration);
 }
 
 a,
@@ -44,14 +45,14 @@ a {
   -moz-user-select: none;
 }
 
-/* 文本超出内容后, 使用省略号代替 */
+/* When text goes beyond its content, use an ellipsis instead */
 .dbtu-text-ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-/* 垂直居中, 前提是父元素必须得设置position */
+/* Center vertically, If the parent element must be set position */
 .dbtu-vertical-center {
   position: absolute;
   top: 50%;
@@ -60,6 +61,8 @@ a {
 }
 
 :root {
+  --dbtu-transition-duration: .3s;
+
   --dbtu-font-size: 14px;
   --dbtu-font-size-large: calc(var(--dbtu-font-size) + 2px);
 

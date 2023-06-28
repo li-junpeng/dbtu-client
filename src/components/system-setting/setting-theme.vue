@@ -100,6 +100,7 @@ watch(() => themeData.fontSize, (size) => {
     </el-form-item>
     <el-form-item label="字体大小">
       <el-slider
+        non-passive
         v-model="themeData.fontSize"
         style="width: 330px"
         :min="12"

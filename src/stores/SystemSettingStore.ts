@@ -79,8 +79,6 @@ export const useSystemSettingStore = defineStore('useSystemSettingStore', {
         size = DEFAULT_FONT_SIZE
       }
 
-      console.log(size)
-
       // @ts-ignore
       $root.style.setProperty('--dbtu-font-size', `${size}px`)
     }

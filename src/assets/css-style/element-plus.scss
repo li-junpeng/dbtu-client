@@ -1,3 +1,21 @@
-.el-dialog__body {
-  padding: 10px 20px 20px 20px;
+.el-dialog {
+  overflow: auto;
+
+  .el-dialog__body {
+    padding: 10px 20px 20px 20px;
+  }
+
+  &.el-dialog__header-no-padding {
+    .el-dialog__header {
+      padding: 0;
+    }
+  }
+
+  &.el-dialog__body-no-padding {
+    .el-dialog__body {
+      padding: 0;
+    }
+  }
 }
+
+

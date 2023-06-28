@@ -97,11 +97,14 @@ defineExpose({
 <template>
   <el-dialog
     v-model="visible"
-    title="设置"
+    class="el-dialog__header-no-padding el-dialog__body-no-padding"
     width="900px"
     draggable
     :close-on-click-modal="false"
   >
+    <template #header>
+      <span class="dialog-header">设置</span>
+    </template>
     <div class="setting-content">
       <!-- 左侧导航tab -->
       <div class="dbtu-un-user-select nav-tab-box">

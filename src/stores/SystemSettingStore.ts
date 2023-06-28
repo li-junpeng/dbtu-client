@@ -32,7 +32,12 @@ export const useSystemSettingStore = defineStore('useSystemSettingStore', {
      * @param mode 模式
      */
     updateThemeMode(mode?: ThemeMode) {
-      // TODO 修改主题
+      if (StringUtils.isEmpty(mode)) {
+        mode = this.setting.theme.mode
+      }
+
+      const $html = document.body
+      $html.className = `dbtu-common-theme dbtu-theme-${mode}`
     },
 
     /**

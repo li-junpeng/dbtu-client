@@ -3,6 +3,7 @@ import '@/assets/css-style/base.scss'
 
 // 主题
 import '@/assets/theme/dark.scss'
+import '@/assets/theme/light.scss'
 
 import { createApp } from 'vue'
 import pinia  from '@/stores/pinia-config'

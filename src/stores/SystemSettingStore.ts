@@ -64,11 +64,16 @@ export const useSystemSettingStore = defineStore('useSystemSettingStore', {
       }
 
       const $style = $root.style
-      const themeColors = generateThemeColors(color as string)
-      $style.setProperty('--dbtu-theme-color', color)
-      $style.setProperty('--dbtu-theme-active-color', themeColors.active)
-      $style.setProperty('--dbtu-theme-hover-color', themeColors.hover)
-      $style.setProperty('--dbtu-theme-disabled-color', themeColors.disabled)
+      const { active, hover, disabled } = generateThemeColors(color as string)
+      const variables: Record<string, string> = {
+        '--dbtu-theme-color': color,
+        '--dbtu-theme-active-color': active,
+        '--dbtu-theme-hover-color': hover,
+        '--dbtu-theme-disabled-color': disabled
+      }
+      for (let key in variables) {
+        $style.setProperty(key, variables[key])
+      }
     },
 
     /**

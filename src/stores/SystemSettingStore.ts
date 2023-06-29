@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { StringUtils } from '@/common/utils/StringUtils'
 import { TinyColor } from '@ctrl/tinycolor'
 import { FONT_SIZE_DEFAULT, FONT_SIZE_MAX, FONT_SIZE_MIN } from '@/common/constants/SystemConstant'
+import { useDark } from '@vueuse/core'
 
 export const useSystemSettingStore = defineStore('useSystemSettingStore', {
   state: () => {
@@ -37,6 +38,10 @@ export const useSystemSettingStore = defineStore('useSystemSettingStore', {
     updateThemeMode(mode?: ThemeMode) {
       if (StringUtils.isEmpty(mode)) {
         mode = this.setting.theme.mode
+      }
+
+      if (mode === 'auto') {
+        mode = useDark().value ? 'dark' : 'light'
       }
 
       const $html = document.body

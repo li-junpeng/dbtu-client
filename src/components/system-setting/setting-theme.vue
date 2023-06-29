@@ -11,6 +11,7 @@ import { Select as IconSelect } from '@element-plus/icons-vue'
 // region theme images
 import ThemeWhiteImg from '@/assets/images/theme/white.svg'
 import ThemeDarkImg from '@/assets/images/theme/dark.svg'
+import ThemeAutoImg from '@/assets/images/theme/auto.svg'
 // endregion theme images
 import { useSystemSettingStore } from '@/stores/SystemSettingStore'
 import { ThemeColors, FONT_SIZE_MIN, FONT_SIZE_MAX } from '@/common/constants/SystemConstant'
@@ -18,7 +19,7 @@ import { ThemeColors, FONT_SIZE_MIN, FONT_SIZE_MAX } from '@/common/constants/Sy
 interface ThemeModeItem {
   key: ThemeMode
   title: string
-  image: never
+  image: string
 }
 
 defineOptions({
@@ -35,6 +36,11 @@ const themeList: ThemeModeItem[] = [
     key: 'dark',
     title: '暗黑',
     image: ThemeDarkImg
+  },
+  {
+    key: 'auto',
+    title: '跟随系统',
+    image: ThemeAutoImg
   }
 ]
 const systemSettingStore = useSystemSettingStore()
@@ -71,7 +77,7 @@ watch(() => themeData.fontSize, (size) => {
             @click="themeData.mode = theme.key"
           >
             <img :src="theme.image" :alt="theme.title"/>
-            <el-radio :label="theme.key" size="small">
+            <el-radio :label="theme.key">
               <span>{{ theme.title }}</span>
             </el-radio>
           </div>
@@ -126,10 +132,6 @@ watch(() => themeData.fontSize, (size) => {
     img {
       border-radius: var(--dbtu-border-radius);
       pointer-events: none;
-    }
-
-    span {
-      zoom: .8
     }
   }
 }

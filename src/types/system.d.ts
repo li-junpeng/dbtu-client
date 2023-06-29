@@ -13,7 +13,7 @@ interface UserInfo {
   avatar: string
 }
 
-type ThemeMode = 'light' | 'dark'
+type ThemeMode = 'light' | 'dark' | 'auto'
 
 /**
  * 系统设置配置项

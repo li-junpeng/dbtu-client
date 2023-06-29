@@ -10,10 +10,15 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
+      redirect: '/manage/connection'
+    },
+    {
+      path: '/manage',
+      name: 'Manage',
       component: () => import('@/views/manage/index.vue'),
       children: [
         {
-          path: '/connection',
+          path: '/manage/connection',
           name: 'ConnectionManage',
           meta: {
             title: '连接管理',
@@ -22,7 +27,7 @@ const router = createRouter({
           component: () => import('@/views/manage/connection/index.vue')
         },
         {
-          path: '/team',
+          path: '/manage/team',
           name: 'TeamManage',
           meta: {
             title: '团队管理',
@@ -31,7 +36,7 @@ const router = createRouter({
           component: () => import('@/views/manage/team/index.vue')
         },
         {
-          path:'/log',
+          path:'/manage/log',
           name: 'LogManage',
           meta: {
             title: '操作日志',
@@ -40,7 +45,7 @@ const router = createRouter({
           component: () => import('@/views/manage/log/index.vue')
         },
         {
-          path: '/recycled',
+          path: '/manage/recycled',
           name: 'Recycled',
           meta: {
             title: '回收站',

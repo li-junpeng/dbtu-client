@@ -15,7 +15,7 @@ defineOptions({
 
 // 获取路由定义
 const router = useRouter()
-const menus = router.getRoutes().find(route => route.path === '/')?.children
+const menus = router.getRoutes().find(route => route.path === '/manage')?.children
 
 // 监听路由变化, 动态修改菜单激活项
 const currentRoutePath = ref<string>('')

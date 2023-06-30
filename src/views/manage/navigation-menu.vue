@@ -35,7 +35,7 @@ onMounted(() => {
         v-for="menu in menus"
         :key="menu.name"
         :to="menu.path"
-        class="menu-item"
+        class="dbtu-un-user-select menu-item"
         :class="{
           'is-active': currentRoutePath === menu.path
         }"

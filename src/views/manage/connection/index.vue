@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
-import { ElButton, ElInput, ElSelect, ElOption } from 'element-plus'
+import { reactive, ref } from 'vue'
+import { ElContainer, ElHeader, ElAside, ElMain, ElButton, ElInput, ElSelect, ElOption } from 'element-plus'
 import { Plus as IconPlus, Search as IconSearch } from '@element-plus/icons-vue'
 import { DatabaseTypes } from '@/common/constants/ConnectionConstant'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
+import DataTable from './data-table.vue'
 
 defineOptions({
   name: 'ConnectionPage'
@@ -21,55 +22,73 @@ const dbTypes = ArrayUtils.unshift<any>(
     name: '全部'
   }
 )
+
+const selectedRow = ref(null)
 </script>
 
 <template>
-  <div class="connection-page-container">
-    <div class="toolbar-box">
-      <div class="left-actions">
-        <el-button type="primary" :icon="IconPlus">新建连接</el-button>
-        <el-select
-          v-model="searchParams.dbType"
-          style="width: 180px"
-        >
-          <el-option
-            v-for="item in dbTypes"
-            :key="item.key"
-            :label="item.name"
-            :value="item.key"
+  <el-container style="height: 100%">
+    <el-main>
+      <el-header class="header-toolbox" height="32px">
+        <div class="left-actions">
+          <el-button type="primary" :icon="IconPlus">新建连接</el-button>
+          <el-select
+            v-model="searchParams.dbType"
+            style="width: 180px"
+          >
+            <el-option
+              v-for="item in dbTypes"
+              :key="item.key"
+              :label="item.name"
+              :value="item.key"
+            />
+          </el-select>
+          <el-input
+            v-model="searchParams.name"
+            placeholder="输入连接名查询"
+            :prefix-icon="IconSearch"
+            style="width: 300px"
+            clearable
           />
-        </el-select>
-        <el-input
-          v-model="searchParams.name"
-          placeholder="输入连接名查询"
-          :prefix-icon="IconSearch"
-          style="width: 300px"
-          clearable
-        />
-      </div>
-      <div>
-        <el-button>排序</el-button>
-      </div>
-    </div>
-  </div>
+        </div>
+        <div>
+          <el-button>排序</el-button>
+        </div>
+      </el-header>
+      <el-main>
+        <data-table class="data-table-box"/>
+      </el-main>
+    </el-main>
+    <el-aside class="right-detail" width="300px">
+      <div
+        v-if="selectedRow === null"
+        class="dbtu-vertical-center dbtu-un-user-select no-data"
+      >暂无数据</div>
+    </el-aside>
+  </el-container>
 </template>
 
 <style scoped lang="scss">
-.connection-page-container {
-  width: 100%;
-  height: 100%;
-  padding: 40px 20px;
+.header-toolbox {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: nowrap;
 
-  .toolbar-box {
+  .left-actions {
     display: flex;
-    justify-content: space-between;
-    gap: 100px;
+    gap: 10px;
+    flex-wrap: nowrap;
+  }
+}
 
-    .left-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+.right-detail {
+  position: relative;
+  border-left: 1px solid var(--dbtu-divide-borer-color);
+  overflow: auto;
+
+  .no-data {
+    color: var(--dbtu-font-color-disabled);
   }
 }
 </style>

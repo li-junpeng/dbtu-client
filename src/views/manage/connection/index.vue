@@ -24,6 +24,11 @@ const dbTypes = ArrayUtils.unshift<any>(
 )
 
 const selectedRow = ref(null)
+
+// demo 根据数据库类型，动态加载详情页面
+const modules = import.meta.glob(`@/components/database/**/connection-detail.vue`)
+console.log(modules)
+
 </script>
 
 <template>

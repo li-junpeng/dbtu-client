@@ -9,7 +9,9 @@ import ElementPlus from 'unplugin-element-plus/vite'
 export default defineConfig({
   plugins: [
     vue(),
-    ElementPlus({})
+    ElementPlus({
+      useSource: true
+    })
   ],
   resolve: {
     alias: {

@@ -20,12 +20,12 @@
 
 .el-input-number__text-left {
   &.is-without-controls .el-input__wrapper {
-    padding-left: 11px !important;
-    padding-right: 11px !important;
+    padding-left: 11px;
+    padding-right: 11px;
   }
 
   .el-input__inner {
-    text-align: left !important;
+    text-align: left;
   }
 }
 
@@ -39,4 +39,37 @@
       background-color: var(--dbtu-hover-color);
     }
   }
+}
+
+.el-table {
+  color: var(--dbtu-font-color);
+
+  --el-table-header-bg-color: var(--dbtu-background-color);
+  --el-table-bg-color: var(--dbtu-background-color);
+  --el-table-tr-bg-color: var(--dbtu-background-color);
+
+  &--enable-row-hover .el-table__body tr:hover > td.el-table__cell {
+    background-color: var(--dbtu-hover-color);
+  }
+
+  &:not(.el-table--border) .el-table--border::after,
+  &:not(.el-table--border) .el-table--border::before,
+  &:not(.el-table--border) .el-table--border .el-table__inner-wrapper::after,
+  &:not(.el-table--border) .el-table__inner-wrapper::before {
+    background-color: transparent;
+  }
+
+  thead {
+    color: var(--dbtu-font-color);
+  }
+
+  &:not(.el-table--border) td.el-table__cell,
+  &:not(.el-table--border) th.el-table__cell.is-leaf {
+    border-bottom: none
+  }
+
+  .el-table__body tr.current-row > td.el-table__cell {
+    background-color: var(--dbtu-hover-color);
+  }
+
 }

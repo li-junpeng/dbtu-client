@@ -35,3 +35,12 @@ export const DatabaseTypes: DatabaseDefine = {
     used: false
   }
 }
+
+/**
+ * 数据库连接状态
+ */
+export const ConnectionStatus: Record<ConnectionStatusType, string> = {
+  connecting: '正在连接',
+  connected: '已连接',
+  no_connection: '未连接'
+}

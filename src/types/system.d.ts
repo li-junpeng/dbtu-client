@@ -1,3 +1,16 @@
+/**
+ * 实体类基础字段
+ */
+interface BaseEntity {
+  createBy: string
+  createTime: string
+  updateBy: string
+  updateTime: string
+}
+
+/**
+ * 用户信息
+ */
 interface UserInfo {
   // key
   id: number
@@ -13,6 +26,9 @@ interface UserInfo {
   avatar: string
 }
 
+/**
+ * 主题模式
+ */
 type ThemeMode = 'light' | 'dark' | 'auto'
 
 /**
@@ -30,7 +46,9 @@ interface SystemSetting {
   }
 }
 
-// 系统设置中, 左侧导航tab信息
+/**
+ * 系统设置中, 左侧导航tab信息
+ */
 interface SystemSettingTabItem {
   key: SystemSettingTabKey
   title: string
@@ -40,7 +58,9 @@ interface SystemSettingTabItem {
   component: string
 }
 
-// 系统设置tab页内容
+/**
+ * 系统设置tab页内容
+ */
 type SystemSettingTabKey =
   | 'theme'         // 主题
   | 'proxy'         // 代理

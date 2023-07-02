@@ -14,10 +14,19 @@ defineOptions({
 })
 
 const connections = ref([])
-for (let i = 0; i < 20; i++) {
+for (let i = 0; i < 1; i++) {
   connections.value.push({
     id: 1,
     name: '@localhost',
+    type: 'mysql',
+    status: 'down',
+    version: '--',
+    host: 'localhost:3306'
+  })
+  connections.value.push({
+    id: 1,
+    name: '@localhost',
+    type: 'sql_server_2012',
     status: 'down',
     version: '--',
     host: 'localhost:3306'

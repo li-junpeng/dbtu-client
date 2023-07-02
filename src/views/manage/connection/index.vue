@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { AsyncComponentLoader, computed, defineAsyncComponent, reactive, ref, shallowRef, watch } from 'vue'
-import { ElContainer, ElHeader, ElAside, ElMain, ElButton, ElInput, ElSelect, ElOption } from 'element-plus'
+import { defineAsyncComponent, reactive, ref, shallowRef } from 'vue'
+import { ElAside, ElButton, ElContainer, ElHeader, ElInput, ElMain, ElOption, ElSelect } from 'element-plus'
 import { Plus as IconPlus, Search as IconSearch } from '@element-plus/icons-vue'
 import { DatabaseTypes } from '@/common/constants/ConnectionConstant'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
@@ -84,6 +84,7 @@ const onChangeDetailComponent = (row: ConnectionInfo) => {
       <component
         v-else
         :is="detailComponent"
+        :connection-info="selectedConnectionInfo"
       />
     </el-aside>
   </el-container>

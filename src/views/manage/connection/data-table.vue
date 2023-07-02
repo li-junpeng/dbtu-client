@@ -67,8 +67,7 @@ const onClickRow = (row: ConnectionInfo) => {
       @row-click="onClickRow"
     >
       <el-table-column prop="name" label="连接名"/>
-      <el-table-column prop="status" label="状态" align="center" width="100"/>
-      <el-table-column prop="version" label="数据库版本" align="center" width="200"/>
+      <el-table-column prop="status" label="状态" align="center" width="200"/>
       <el-table-column prop="host" label="主机 & 端口" align="center" width="300"/>
       <el-table-column prop="__action" label="操作" align="center" width="300">
         <template #default="{ row }">

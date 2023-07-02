@@ -13,26 +13,45 @@ defineOptions({
   name: 'ManageConnectionDataTablePage'
 })
 
-const connections = ref([])
+const emit = defineEmits<{
+  (e: 'selectRow', row: ConnectionInfo): void
+}>()
+
+const connections = ref<ConnectionInfo[]>([])
 for (let i = 0; i < 1; i++) {
   connections.value.push({
     id: 1,
     name: '@localhost',
-    type: 'mysql',
-    status: 'down',
-    version: '--',
-    host: 'localhost:3306'
+    dbType: 'mysql',
+    status: 'no_connection',
+    host: 'localhost:3306',
+    createBy: '',
+    createTime: '',
+    updateBy: '',
+    updateTime: '',
+    detail: {
+      sessionNum: 0
+    } as MySQLConnectionInfo
   })
   connections.value.push({
     id: 1,
     name: '@localhost',
-    type: 'sql_server_2012',
-    status: 'down',
-    version: '--',
-    host: 'localhost:3306'
+    dbType: 'sql_server_2012',
+    status: 'connected',
+    host: 'localhost:3306',
+    createBy: '',
+    createTime: '',
+    updateBy: '',
+    updateTime: '',
+    detail: {
+      sessionNum: 0
+    } as SQLServer2012ConnectionInfo
   })
 }
 
+const onClickRow = (row: ConnectionInfo) => {
+  emit('selectRow', row)
+}
 </script>
 
 <template>
@@ -45,6 +64,7 @@ for (let i = 0; i < 1; i++) {
       max-height="530px"
       scrollbar-always-on
       style="width: 100%"
+      @row-click="onClickRow"
     >
       <el-table-column prop="name" label="连接名"/>
       <el-table-column prop="status" label="状态" align="center" width="100"/>

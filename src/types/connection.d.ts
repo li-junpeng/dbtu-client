@@ -3,12 +3,12 @@
  */
 type DatabaseIdent =
   | 'mysql'
-  | 'oracle'
+  | 'sql_server_2012'
+ /* | 'oracle'
   | 'postgre_sql'
   | 'dm'
-  | 'sql_server_2012'
   | 'mongodb'
-  | 'hive'
+  | 'hive'*/
 
 /**
  * 数据库连接状态, | 正在连接 | 已连接 | 未连接
@@ -67,7 +67,7 @@ interface ConnectionInfo extends BaseEntity {
  */
 interface MySQLConnectionInfo {
   // 服务器版本
-  version: string
+  version?: string
   // 会话数
   sessionNum: number
   // 用户名
@@ -81,7 +81,7 @@ interface MySQLConnectionInfo {
  */
 interface SQLServer2012ConnectionInfo {
   // 服务器版本
-  version: string
+  version?: string
   // 会话数
   sessionNum: number
   // 用户名

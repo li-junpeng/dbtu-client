@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { AsyncComponentLoader, computed, defineAsyncComponent, reactive, ref, shallowRef, watch } from 'vue'
 import { ElContainer, ElHeader, ElAside, ElMain, ElButton, ElInput, ElSelect, ElOption } from 'element-plus'
 import { Plus as IconPlus, Search as IconSearch } from '@element-plus/icons-vue'
 import { DatabaseTypes } from '@/common/constants/ConnectionConstant'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
+import { getConnectionDetailCom } from '@/components/database/connection-detail'
 import DataTable from './data-table.vue'
 
 defineOptions({
@@ -23,12 +24,19 @@ const dbTypes = ArrayUtils.unshift<any>(
   }
 )
 
-const selectedRow = ref(null)
-
-// demo 根据数据库类型，动态加载详情页面
-const modules = import.meta.glob(`@/components/database/**/connection-detail.vue`)
-console.log(modules)
-
+// 根据数据库类型，动态显示
+const selectedConnectionInfo = ref<ConnectionInfo | null>(null)
+const detailComponent = shallowRef(null)
+const onChangeDetailComponent = (row: ConnectionInfo) => {
+  const component = getConnectionDetailCom(row.dbType)
+  component && component().then(() => {
+    selectedConnectionInfo.value = row
+    // @ts-ignore
+    detailComponent.value = defineAsyncComponent(component)
+  }).catch(() => {
+    // TODO 错误提示，提示内容：加载页面组件失败，请刷新页面后再试
+  })
+}
 </script>
 
 <template>
@@ -61,14 +69,22 @@ console.log(modules)
         </div>
       </el-header>
       <el-main>
-        <data-table class="data-table-box"/>
+        <data-table
+          class="data-table-box"
+          @select-row="onChangeDetailComponent"
+        />
       </el-main>
     </el-main>
     <el-aside class="right-detail" width="300px">
       <div
-        v-if="selectedRow === null"
+        v-if="detailComponent === null"
         class="dbtu-vertical-center dbtu-un-user-select no-data"
-      >暂无数据</div>
+      >暂无数据
+      </div>
+      <component
+        v-else
+        :is="detailComponent"
+      />
     </el-aside>
   </el-container>
 </template>

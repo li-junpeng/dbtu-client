@@ -38,7 +38,9 @@ export const MessageBox = {
   ): Promise<MessageBoxData> => {
     return ElMessageBox.confirm(msg, title, {
       type: 'warning',
+      cancelButtonClass: 'el-button--info',
       cancelButtonText: '取消',
+      confirmButtonClass: 'el-button--danger',
       confirmButtonText: '删除',
       autofocus: false,
       draggable: true,

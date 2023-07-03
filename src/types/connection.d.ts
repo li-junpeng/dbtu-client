@@ -21,14 +21,16 @@ type ConnectionStatusType =
 /**
  * 数据库基本信息
  */
-type DatabaseDefine = Record<DatabaseIdent, {
+type DatabaseDefine = Record<DatabaseIdent, DatabaseDefineItem>
+
+interface DatabaseDefineItem {
   // 标识
   key: DatabaseIdent
   // 显示名
-  name: string,
+  name: string
   // 开发完成了
   used: boolean
-}>
+}
 
 /**
  * 连接管理中，筛选连接列表需要的参数

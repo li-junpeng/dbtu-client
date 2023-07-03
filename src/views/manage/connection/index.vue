@@ -7,6 +7,7 @@ import { ArrayUtils } from '@/common/utils/ArrayUtils'
 import { getConnectionDetailCom } from '@/components/database/component/connection-detail'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import DataTable from './data-table.vue'
+import CreateConnection from './create-connection.vue'
 
 defineOptions({
   name: 'ConnectionPage'
@@ -38,13 +39,23 @@ const onChangeDetailComponent = (row: ConnectionInfo<BaseConnectionDetail>) => {
     MessageBox.error(`加载[ ${DatabaseTypes[row.dbType].name} ]数据库详情组件失败，请刷新页面后再试！`)
   })
 }
+
+// 创建连接、编辑连接
+const createConnectionRef = ref()
+const toCreateConnection = () => {
+  createConnectionRef.value?.open()
+}
 </script>
 
 <template>
   <el-container style="height: 100%;padding: 20px 0;">
     <el-header class="header-toolbox" height="32px">
       <div class="left-actions">
-        <el-button type="primary" :icon="IconPlus">新建连接</el-button>
+        <el-button
+          type="primary"
+          :icon="IconPlus"
+          @click="toCreateConnection"
+        >新建连接</el-button>
         <el-select
           v-model="searchParams.dbType"
           style="width: 180px"
@@ -87,6 +98,10 @@ const onChangeDetailComponent = (row: ConnectionInfo<BaseConnectionDetail>) => {
       :connection-info="selectedConnectionInfo"
     />
   </el-aside>
+
+  <create-connection
+    ref="createConnectionRef"
+  />
 </template>
 
 <style scoped lang="scss">

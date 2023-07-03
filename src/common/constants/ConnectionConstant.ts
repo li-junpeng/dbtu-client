@@ -4,6 +4,11 @@ export const DatabaseTypes: DatabaseDefine = {
     name: 'MySQL',
     used: true
   },
+  sql_server_2012: {
+    key: 'sql_server_2012',
+    name: 'SQL Server 2012',
+    used: true
+  },
   /*oracle: {
     key: 'oracle',
     name: 'Oracle',
@@ -28,12 +33,7 @@ export const DatabaseTypes: DatabaseDefine = {
     key: 'postgre_sql',
     name: 'PostgreSQL',
     used: false
-  },*/
-  sql_server_2012: {
-    key: 'sql_server_2012',
-    name: 'SQL Server 2012',
-    used: false
-  }
+  }*/
 }
 
 /**

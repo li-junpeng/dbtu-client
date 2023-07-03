@@ -4,7 +4,7 @@ import { ElAside, ElButton, ElContainer, ElHeader, ElInput, ElMain, ElOption, El
 import { Plus as IconPlus, Search as IconSearch } from '@element-plus/icons-vue'
 import { DatabaseTypes } from '@/common/constants/ConnectionConstant'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
-import { getConnectionDetailCom } from '@/components/database/connection-detail'
+import { getConnectionDetailCom } from '@/components/database/component/connection-detail'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import DataTable from './data-table.vue'
 
@@ -26,9 +26,9 @@ const dbTypes = ArrayUtils.unshift<any>(
 )
 
 // 根据数据库类型，动态显示
-const selectedConnectionInfo = ref<ConnectionInfo | null>(null)
+const selectedConnectionInfo = ref<ConnectionInfo<BaseConnectionDetail> | null>(null)
 const detailComponent = shallowRef(null)
-const onChangeDetailComponent = (row: ConnectionInfo) => {
+const onChangeDetailComponent = (row: ConnectionInfo<BaseConnectionDetail>) => {
   const component = getConnectionDetailCom(row.dbType)
   component().then(() => {
     selectedConnectionInfo.value = row
@@ -41,54 +41,52 @@ const onChangeDetailComponent = (row: ConnectionInfo) => {
 </script>
 
 <template>
-  <el-container style="height: 100%">
-    <el-main>
-      <el-header class="header-toolbox" height="32px">
-        <div class="left-actions">
-          <el-button type="primary" :icon="IconPlus">新建连接</el-button>
-          <el-select
-            v-model="searchParams.dbType"
-            style="width: 180px"
-          >
-            <el-option
-              v-for="item in dbTypes"
-              :key="item.key"
-              :label="item.name"
-              :value="item.key"
-            />
-          </el-select>
-          <el-input
-            v-model="searchParams.name"
-            placeholder="输入连接名查询"
-            :prefix-icon="IconSearch"
-            style="width: 300px"
-            clearable
+  <el-container style="height: 100%;padding: 20px 0;">
+    <el-header class="header-toolbox" height="32px">
+      <div class="left-actions">
+        <el-button type="primary" :icon="IconPlus">新建连接</el-button>
+        <el-select
+          v-model="searchParams.dbType"
+          style="width: 180px"
+        >
+          <el-option
+            v-for="item in dbTypes"
+            :key="item.key"
+            :label="item.name"
+            :value="item.key"
           />
-        </div>
-        <div>
-          <el-button>排序</el-button>
-        </div>
-      </el-header>
-      <el-main>
-        <data-table
-          class="data-table-box"
-          @select-row="onChangeDetailComponent"
+        </el-select>
+        <el-input
+          v-model="searchParams.name"
+          placeholder="输入连接名查询"
+          :prefix-icon="IconSearch"
+          style="width: 300px"
+          clearable
         />
-      </el-main>
-    </el-main>
-    <el-aside class="right-detail" width="300px">
-      <div
-        v-if="detailComponent === null"
-        class="dbtu-vertical-center dbtu-un-user-select no-data"
-      >暂无数据
       </div>
-      <component
-        v-else
-        :is="detailComponent"
-        :connection-info="selectedConnectionInfo"
+      <div>
+        <el-button>排序</el-button>
+      </div>
+    </el-header>
+    <el-main>
+      <data-table
+        class="data-table-box"
+        @select-row="onChangeDetailComponent"
       />
-    </el-aside>
+    </el-main>
   </el-container>
+  <el-aside class="right-detail" width="300px">
+    <div
+      v-if="detailComponent === null"
+      class="dbtu-vertical-center dbtu-un-user-select no-data"
+    >暂无数据
+    </div>
+    <component
+      v-else
+      :is="detailComponent"
+      :connection-info="selectedConnectionInfo"
+    />
+  </el-aside>
 </template>
 
 <style scoped lang="scss">
@@ -108,7 +106,6 @@ const onChangeDetailComponent = (row: ConnectionInfo) => {
 .right-detail {
   position: relative;
   border-left: 1px solid var(--dbtu-divide-borer-color);
-  overflow: auto;
   padding: 10px;
 
   .no-data {

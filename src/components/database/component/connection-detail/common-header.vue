@@ -19,7 +19,7 @@ defineSlots<{
 const props = defineProps({
 
   connectionInfo: {
-    type: Object as PropType<ConnectionInfo>,
+    type: Object as PropType<ConnectionInfo<MySQLConnectionInfo>>,
     required: true
   }
 
@@ -38,7 +38,7 @@ const statusText = computed(() => {
     </div>
     <div class="info-box">
       <p class="dbtu-text-ellipsis  connection-name">{{ connectionInfo.name }}</p>
-      <p class="connection-status-text">{{ statusText }}</p>
+      <p class="dbtu-un-user-select connection-status-text">{{ statusText }}</p>
     </div>
   </div>
 </template>
@@ -49,6 +49,7 @@ $icon-box-size: 50px;
 .detail-header-wrapper {
   display: flex;
   gap: 10px;
+  margin-bottom: 10px;
 
   .db-icon {
     width: $icon-box-size;
@@ -80,6 +81,7 @@ $icon-box-size: 50px;
     .connection-name {
       font-weight: 500;
       color: var(--dbtu-font-color);
+      cursor: default;
     }
 
     .connection-status-text {

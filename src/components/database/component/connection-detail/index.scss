@@ -1,0 +1,19 @@
+.detail-items {
+  list-style: none;
+  font-size: var(--dbtu-font-size);
+  color: var(--dbtu-font-color);
+
+  li {
+    line-height: 24px;
+    margin-bottom: 20px;
+
+    div:nth-child(1) {
+      user-select: none;
+      color: var(--dbtu-font-color-minor-01);
+    }
+
+    div:nth-child(2) {
+      word-wrap: break-word;
+    }
+  }
+}

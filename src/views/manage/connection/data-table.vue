@@ -15,17 +15,18 @@ defineOptions({
 })
 
 const emit = defineEmits<{
-  (e: 'selectRow', row: ConnectionInfo): void
+  (e: 'selectRow', row: ConnectionInfo<BaseConnectionDetail>): void
 }>()
 
-const connections = ref<ConnectionInfo[]>([])
+const connections = ref<ConnectionInfo<BaseConnectionDetail>[]>([])
 for (let i = 0; i < 1; i++) {
   connections.value.push({
     id: 1,
     name: '@localhost',
     dbType: 'mysql',
     status: 'no_connection',
-    host: 'localhost:3306',
+    host: 'localhost',
+    port: 3306,
     createBy: '',
     createTime: '',
     updateBy: '',
@@ -39,7 +40,8 @@ for (let i = 0; i < 1; i++) {
     name: '@localhost',
     dbType: 'sql_server_2012',
     status: 'connected',
-    host: 'localhost:3306',
+    host: 'localhost',
+    port: 3306,
     createBy: '',
     createTime: '',
     updateBy: '',
@@ -50,7 +52,7 @@ for (let i = 0; i < 1; i++) {
   })
 }
 
-const onClickRow = (row: ConnectionInfo) => {
+const onClickRow = (row: ConnectionInfo<BaseConnectionDetail>) => {
   emit('selectRow', row)
 }
 

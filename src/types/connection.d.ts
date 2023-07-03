@@ -4,11 +4,11 @@
 type DatabaseIdent =
   | 'mysql'
   | 'sql_server_2012'
- /* | 'oracle'
-  | 'postgre_sql'
-  | 'dm'
-  | 'mongodb'
-  | 'hive'*/
+/* | 'oracle'
+ | 'postgre_sql'
+ | 'dm'
+ | 'mongodb'
+ | 'hive'*/
 
 /**
  * 数据库连接状态, | 正在连接 | 已连接 | 未连接
@@ -43,7 +43,7 @@ interface ConnectionListSearchParams {
 /**
  * 数据库连接信息
  */
-interface ConnectionInfo extends BaseEntity {
+interface ConnectionInfo<T extends BaseConnectionDetail> extends BaseEntity {
   // 主键
   id: number | null
   // 连接名
@@ -57,15 +57,16 @@ interface ConnectionInfo extends BaseEntity {
   // 端口, 范围 0 ~ 65535
   port?: number
   // 连接详情, 每个数据库跟每个数据库的信息都不一样
-  detail:
-    | MySQLConnectionInfo
-    | SQLServer2012ConnectionInfo
+  detail: T
+}
+
+interface BaseConnectionDetail {
 }
 
 /**
  * MySQL数据库连接详情信息
  */
-interface MySQLConnectionInfo {
+interface MySQLConnectionInfo extends BaseConnectionDetail {
   // 服务器版本
   version?: string
   // 会话数
@@ -79,7 +80,7 @@ interface MySQLConnectionInfo {
 /**
  * SQL Server 2012 数据库连接详情信息
  */
-interface SQLServer2012ConnectionInfo {
+interface SQLServer2012ConnectionInfo extends BaseConnectionDetail {
   // 服务器版本
   version?: string
   // 会话数

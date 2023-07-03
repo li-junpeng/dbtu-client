@@ -5,11 +5,13 @@
  * @date 2023-07-03 21:
 -->
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, defineAsyncComponent, reactive, Ref, ref, shallowRef } from 'vue'
 import { ElDialog, ElContainer, ElAside, ElMain, ElInput, ElIcon, ElScrollbar } from 'element-plus'
 import { Search as IconSearch, Lock as IconLock } from '@element-plus/icons-vue'
 import { DatabaseTypes } from '@/common/constants/ConnectionConstant'
 import { StringUtils } from '@/common/utils/StringUtils'
+import { getCreateConnectionCom } from '@/components/database/component/create-connection'
+import { MessageBox } from '@/components/element-plus/el-feedback-util'
 
 defineOptions({
   name: 'CreateConnectionDialog'
@@ -47,9 +49,15 @@ const open = (data?: ConnectionInfo<BaseConnectionDetail>, db: DatabaseIdent = '
   if (!data) {
     dialog.title = '创建连接'
     dialog.isEdit = false
+    formData.value = {
+      dbType: db,
+      host: 'localhost',
+      name: '@localhost',
+    }
   } else {
     dialog.title = '编辑连接'
     dialog.isEdit = true
+    formData.value = data
   }
 
   onClickDbItem(data ? DatabaseTypes[data.dbType] : DatabaseTypes[db])
@@ -66,6 +74,24 @@ const onClickDbItem = (db: DatabaseDefineItem) => {
   }
 
   activeDb.value = db
+  onChangeFormComponent()
+}
+
+// 动态加载表单组件
+const formData = ref<ConnectionInfo<BaseConnectionDetail> | {}>()
+const formComponent = shallowRef(null)
+const onChangeFormComponent = () => {
+  if (!activeDb.value) {
+    return
+  }
+
+  const component = getCreateConnectionCom(activeDb.value!.key)
+  component().then(() => {
+    // @ts-ignore
+    formComponent.value = defineAsyncComponent(component)
+  }).catch(() => {
+    MessageBox.error(`加载 [ ${activeDb.value?.name} ] 数据库表单组件失败，请刷新页面后再试！`)
+  })
 }
 
 defineExpose({
@@ -112,7 +138,10 @@ defineExpose({
           </el-scrollbar>
         </el-aside>
         <el-main>
-          bv
+          <component
+            :is="formComponent"
+            :form-data="formData"
+          />
         </el-main>
       </el-container>
     </div>

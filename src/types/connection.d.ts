@@ -18,11 +18,6 @@ type ConnectionStatusType =
   | 'connected'
   | 'no_connection'
 
-/**
- * 数据库基本信息
- */
-type DatabaseDefine = Record<DatabaseIdent, DatabaseDefineItem>
-
 interface DatabaseDefineItem {
   // 标识
   key: DatabaseIdent
@@ -31,6 +26,11 @@ interface DatabaseDefineItem {
   // 开发完成了
   used: boolean
 }
+
+/**
+ * 数据库基本信息
+ */
+type DatabaseDefine = Record<DatabaseIdent, DatabaseDefineItem>
 
 /**
  * 连接管理中，筛选连接列表需要的参数
@@ -72,7 +72,7 @@ interface MySQLConnectionInfo extends BaseConnectionDetail {
   // 服务器版本
   version?: string
   // 会话数
-  sessionNum: number
+  sessionNum?: number
   // 用户名
   username?: string
   // 密码

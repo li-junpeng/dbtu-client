@@ -8,6 +8,7 @@
 import { ref } from 'vue'
 import { ElButton, ElTable, ElTableColumn } from 'element-plus'
 import { Delete as IconDelete, Edit as IconEdit } from '@element-plus/icons-vue'
+import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 
 defineOptions({
   name: 'ManageConnectionDataTablePage'
@@ -52,11 +53,15 @@ for (let i = 0; i < 1; i++) {
 const onClickRow = (row: ConnectionInfo) => {
   emit('selectRow', row)
 }
+
+const tableRef = useComponentRef(ElTable)
+
 </script>
 
 <template>
   <div class="container">
     <el-table
+      ref="tableRef"
       :data="connections"
       empty-text="暂无数据库连接"
       fit

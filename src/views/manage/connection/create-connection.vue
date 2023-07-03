@@ -5,9 +5,9 @@
  * @date 2023-07-03 21:
 -->
 <script setup lang="ts">
-import { computed, defineAsyncComponent, reactive, Ref, ref, shallowRef } from 'vue'
-import { ElDialog, ElContainer, ElAside, ElMain, ElInput, ElIcon, ElScrollbar } from 'element-plus'
-import { Search as IconSearch, Lock as IconLock } from '@element-plus/icons-vue'
+import { computed, defineAsyncComponent, reactive, ref, shallowRef } from 'vue'
+import { ElAside, ElContainer, ElDialog, ElIcon, ElInput, ElMain, ElScrollbar } from 'element-plus'
+import { Lock as IconLock, Search as IconSearch } from '@element-plus/icons-vue'
 import { DatabaseTypes } from '@/common/constants/ConnectionConstant'
 import { StringUtils } from '@/common/utils/StringUtils'
 import { getCreateConnectionCom } from '@/components/database/component/create-connection'

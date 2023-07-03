@@ -55,7 +55,7 @@ const props = defineProps({
       </li>
       <li>
         <div>用户名</div>
-        <div>{{ connectionInfo.port || StringUtils.NULL_SHOW_VALUE }}</div>
+        <div>{{ connectionInfo.detail.username || StringUtils.NULL_SHOW_VALUE }}</div>
       </li>
     </ul>
   </el-scrollbar>

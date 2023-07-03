@@ -5,7 +5,7 @@
  * @date 2023-06-27 21:
 -->
 <script setup lang="ts">
-import { reactive, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { ElForm, ElFormItem, ElIcon, ElRadio, ElRadioGroup, ElSlider } from 'element-plus'
 import { Select as IconSelect } from '@element-plus/icons-vue'
 // region theme images
@@ -14,7 +14,7 @@ import ThemeDarkImg from '@/assets/images/theme/dark.svg'
 import ThemeAutoImg from '@/assets/images/theme/auto.svg'
 // endregion theme images
 import { useSystemSettingStore } from '@/stores/SystemSettingStore'
-import { ThemeColors, FONT_SIZE_MIN, FONT_SIZE_MAX } from '@/common/constants/SystemConstant'
+import { FONT_SIZE_MAX, FONT_SIZE_MIN, ThemeColors } from '@/common/constants/SystemConstant'
 
 interface ThemeModeItem {
   key: ThemeMode
@@ -44,20 +44,20 @@ const themeList: ThemeModeItem[] = [
   }
 ]
 const systemSettingStore = useSystemSettingStore()
-const themeData = reactive(systemSettingStore.getSetting().theme)
+const themeData = ref(systemSettingStore.getSetting().theme)
 
 // 修改主题模式
-watch(() => themeData.mode, (mode) => {
+watch(() => themeData.value.mode, (mode) => {
   systemSettingStore.updateThemeMode(mode)
 })
 
 // 修改主题颜色
-watch(() => themeData.color, (color) => {
+watch(() => themeData.value.color, (color) => {
   systemSettingStore.updateThemeColor(color)
 })
 
 // 修改字体大小
-watch(() => themeData.fontSize, (size) => {
+watch(() => themeData.value.fontSize, (size) => {
   systemSettingStore.updateThemeFontSize(size)
 })
 </script>

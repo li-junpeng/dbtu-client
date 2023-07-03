@@ -101,6 +101,7 @@ a {
   --el-border-color: var(--dbtu-border-color);
   --el-border-color-hover: var(--dbtu-theme-color);
   --el-border-color-light: var(--dbtu-background-color-dark);
+  --el-border-color-lighter: var(--dbtu-border-color);
 
   --el-color-primary: var(--dbtu-theme-color);
   --el-color-primary-light-3: var(--dbtu-theme-hover-color);
@@ -109,4 +110,5 @@ a {
 
   --el-fill-color-blank: var(--dbtu-background-color-dark);
   --el-fill-color-light: var(--dbtu-theme-color);
+
 }

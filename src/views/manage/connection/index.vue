@@ -5,6 +5,7 @@ import { Plus as IconPlus, Search as IconSearch } from '@element-plus/icons-vue'
 import { DatabaseTypes } from '@/common/constants/ConnectionConstant'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
 import { getConnectionDetailCom } from '@/components/database/connection-detail'
+import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import DataTable from './data-table.vue'
 
 defineOptions({
@@ -29,12 +30,12 @@ const selectedConnectionInfo = ref<ConnectionInfo | null>(null)
 const detailComponent = shallowRef(null)
 const onChangeDetailComponent = (row: ConnectionInfo) => {
   const component = getConnectionDetailCom(row.dbType)
-  component && component().then(() => {
+  component().then(() => {
     selectedConnectionInfo.value = row
     // @ts-ignore
     detailComponent.value = defineAsyncComponent(component)
   }).catch(() => {
-    // TODO 错误提示，提示内容：加载页面组件失败，请刷新页面后再试
+    MessageBox.error(`加载[ ${DatabaseTypes[row.dbType].name} ]数据库详情组件失败，请刷新页面后再试！`)
   })
 }
 </script>

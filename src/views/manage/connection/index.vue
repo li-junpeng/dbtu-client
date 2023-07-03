@@ -109,6 +109,7 @@ const onChangeDetailComponent = (row: ConnectionInfo) => {
   position: relative;
   border-left: 1px solid var(--dbtu-divide-borer-color);
   overflow: auto;
+  padding: 10px;
 
   .no-data {
     color: var(--dbtu-font-color-disabled);

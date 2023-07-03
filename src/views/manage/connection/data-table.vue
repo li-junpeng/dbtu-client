@@ -9,16 +9,20 @@ import { ref } from 'vue'
 import { ElButton, ElTable, ElTableColumn } from 'element-plus'
 import { Delete as IconDelete, Edit as IconEdit } from '@element-plus/icons-vue'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
+import { MessageBox } from '@/components/element-plus/el-feedback-util'
+import { TextConstant } from '@/common/constants/TextConstant'
+
+type RowType = ConnectionInfo<BaseConnectionDetail>
 
 defineOptions({
   name: 'ManageConnectionDataTablePage'
 })
 
 const emit = defineEmits<{
-  (e: 'selectRow', row: ConnectionInfo<BaseConnectionDetail>): void
+  (e: 'selectRow', row: RowType): void
 }>()
 
-const connections = ref<ConnectionInfo<BaseConnectionDetail>[]>([])
+const connections = ref<RowType[]>([])
 for (let i = 0; i < 1; i++) {
   connections.value.push({
     id: 1,
@@ -37,7 +41,7 @@ for (let i = 0; i < 1; i++) {
   })
   connections.value.push({
     id: 1,
-    name: '@localhost',
+    name: '127.0.0.1',
     dbType: 'sql_server_2012',
     status: 'connected',
     host: 'localhost',
@@ -52,12 +56,25 @@ for (let i = 0; i < 1; i++) {
   })
 }
 
-const onClickRow = (row: ConnectionInfo<BaseConnectionDetail>) => {
+const onClickRow = (row: RowType) => {
   emit('selectRow', row)
 }
 
 const tableRef = useComponentRef(ElTable)
 
+/**
+ * 删除表格行
+ *
+ * @param row   要删除的row
+ */
+const onDeleteRow = (row: RowType) => {
+  MessageBox.deleteConfirm(TextConstant.deleteConfirm(row.name), (done) => {
+    setTimeout(() => {
+      // TODO 调后台接口删除连接
+      done()
+    }, 1000)
+  })
+}
 </script>
 
 <template>
@@ -79,7 +96,13 @@ const tableRef = useComponentRef(ElTable)
       <el-table-column prop="__action" label="操作" align="center" width="300">
         <template #default="{ row }">
           <el-button :icon="IconEdit" link text>修改</el-button>
-          <el-button :icon="IconDelete" type="danger" link text>删除</el-button>
+          <el-button
+            :icon="IconDelete"
+            type="danger"
+            link
+            text
+            @click="onDeleteRow(row)"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>

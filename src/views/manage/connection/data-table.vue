@@ -9,7 +9,7 @@ import { ref } from 'vue'
 import { ElButton, ElTable, ElTableColumn } from 'element-plus'
 import { Delete as IconDelete, Edit as IconEdit } from '@element-plus/icons-vue'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
-import { MessageBox } from '@/components/element-plus/el-feedback-util'
+import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
 
 type RowType = ConnectionInfo<BaseConnectionDetail>
@@ -71,6 +71,7 @@ const onDeleteRow = (row: RowType) => {
   MessageBox.deleteConfirm(TextConstant.deleteConfirm(row.name), (done) => {
     setTimeout(() => {
       // TODO 调后台接口删除连接
+      Message.success('删除成功')
       done()
     }, 1000)
   })

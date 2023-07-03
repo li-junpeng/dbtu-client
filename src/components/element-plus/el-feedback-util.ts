@@ -1,5 +1,5 @@
 // @ts-ignore
-import { ElMessageBox, MessageBoxData } from 'element-plus'
+import { ElMessage, ElMessageBox, MessageBoxData } from 'element-plus'
 // @ts-ignore
 import type { Action, MessageBoxState } from 'element-plus/es/components/message-box/src/message-box.type'
 
@@ -19,7 +19,8 @@ export const MessageBox = {
       confirmButtonText: '确 定',
       type: 'error',
       autofocus: false,
-      draggable: true
+      draggable: true,
+      closeOnHashChange: true
     })
   },
 
@@ -43,6 +44,7 @@ export const MessageBox = {
       draggable: true,
       closeOnClickModal: false,
       closeOnPressEscape: false,
+      closeOnHashChange: true,
       // 点击【确定】后，将【确定】按钮改成加载状态
       beforeClose: (action: Action, instance: MessageBoxState, done: () => void) => {
         if (action === 'confirm') {
@@ -53,6 +55,17 @@ export const MessageBox = {
           done()
         }
       }
+    })
+  }
+
+}
+
+export const Message = {
+
+  success: (msg: string) => {
+    ElMessage({
+      message: msg,
+      type: 'success'
     })
   }
 

@@ -29,7 +29,7 @@ const dbTypes = ArrayUtils.unshift<any>(
 const selectedConnectionInfo = ref<ConnectionInfo | null>(null)
 const detailComponent = shallowRef(null)
 const onChangeDetailComponent = (row: ConnectionInfo) => {
-  const component = getConnectionDetailCom(row.dbType +1)
+  const component = getConnectionDetailCom(row.dbType)
   component().then(() => {
     selectedConnectionInfo.value = row
     // @ts-ignore

@@ -60,6 +60,8 @@ interface ConnectionInfo<T extends BaseConnectionDetail> extends BaseEntity {
   port?: number
   // 连接详情, 每个数据库跟每个数据库的信息都不一样
   detail: T
+  // 说明
+  comment?: string
 }
 
 interface BaseConnectionDetail {

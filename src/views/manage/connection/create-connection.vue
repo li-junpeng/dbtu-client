@@ -137,10 +137,10 @@ defineExpose({
             </ul>
           </el-scrollbar>
         </el-aside>
-        <el-main>
+        <el-main style="padding: 0 10px">
           <component
             :is="formComponent"
-            :form-data="formData"
+            v-model="formData"
           />
         </el-main>
       </el-container>

@@ -6,22 +6,29 @@
 -->
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import { ElFormItem, ElInput } from 'element-plus'
 import { NumberUtils } from '@/common/utils/NumberUtils'
+import CommonForm from '@/components/database/component/create-connection/common-form.vue'
+import { useCommonForm } from '@/components/database/component/create-connection/common-form'
 
 defineOptions({
   name: 'CreateMySQLConnectionForm'
 })
 
 const props = defineProps<{
-  formData: ConnectionInfo<MySQLConnectionInfo>
+  modelValue: ConnectionInfo<MySQLConnectionInfo>
 }>()
 
+const emits = defineEmits(['update:modelValue'])
+
+const { formData } = useCommonForm(props.modelValue, emits)
+
 const initFormData = () => {
-  if (NumberUtils.isEmpty(props.formData.port)) {
-    props.formData.port = 3306
+  if (NumberUtils.isEmpty(formData.value.port)) {
+    formData.value.port = 3306
   }
-  if (!props.formData.detail) {
-    props.formData.detail = {
+  if (!formData.value.detail) {
+    formData.value.detail = {
       username: 'root'
     }
   }
@@ -33,7 +40,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <h1>我是mysql</h1>
+  <common-form v-model="formData">
+    <el-form-item label="主机" prop="host">
+      <el-input v-model="formData.host"/>
+    </el-form-item>
+  </common-form>
 </template>
 
 <style scoped lang="scss">

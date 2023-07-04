@@ -8,6 +8,7 @@
 import { ElButton, ElForm, ElFormItem, ElInput } from 'element-plus'
 import { PropType } from 'vue'
 import { usePropValue } from '@/common/utils/VueUtils'
+import { useCommonForm } from '@/components/database/component/create-connection/common-form'
 
 defineOptions({
   name: 'CreateConnectionFormCommonHeaderComponent'
@@ -20,13 +21,18 @@ const props = defineProps({
   },
   labelWidth: {
     type: String,
-    default: '70px'
+    default: '80px'
   }
 })
 
 const emits = defineEmits(['update:modelValue'])
 
 const formData = usePropValue<ConnectionInfo<BaseConnectionDetail>>(props.modelValue, emits)
+
+const {
+  isTestConnecting,
+  onTestConnection
+} = useCommonForm()
 
 </script>
 
@@ -61,7 +67,7 @@ const formData = usePropValue<ConnectionInfo<BaseConnectionDetail>>(props.modelV
     </div>
 
     <div class="form-footer">
-      <el-button link>测试连接</el-button>
+      <el-button link @click="onTestConnection" :loading="isTestConnecting">测试连接</el-button>
     </div>
   </div>
 </template>

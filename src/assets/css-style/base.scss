@@ -112,3 +112,20 @@ a {
   --el-fill-color-light: var(--dbtu-theme-color);
 
 }
+
+/* region browser scrollbar style start */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(144, 147, 153, .3);
+  border-radius: 10px;
+  transition: all .2s ease-in-out;
+  opacity: 0.3;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+/* endregion browser scrollbar style end */

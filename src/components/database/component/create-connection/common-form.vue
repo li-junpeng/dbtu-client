@@ -32,7 +32,7 @@ const formData = usePropValue<ConnectionInfo<BaseConnectionDetail>>(props.modelV
 const {
   isTestConnecting,
   onTestConnection
-} = useCommonForm()
+} = useCommonForm(formData)
 
 </script>
 

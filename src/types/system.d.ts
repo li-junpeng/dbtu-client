@@ -66,3 +66,17 @@ type SystemSettingTabKey =
   | 'proxy'         // 代理
   | 'keymap'        // 快捷键
   | 'security'      // 隐私与安全
+
+/**
+ * el-select option
+ * <br>
+ * doc link: https://element-plus.org/zh-CN/component/select.html#option-attributes
+ */
+interface ElSelectOption<T extends string | number | boolean | object> {
+  // 选项的标签，若不设置则默认与value相同
+  label: string | number
+  // 选项的值
+  value: T
+  // 是否禁用该选项, 默认false
+  disabled?: boolean
+}

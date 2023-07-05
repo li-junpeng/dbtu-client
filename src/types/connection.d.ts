@@ -18,6 +18,11 @@ type ConnectionStatusType =
   | 'connected'
   | 'no_connection'
 
+/**
+ * 认证方式的key
+ */
+type AuthenticationTypeKey = 'user_password' | 'none'
+
 interface DatabaseDefineItem {
   // 标识
   key: DatabaseIdent
@@ -79,6 +84,8 @@ interface MySQLConnectionInfo extends BaseConnectionDetail {
   username?: string
   // 密码
   password?: string
+  // 认证方式
+  authType: AuthenticationTypeKey
 }
 
 /**

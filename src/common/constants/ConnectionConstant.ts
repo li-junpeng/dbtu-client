@@ -44,3 +44,17 @@ export const ConnectionStatus: Record<ConnectionStatusType, string> = {
   connected: '已连接',
   no_connection: '未连接'
 }
+
+/**
+ * 认证方式
+ */
+export const AuthenticationTypes: ElSelectOption<AuthenticationTypeKey>[] = [
+  {
+    value: 'user_password',
+    label: '用户 & 密码'
+  },
+  {
+    value: 'none',
+    label: '无认证'
+  }
+]

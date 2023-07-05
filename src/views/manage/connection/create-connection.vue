@@ -107,7 +107,7 @@ defineExpose({
     draggable
     :close-on-click-modal="false"
     destroy-on-close
-    width="60%"
+    width="50%"
   >
     <div style="height: 500px;">
       <el-container style="height: 100%;">

@@ -106,6 +106,7 @@ defineExpose({
     :title="dialog.title"
     draggable
     :close-on-click-modal="false"
+    destroy-on-close
     width="60%"
   >
     <div style="height: 500px;">
@@ -137,7 +138,7 @@ defineExpose({
             </ul>
           </el-scrollbar>
         </el-aside>
-        <el-main style="padding: 0 10px">
+        <el-main style="padding: 0 30px">
           <component
             :is="formComponent"
             v-model="formData"

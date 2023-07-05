@@ -78,3 +78,11 @@
   background-color: var(--dbtu-background-color);
   border-radius: var(--dbtu-border-radius);
 }
+
+.el-button.is-link.is-loading {
+  color: var(--dbtu-font-color-disabled);
+
+  &:before {
+    background-color: transparent;
+  }
+}

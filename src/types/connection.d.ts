@@ -23,6 +23,11 @@ type ConnectionStatusType =
  */
 type AuthenticationTypeKey = 'user_password' | 'none'
 
+/**
+ * 保存密码方式的key
+ */
+type SavePasswordTypeKey = 'never' | 'until_restart' | 'for_session' | 'forever'
+
 interface DatabaseDefineItem {
   // 标识
   key: DatabaseIdent
@@ -86,6 +91,8 @@ interface MySQLConnectionInfo extends BaseConnectionDetail {
   password?: string
   // 认证方式
   authType: AuthenticationTypeKey
+  // 保存密码的方式
+  savePwdType: SavePasswordTypeKey
 }
 
 /**

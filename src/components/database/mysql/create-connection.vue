@@ -5,12 +5,12 @@
  * @date 2023-07-03 23:
 -->
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { ElFormItem, ElInput, ElInputNumber, ElRow, ElCol, ElTabs, ElTabPane, ElSelect, ElOption } from 'element-plus'
+import { ref } from 'vue'
+import { ElCol, ElFormItem, ElInput, ElInputNumber, ElOption, ElRow, ElSelect, ElTabPane, ElTabs } from 'element-plus'
 import { NumberUtils } from '@/common/utils/NumberUtils'
 import CommonForm from '@/components/database/component/create-connection/common-form.vue'
 import { usePropValue } from '@/common/utils/VueUtils'
-import { AuthenticationTypes } from '@/common/constants/ConnectionConstant'
+import { AuthenticationTypes, SavePasswordTypes } from '@/common/constants/ConnectionConstant'
 import { ObjectUtils } from '@/common/utils/ObjectUtils'
 import { useCommonForm } from '@/components/database/component/create-connection/common-form'
 
@@ -35,7 +35,8 @@ const {
     if (ObjectUtils.isEmpty(formData.value.detail)) {
       formData.value.detail = {
         username: 'root',
-        authType: 'user_password'
+        authType: 'user_password',
+        savePwdType: 'forever'
       }
     }
   }
@@ -75,6 +76,42 @@ const activeTab = ref('general')
               >
                 <el-option
                   v-for="item in AuthenticationTypes"
+                  :key="item.value"
+                  :value="item.value"
+                  :label="item.label"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row
+          v-if="formData.detail.authType === 'user_password'"
+        >
+          <el-col :span="13">
+            <el-form-item label="用户" prop="username">
+              <el-input v-model="formData.detail.username"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row
+          v-if="formData.detail.authType === 'user_password'"
+        >
+          <el-col :span="13">
+            <el-form-item label="密码" prop="password">
+              <el-input
+                v-model="formData.detail.password"
+                type="password"
+                show-password
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="9" :offset="2">
+            <el-form-item label="保存密码" prop="savePwdType">
+              <el-select
+                v-model="formData.detail.savePwdType"
+              >
+                <el-option
+                  v-for="item in SavePasswordTypes"
                   :key="item.value"
                   :value="item.value"
                   :label="item.label"

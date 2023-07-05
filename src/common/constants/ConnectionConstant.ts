@@ -58,3 +58,21 @@ export const AuthenticationTypes: ElSelectOption<AuthenticationTypeKey>[] = [
     label: '无认证'
   }
 ]
+
+/**
+ * 保存密码的方式
+ */
+export const SavePasswordTypes: ElSelectOption<SavePasswordTypeKey>[] = [
+  {
+    value: 'never',
+    label: '从不保存'
+  },
+  {
+    value: 'for_session',
+    label: '本次会话'
+  },
+  {
+    value: 'forever',
+    label: '永久保存'
+  }
+]

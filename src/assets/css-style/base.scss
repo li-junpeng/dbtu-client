@@ -88,7 +88,7 @@ a {
 }
 
 .dbtu-common-theme {
-  --el-bg-color: var(--dbtu-background-color-dark);
+  --el-bg-color: var(--dbtu-background-color);
   --el-bg-color-overlay: var(--dbtu-background-color);
 
   --el-text-color-primary: var(--dbtu-font-color);
@@ -108,7 +108,7 @@ a {
   --el-color-primary-light-5: var(--dbtu-theme-disabled-color);
   --el-color-primary-dark-2: var(--dbtu-theme-active-color);
 
-  --el-fill-color-blank: var(--dbtu-background-color-dark);
+  --el-fill-color-blank: var(--dbtu-background-color);
   --el-fill-color-light: var(--dbtu-theme-color);
 
 }

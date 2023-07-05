@@ -86,3 +86,15 @@
     background-color: transparent;
   }
 }
+
+.el-tabs {
+  .el-tabs__nav-wrap::after {
+    height: 1px;
+    background-color: var(--el-tabs-nav-bg-color, var(--dbtu-divide-borer-color, #fff));
+  }
+
+  .el-tabs__item {
+    width: var(--el-tab-pane-width, auto);
+    user-select: none;
+  }
+}

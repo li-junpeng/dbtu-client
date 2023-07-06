@@ -28,6 +28,16 @@ type AuthenticationTypeKey = 'user_password' | 'none'
  */
 type SavePasswordTypeKey = 'never' | 'until_restart' | 'for_session' | 'forever'
 
+/**
+ * 连接类型
+ */
+type ConnectionTypeKey = 'default' | 'only_url'
+
+/**
+ * MySQL驱动
+ */
+type MySQLDriverKey = 'mysql' | 'mysql_5.1' | 'mariadb'
+
 interface DatabaseDefineItem {
   // 标识
   key: DatabaseIdent
@@ -81,6 +91,10 @@ interface BaseConnectionDetail {
  * MySQL数据库连接详情信息
  */
 interface MySQLConnectionInfo extends BaseConnectionDetail {
+  // 驱动
+  driver: MySQLDriverKey,
+  // 连接类型
+  connectionType: ConnectionTypeKey,
   // 服务器版本
   version?: string
   // 会话数
@@ -93,6 +107,8 @@ interface MySQLConnectionInfo extends BaseConnectionDetail {
   authType: AuthenticationTypeKey
   // 保存密码的方式
   savePwdType: SavePasswordTypeKey
+  // url
+  url?: string
 }
 
 /**

@@ -6,7 +6,7 @@
 -->
 <script setup lang="ts">
 import { computed, defineAsyncComponent, reactive, ref, shallowRef } from 'vue'
-import { ElAside, ElContainer, ElDialog, ElIcon, ElInput, ElMain, ElScrollbar } from 'element-plus'
+import { ElAside, ElContainer, ElDialog, ElIcon, ElInput, ElMain, ElScrollbar, ElButton } from 'element-plus'
 import { Lock as IconLock, Search as IconSearch } from '@element-plus/icons-vue'
 import { DatabaseTypes } from '@/common/constants/ConnectionConstant'
 import { StringUtils } from '@/common/utils/StringUtils'
@@ -146,6 +146,11 @@ defineExpose({
         </el-main>
       </el-container>
     </div>
+
+    <template #footer>
+      <el-button type="info">取消</el-button>
+      <el-button type="primary">创建</el-button>
+    </template>
   </el-dialog>
 </template>
 

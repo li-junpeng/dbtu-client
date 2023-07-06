@@ -37,6 +37,26 @@ export const DatabaseTypes: DatabaseDefine = {
 }
 
 /**
+ * 数据库驱动
+ */
+export const DatabaseDrivers: Partial<Record<DatabaseIdent, ElSelectOption<string>[]>> = {
+  mysql: [
+    {
+      value: 'mysql',
+      label: 'MySQL'
+    },
+    {
+      value: 'mysql_5.1',
+      label: 'MySQL for 5.1'
+    },
+    {
+      value: 'mariadb',
+      label: 'MariaDB'
+    }
+  ] as ElSelectOption<MySQLDriverKey>[]
+}
+
+/**
  * 数据库连接状态
  */
 export const ConnectionStatus: Record<ConnectionStatusType, string> = {
@@ -44,6 +64,20 @@ export const ConnectionStatus: Record<ConnectionStatusType, string> = {
   connected: '已连接',
   no_connection: '未连接'
 }
+
+/**
+ * 连接类型
+ */
+export const ConnectionTypes: ElSelectOption<ConnectionTypeKey>[] = [
+  {
+    value: 'default',
+    label: '默认'
+  },
+  {
+    value: 'only_url',
+    label: '仅 URL'
+  }
+]
 
 /**
  * 认证方式

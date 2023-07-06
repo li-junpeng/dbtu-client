@@ -10,7 +10,12 @@ import { ElCol, ElFormItem, ElInput, ElInputNumber, ElOption, ElRow, ElSelect, E
 import { NumberUtils } from '@/common/utils/NumberUtils'
 import CommonForm from '@/components/database/component/create-connection/common-form.vue'
 import { usePropValue } from '@/common/utils/VueUtils'
-import { AuthenticationTypes, SavePasswordTypes } from '@/common/constants/ConnectionConstant'
+import {
+  AuthenticationTypes,
+  ConnectionTypes,
+  DatabaseDrivers,
+  SavePasswordTypes
+} from '@/common/constants/ConnectionConstant'
 import { ObjectUtils } from '@/common/utils/ObjectUtils'
 import { useCommonForm } from '@/components/database/component/create-connection/common-form'
 
@@ -34,9 +39,12 @@ const {
     }
     if (ObjectUtils.isEmpty(formData.value.detail)) {
       formData.value.detail = {
+        driver: 'mysql',
+        connectionType: 'default',
         username: 'root',
         authType: 'user_password',
-        savePwdType: 'forever'
+        savePwdType: 'forever',
+        url: 'jdbc:mysql://localhost:3306'
       }
     }
   }
@@ -57,16 +65,52 @@ const activeTab = ref('general')
       <el-tab-pane name="general" label="常规">
         <el-row>
           <el-col :span="13">
+            <el-form-item label="连接方式" prop="connectionType">
+              <el-select
+                v-model="formData.detail.connectionType"
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="item in ConnectionTypes"
+                  :key="item.value"
+                  :value="item.value"
+                  :label="item.label"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col v-if="formData.detail.connectionType === 'default'" :span="9" :offset="2">
+            <el-form-item label="驱动" prop="driver">
+              <el-select
+                v-model="formData.detail.driver"
+              >
+                <el-option
+                  v-for="item in DatabaseDrivers.mysql"
+                  :key="item.value"
+                  :value="item.value"
+                  :label="item.label"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row
+          v-if="formData.detail.connectionType === 'default'"
+        >
+          <el-col :span="13">
             <el-form-item label="主机" prop="host">
               <el-input v-model="formData.host"/>
             </el-form-item>
           </el-col>
           <el-col :span="9" :offset="2">
             <el-form-item label="端口" prop="port">
-              <el-input-number v-model="formData.port" :controls="false" class="el-input-number__text-left" style="width: 100%"/>
+              <el-input-number v-model="formData.port" :controls="false" class="el-input-number__text-left"
+                               style="width: 100%"/>
             </el-form-item>
           </el-col>
         </el-row>
+
         <el-row>
           <el-col :span="13">
             <el-form-item label="认证方式" prop="authType">
@@ -84,6 +128,7 @@ const activeTab = ref('general')
             </el-form-item>
           </el-col>
         </el-row>
+
         <el-row
           v-if="formData.detail.authType === 'user_password'"
         >
@@ -93,6 +138,7 @@ const activeTab = ref('general')
             </el-form-item>
           </el-col>
         </el-row>
+
         <el-row
           v-if="formData.detail.authType === 'user_password'"
         >
@@ -120,6 +166,22 @@ const activeTab = ref('general')
             </el-form-item>
           </el-col>
         </el-row>
+
+        <el-form-item
+          v-if="formData.detail.connectionType === 'only_url'"
+          label="URL"
+          prop="url"
+        >
+          <el-input
+            v-model="formData.detail.url"
+            type="textarea"
+            resize="none"
+            :autosize="{
+                minRows: 1,
+                maxRows: 5
+              }"
+          />
+        </el-form-item>
       </el-tab-pane>
       <el-tab-pane name="ssh_ssl" label="SSH/SSL">
 

@@ -57,7 +57,8 @@ const {dataInitCompleted} = useCommonForm(formData, {
         username: 'root',
         authType: 'user_password',
         savePwdType: 'forever',
-        url: 'jdbc:mysql://localhost:3306'
+        url: 'jdbc:mysql://localhost:3306',
+        timeZone: 'Asia/Shanghai'
       }
     }
   }
@@ -249,6 +250,7 @@ const timeZonesOptions: { value: string, label: string }[] = TimeZones.map(_ => 
                 placeholder=" "
                 clearable
                 filterable
+                :persistent="false"
               />
             </el-form-item>
           </el-col>

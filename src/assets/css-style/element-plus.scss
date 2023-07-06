@@ -99,7 +99,14 @@
   }
 }
 
-/* el-select-v2 selected font color */
-.el-select-dropdown__option-item.is-selected:not(.is-multiple) {
-  color: var(--el-color-white);
+/* el-select-v2 item style */
+.el-select-dropdown__option-item {
+  &.is-selected:not(.is-multiple) {
+    color: var(--dbtu-theme-color);
+    background-color: var(--dbtu-hover-color);
+  }
+
+  &.hover {
+    background-color: var(--dbtu-hover-color) !important;
+  }
 }

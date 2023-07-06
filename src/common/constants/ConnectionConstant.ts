@@ -108,7 +108,7 @@ export const AuthenticationTypes: ElSelectOption<AuthenticationTypeKey>[] = [
   },
   {
     value: 'none',
-    label: '无认证'
+    label: '无身份验证'
   }
 ]
 
@@ -127,5 +127,35 @@ export const SavePasswordTypes: ElSelectOption<SavePasswordTypeKey>[] = [
   {
     value: 'forever',
     label: '永久保存'
+  }
+]
+
+/**
+ * 编码方式
+ */
+export const CharsetTypes: ElSelectOption<string>[] = [
+  {
+    value: 'auto',
+    label: '自动'
+  },
+  {
+    value: 'us_ascii',
+    label: 'US-ASCII'
+  },
+  {
+    value: 'iso_6937',
+    label: 'ISO 6937 Non-Spacing Accent'
+  },
+  {
+    value: 'utf7',
+    label: 'UTF - 7'
+  },
+  {
+    value: 'utf8',
+    label: 'UTF - 8'
+  },
+  {
+    value: 'gbk',
+    label: 'GBK'
   }
 ]

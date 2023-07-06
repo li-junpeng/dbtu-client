@@ -17,6 +17,7 @@ import {
   ElSelectV2,
   ElTabPane,
   ElTabs,
+  ElSwitch,
   FormRules
 } from 'element-plus'
 import { NumberUtils } from '@/common/utils/NumberUtils'
@@ -26,8 +27,8 @@ import {
   AuthenticationTypes,
   ConnectionTypes,
   DatabaseDrivers,
-  getDatabaseDriverInfo,
-  SavePasswordTypes
+  SavePasswordTypes,
+  getDatabaseDriverInfo, CharsetTypes
 } from '@/common/constants/ConnectionConstant'
 import { ObjectUtils } from '@/common/utils/ObjectUtils'
 import { useCommonForm } from '@/components/database/component/create-connection/common-form'
@@ -58,7 +59,12 @@ const {dataInitCompleted} = useCommonForm(formData, {
         authType: 'user_password',
         savePwdType: 'forever',
         url: 'jdbc:mysql://localhost:3306',
-        timeZone: 'Asia/Shanghai'
+        timeZone: 'Asia/Shanghai',
+        charset: 'auto',
+        connectionInterval: false,
+        connectionIntervalTime: 60,
+        autoBreak: false,
+        autoBreakTime: 300
       }
     }
   }
@@ -242,7 +248,7 @@ const timeZonesOptions: { value: string, label: string }[] = TimeZones.map(_ => 
 
       <el-tab-pane name="advanced" label="高级">
         <el-row>
-          <el-col :span="13">
+          <el-col :span="11">
             <el-form-item label="时区" prop="detail.timeZone">
               <el-select-v2
                 v-model="formData.detail.timeZone"
@@ -251,8 +257,57 @@ const timeZonesOptions: { value: string, label: string }[] = TimeZones.map(_ => 
                 clearable
                 filterable
                 :persistent="false"
+                no-data-text="没有可匹配项"
               />
             </el-form-item>
+          </el-col>
+          <el-col :span="11" :offset="2">
+            <el-form-item label="编码" prop="detail.charset">
+              <el-select
+                v-model="formData.detail.charset"
+                filterable
+                no-match-text="没有可匹配项"
+              >
+                <el-option
+                  v-for="item in CharsetTypes"
+                  :key="item.value"
+                  :value="item.value"
+                  :label="item.label"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="13" style="display: flex;align-items: center;margin-bottom: 18px">
+            <el-switch
+              v-model="formData.detail.connectionInterval"
+            />
+            <span style="margin-left: 20px;width: 133px;">保持连接间隔</span>
+            <el-input-number
+              v-model="formData.detail.connectionIntervalTime"
+              :controls="false"
+              class="el-input-number__text-left"
+              style="margin-left: 10px;width: 80px"
+              :disabled="!formData.detail.connectionInterval"
+            />
+            <span style="margin-left: 10px">秒</span>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="13" style="display: flex;align-items: center">
+            <el-switch
+              v-model="formData.detail.autoBreak"
+            />
+            <span style="margin-left: 20px;width: 133px">此时间后自动断开</span>
+            <el-input-number
+              v-model="formData.detail.autoBreakTime"
+              :controls="false"
+              class="el-input-number__text-left"
+              style="margin-left: 10px;width: 80px"
+              :disabled="!formData.detail.autoBreak"
+            />
+            <span style="margin-left: 10px">秒</span>
           </el-col>
         </el-row>
       </el-tab-pane>

@@ -119,6 +119,16 @@ interface MySQLConnectionInfo extends BaseConnectionDetail {
   url?: string,
   // 时区
   timeZone?: string
+  // 字符集编码
+  charset: string
+  // 是否开启保持连接间隔
+  connectionInterval: boolean
+  // 保持连接间隔时间, 单位: 秒
+  connectionIntervalTime?: number
+  // 是否开启自动断开功能
+  autoBreak: boolean
+  // 自动断开时间, 单位: 秒
+  autoBreakTime?: number
 }
 
 /**

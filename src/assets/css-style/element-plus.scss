@@ -18,6 +18,19 @@
   }
 }
 
+.el-input {
+  &.is-disabled {
+    .el-input__wrapper {
+      background-color: transparent;
+      box-shadow: 0 0 0 1px var(--dbtu-border-disabled-color) inset;
+    }
+
+    .el-input__inner{
+      color: var(--dbtu-font-color-disabled);
+    }
+  }
+}
+
 .el-input-number__text-left {
   &.is-without-controls .el-input__wrapper {
     padding-left: 11px;

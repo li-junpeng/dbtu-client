@@ -9,6 +9,7 @@ import { ElButton, ElForm, ElFormItem, ElInput } from 'element-plus'
 import { PropType } from 'vue'
 import { usePropValue } from '@/common/utils/VueUtils'
 import { useCommonForm } from '@/components/database/component/create-connection/common-form'
+import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 
 defineOptions({
   name: 'CreateConnectionFormCommonHeaderComponent'
@@ -22,6 +23,9 @@ const props = defineProps({
   labelWidth: {
     type: String,
     default: '80px'
+  },
+  rules: {
+    type: Object as PropType<any>
   }
 })
 
@@ -34,14 +38,21 @@ const {
   onTestConnection
 } = useCommonForm(formData)
 
+const formRef = useComponentRef(ElForm)
+
+defineExpose({
+  formRef
+})
 </script>
 
 <template>
   <div class="form-container">
     <div class="form-main">
       <el-form
+        ref="formRef"
         v-model="formData"
         :label-width="labelWidth!"
+        :rules="rules"
         label-position="left"
       >
         <el-form-item label="连接名" prop="name">

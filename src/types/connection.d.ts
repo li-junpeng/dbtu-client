@@ -38,6 +38,14 @@ type ConnectionTypeKey = 'default' | 'only_url'
  */
 type MySQLDriverKey = 'mysql' | 'mysql_5.1' | 'mariadb'
 
+/**
+ * database driver in el-option
+ */
+interface DatabaseDriverElOption<T> extends ElSelectOption<T> {
+  // flag = jdbc:${flag}://${host}:${port}
+  flag: string
+}
+
 interface DatabaseDefineItem {
   // 标识
   key: DatabaseIdent
@@ -92,9 +100,9 @@ interface BaseConnectionDetail {
  */
 interface MySQLConnectionInfo extends BaseConnectionDetail {
   // 驱动
-  driver: MySQLDriverKey,
+  driver: MySQLDriverKey
   // 连接类型
-  connectionType: ConnectionTypeKey,
+  connectionType: ConnectionTypeKey
   // 服务器版本
   version?: string
   // 会话数

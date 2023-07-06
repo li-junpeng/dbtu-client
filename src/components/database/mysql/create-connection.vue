@@ -6,7 +6,18 @@
 -->
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ElCol, ElFormItem, ElInput, ElInputNumber, ElOption, ElRow, ElSelect, ElTabPane, ElTabs } from 'element-plus'
+import {
+  ElCol,
+  ElFormItem,
+  ElInput,
+  ElInputNumber,
+  ElOption,
+  ElRow,
+  ElSelect,
+  ElTabPane,
+  ElTabs,
+  FormRules
+} from 'element-plus'
 import { NumberUtils } from '@/common/utils/NumberUtils'
 import CommonForm from '@/components/database/component/create-connection/common-form.vue'
 import { usePropValue } from '@/common/utils/VueUtils'
@@ -14,6 +25,7 @@ import {
   AuthenticationTypes,
   ConnectionTypes,
   DatabaseDrivers,
+  getDatabaseDriverInfo,
   SavePasswordTypes
 } from '@/common/constants/ConnectionConstant'
 import { ObjectUtils } from '@/common/utils/ObjectUtils'
@@ -29,10 +41,9 @@ const props = defineProps<{
 
 const emits = defineEmits(['update:modelValue'])
 
+const commonFormRef = ref<InstanceType<typeof CommonForm> | null>(null)
 const formData = usePropValue<ConnectionInfo<MySQLConnectionInfo>>(props.modelValue, emits)
-const {
-  dataInitCompleted
-} = useCommonForm(formData, {
+const { dataInitCompleted } = useCommonForm(formData, {
   initFormData: () => {
     if (NumberUtils.isEmpty(formData.value.port)) {
       formData.value.port = 3306
@@ -49,14 +60,50 @@ const {
     }
   }
 })
+const formRules: FormRules = {
+  ['detail.url']: [
+    {
+      trigger: 'blur',
+      validator: (a, b, callback) => {
+        const url = formData.value.detail.url
+        if (url) {
+          const driver = getDatabaseDriverInfo('mysql', formData.value.detail.driver)
+          const match = url.match(/jdbc:.*:\/\//)
+          if (match) {
+            if (match[0] !== `jdbc:${driver?.flag || 'mysql'}://`) {
+              throw new Error('URL 与 数据库驱动不一致，请检查后重新填写')
+            }
+          }
+        }
+        callback()
+      }
+    }
+  ]
+}
 
 const activeTab = ref('general')
+
+/**
+ * 根据驱动修改url的驱动值
+ */
+const onChangeUrlByDriver = () => {
+  // @ts-ignore
+  commonFormRef.value?.formRef.clearValidate('detail.url')
+
+  const url = formData.value.detail.url
+  if (url) {
+    const driver = getDatabaseDriverInfo('mysql', formData.value.detail.driver)
+    formData.value.detail.url = url.replace(/jdbc:\w*:\/\//, `jdbc:${driver?.flag || 'mysql'}://`)
+  }
+}
 </script>
 
 <template>
   <common-form
+    ref="commonFormRef"
     v-if="dataInitCompleted"
     v-model="formData"
+    :rules="formRules"
   >
     <el-tabs
       v-model="activeTab"
@@ -65,7 +112,7 @@ const activeTab = ref('general')
       <el-tab-pane name="general" label="常规">
         <el-row>
           <el-col :span="13">
-            <el-form-item label="连接方式" prop="connectionType">
+            <el-form-item label="连接方式" prop="detail.connectionType">
               <el-select
                 v-model="formData.detail.connectionType"
                 style="width: 100%"
@@ -79,10 +126,11 @@ const activeTab = ref('general')
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col v-if="formData.detail.connectionType === 'default'" :span="9" :offset="2">
-            <el-form-item label="驱动" prop="driver">
+          <el-col :span="9" :offset="2">
+            <el-form-item label="驱动" prop="detail.driver">
               <el-select
                 v-model="formData.detail.driver"
+                @change="onChangeUrlByDriver"
               >
                 <el-option
                   v-for="item in DatabaseDrivers.mysql"
@@ -95,9 +143,7 @@ const activeTab = ref('general')
           </el-col>
         </el-row>
 
-        <el-row
-          v-if="formData.detail.connectionType === 'default'"
-        >
+        <el-row v-if="formData.detail.connectionType === 'default'">
           <el-col :span="13">
             <el-form-item label="主机" prop="host">
               <el-input v-model="formData.host"/>
@@ -105,15 +151,19 @@ const activeTab = ref('general')
           </el-col>
           <el-col :span="9" :offset="2">
             <el-form-item label="端口" prop="port">
-              <el-input-number v-model="formData.port" :controls="false" class="el-input-number__text-left"
-                               style="width: 100%"/>
+              <el-input-number
+                v-model="formData.port"
+                :controls="false"
+                class="el-input-number__text-left"
+                style="width: 100%"
+              />
             </el-form-item>
           </el-col>
         </el-row>
 
         <el-row>
           <el-col :span="13">
-            <el-form-item label="认证方式" prop="authType">
+            <el-form-item label="认证方式" prop="detail.authType">
               <el-select
                 v-model="formData.detail.authType"
                 style="width: 100%"
@@ -129,21 +179,17 @@ const activeTab = ref('general')
           </el-col>
         </el-row>
 
-        <el-row
-          v-if="formData.detail.authType === 'user_password'"
-        >
+        <el-row v-if="formData.detail.authType === 'user_password'">
           <el-col :span="13">
-            <el-form-item label="用户" prop="username">
+            <el-form-item label="用户" prop="detail.username">
               <el-input v-model="formData.detail.username"/>
             </el-form-item>
           </el-col>
         </el-row>
 
-        <el-row
-          v-if="formData.detail.authType === 'user_password'"
-        >
+        <el-row v-if="formData.detail.authType === 'user_password'">
           <el-col :span="13">
-            <el-form-item label="密码" prop="password">
+            <el-form-item label="密码" prop="detail.password">
               <el-input
                 v-model="formData.detail.password"
                 type="password"
@@ -152,10 +198,8 @@ const activeTab = ref('general')
             </el-form-item>
           </el-col>
           <el-col :span="9" :offset="2">
-            <el-form-item label="保存密码" prop="savePwdType">
-              <el-select
-                v-model="formData.detail.savePwdType"
-              >
+            <el-form-item label="保存密码" prop="detail.savePwdType">
+              <el-select v-model="formData.detail.savePwdType">
                 <el-option
                   v-for="item in SavePasswordTypes"
                   :key="item.value"
@@ -170,16 +214,16 @@ const activeTab = ref('general')
         <el-form-item
           v-if="formData.detail.connectionType === 'only_url'"
           label="URL"
-          prop="url"
+          prop="detail.url"
         >
           <el-input
             v-model="formData.detail.url"
             type="textarea"
             resize="none"
             :autosize="{
-                minRows: 1,
-                maxRows: 5
-              }"
+              minRows: 1,
+              maxRows: 5
+            }"
           />
         </el-form-item>
       </el-tab-pane>

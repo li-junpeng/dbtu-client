@@ -39,21 +39,40 @@ export const DatabaseTypes: DatabaseDefine = {
 /**
  * 数据库驱动
  */
-export const DatabaseDrivers: Partial<Record<DatabaseIdent, ElSelectOption<string>[]>> = {
+export const DatabaseDrivers: Partial<Record<DatabaseIdent, DatabaseDriverElOption<string>[]>> = {
   mysql: [
     {
       value: 'mysql',
-      label: 'MySQL'
+      label: 'MySQL',
+      flag: 'mysql'
     },
     {
       value: 'mysql_5.1',
-      label: 'MySQL for 5.1'
+      label: 'MySQL for 5.1',
+      flag: 'mysql'
     },
     {
       value: 'mariadb',
-      label: 'MariaDB'
+      label: 'MariaDB',
+      flag: 'mariadb'
     }
-  ] as ElSelectOption<MySQLDriverKey>[]
+  ] as DatabaseDriverElOption<MySQLDriverKey>[]
+}
+
+/**
+ * 获取数据库驱动详情
+ *
+ * @param db      数据库标识
+ * @param driver  驱动标识
+ */
+export const getDatabaseDriverInfo = <T>(db: DatabaseIdent, driver: T): DatabaseDriverElOption<T> | null => {
+  const drivers = DatabaseDrivers[db] as DatabaseDriverElOption<T>[]
+  for (let i = 0; i < drivers.length; i++) {
+    if (drivers[i].value === driver) {
+      return drivers[i]
+    }
+  }
+  return null
 }
 
 /**

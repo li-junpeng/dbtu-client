@@ -116,7 +116,9 @@ interface MySQLConnectionInfo extends BaseConnectionDetail {
   // 保存密码的方式
   savePwdType: SavePasswordTypeKey
   // url
-  url?: string
+  url?: string,
+  // 时区
+  timeZone?: string
 }
 
 /**

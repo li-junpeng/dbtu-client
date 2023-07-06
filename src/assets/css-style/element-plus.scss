@@ -98,3 +98,8 @@
     user-select: none;
   }
 }
+
+/* el-select-v2 selected font color */
+.el-select-dropdown__option-item.is-selected:not(.is-multiple) {
+  color: var(--el-color-white);
+}

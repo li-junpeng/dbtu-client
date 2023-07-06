@@ -14,6 +14,7 @@ import {
   ElOption,
   ElRow,
   ElSelect,
+  ElSelectV2,
   ElTabPane,
   ElTabs,
   FormRules
@@ -30,6 +31,7 @@ import {
 } from '@/common/constants/ConnectionConstant'
 import { ObjectUtils } from '@/common/utils/ObjectUtils'
 import { useCommonForm } from '@/components/database/component/create-connection/common-form'
+import TimeZones from '@/assets/data/time-zone.json'
 
 defineOptions({
   name: 'CreateMySQLConnectionForm'
@@ -43,7 +45,7 @@ const emits = defineEmits(['update:modelValue'])
 
 const commonFormRef = ref<InstanceType<typeof CommonForm> | null>(null)
 const formData = usePropValue<ConnectionInfo<MySQLConnectionInfo>>(props.modelValue, emits)
-const { dataInitCompleted } = useCommonForm(formData, {
+const {dataInitCompleted} = useCommonForm(formData, {
   initFormData: () => {
     if (NumberUtils.isEmpty(formData.value.port)) {
       formData.value.port = 3306
@@ -96,6 +98,11 @@ const onChangeUrlByDriver = () => {
     formData.value.detail.url = url.replace(/jdbc:\w*:\/\//, `jdbc:${driver?.flag || 'mysql'}://`)
   }
 }
+
+const timeZonesOptions: { value: string, label: string }[] = TimeZones.map(_ => ({
+  value: _,
+  label: _
+}))
 </script>
 
 <template>
@@ -227,8 +234,25 @@ const onChangeUrlByDriver = () => {
           />
         </el-form-item>
       </el-tab-pane>
-      <el-tab-pane name="ssh_ssl" label="SSH/SSL">
 
+      <el-tab-pane name="database" label="数据库">
+
+      </el-tab-pane>
+
+      <el-tab-pane name="advanced" label="高级">
+        <el-row>
+          <el-col :span="13">
+            <el-form-item label="时区" prop="detail.timeZone">
+              <el-select-v2
+                v-model="formData.detail.timeZone"
+                :options="timeZonesOptions"
+                placeholder=" "
+                clearable
+                filterable
+              />
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-tab-pane>
     </el-tabs>
   </common-form>

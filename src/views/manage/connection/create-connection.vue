@@ -141,7 +141,7 @@ defineExpose({
         <el-main style="padding: 0 30px">
           <!-- bug: https://github.com/vuejs/language-tools/issues/3374 -->
           <component
-            :is="formComponent"
+            :is="formComponent as any"
             v-model="formData"
           />
         </el-main>

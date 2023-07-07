@@ -14,7 +14,8 @@ defineOptions({
 })
 
 defineSlots<{
-  icon(): any
+  // bug: https://github.com/vuejs/language-tools/issues/3371
+  icon(props: {}): any
 }>()
 
 const props = defineProps({

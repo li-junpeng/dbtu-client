@@ -139,6 +139,7 @@ defineExpose({
           </el-scrollbar>
         </el-aside>
         <el-main style="padding: 0 30px">
+          <!-- bug: https://github.com/vuejs/language-tools/issues/3374 -->
           <component
             :is="formComponent"
             v-model="formData"

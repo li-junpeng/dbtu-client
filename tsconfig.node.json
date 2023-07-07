@@ -10,6 +10,7 @@
   "compilerOptions": {
     "composite": true,
     "module": "ESNext",
-    "types": ["node"]
+    "types": ["node", "element-plus/global"],
+    "moduleResolution": "node"
   }
 }

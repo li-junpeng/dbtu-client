@@ -27,7 +27,8 @@ const dialog = reactive({
 const searchDb = ref<string>('')
 const databases = computed(() => {
   let array = []
-  for (let key in DatabaseTypes) {
+  let key: DatabaseIdent
+  for (key in DatabaseTypes) {
     const db = DatabaseTypes[key] as DatabaseDefineItem
     if (StringUtils.isEmpty(searchDb.value)
       || db.key.toLowerCase().indexOf(searchDb.value) >= 0
@@ -87,7 +88,6 @@ const onChangeFormComponent = () => {
 
   const component = getCreateConnectionCom(activeDb.value!.key)
   component().then(() => {
-    // @ts-ignore
     formComponent.value = defineAsyncComponent(component)
   }).catch(() => {
     MessageBox.error(`加载 [ ${activeDb.value?.name} ] 数据库表单组件失败，请刷新页面后再试！`)

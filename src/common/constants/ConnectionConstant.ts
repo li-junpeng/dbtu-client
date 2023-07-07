@@ -8,7 +8,7 @@ export const DatabaseTypes: DatabaseDefine = {
     key: 'sql_server_2012',
     name: 'SQL Server 2012',
     used: true
-  },
+  }
   /*oracle: {
     key: 'oracle',
     name: 'Oracle',

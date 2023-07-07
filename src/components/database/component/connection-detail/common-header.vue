@@ -5,7 +5,8 @@
  * @date 2023-07-03 11-25
 -->
 <script setup lang="ts">
-import { computed, defineSlots, PropType } from 'vue'
+import { computed } from 'vue'
+import type { PropType } from 'vue'
 import { ConnectionStatus } from '@/common/constants/ConnectionConstant'
 
 defineOptions({
@@ -34,7 +35,7 @@ const statusText = computed(() => {
 <template>
   <div class="detail-header-wrapper">
     <div :class="`db-icon ${connectionInfo.status}`">
-      <slot name="icon"/>
+      <slot name="icon"></slot>
     </div>
     <div class="info-box">
       <p class="dbtu-text-ellipsis  connection-name">{{ connectionInfo.name }}</p>

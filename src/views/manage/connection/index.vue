@@ -33,7 +33,6 @@ const onChangeDetailComponent = (row: ConnectionInfo<BaseConnectionDetail>) => {
   const component = getConnectionDetailCom(row.dbType)
   component().then(() => {
     selectedConnectionInfo.value = row
-    // @ts-ignore
     detailComponent.value = defineAsyncComponent(component)
   }).catch(() => {
     MessageBox.error(`加载[ ${DatabaseTypes[row.dbType].name} ]数据库详情组件失败，请刷新页面后再试！`)

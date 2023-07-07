@@ -6,7 +6,7 @@
 -->
 <script setup lang="ts">
 import { ElButton, ElForm, ElFormItem, ElInput } from 'element-plus'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 import { usePropValue } from '@/common/utils/VueUtils'
 import { useCommonForm } from '@/components/database/component/create-connection/common-form'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'

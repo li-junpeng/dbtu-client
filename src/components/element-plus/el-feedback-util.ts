@@ -1,6 +1,5 @@
-// @ts-ignore
-import { ElMessage, ElMessageBox, MessageBoxData } from 'element-plus'
-// @ts-ignore
+import { ElMessage, ElMessageBox } from 'element-plus'
+import type { MessageBoxData } from 'element-plus'
 import type { Action, MessageBoxState } from 'element-plus/es/components/message-box/src/message-box.type'
 
 export const MessageBox = {

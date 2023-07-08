@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { ElIcon } from 'element-plus'
 import DefaultAvatarImg from '@/assets/images/avatars/avatar-30.png'
 // icons
@@ -11,6 +11,7 @@ import IconNotify from '@/icons/svg/notify.vue'
 import { useUserInfoStore } from '@/stores/UserInfoStore'
 // 组件
 import SystemSettingDialog from '@/components/system-setting/index.vue'
+import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 
 defineOptions({
   name: 'PageHeader'
@@ -34,7 +35,7 @@ const toLogin = () => {
 }
 
 // 系统设置对话框实例
-const systemSettingDialogRef = ref()
+const systemSettingDialogRef = useComponentRef(SystemSettingDialog)
 const openSystemSettingDialog = () => {
   systemSettingDialogRef.value?.onOpen()
 }
@@ -44,7 +45,7 @@ const openSystemSettingDialog = () => {
   <div class="page-header">
     <div class="left-box">DB兔，稳而快</div>
     <div class="dbtu-un-user-select right-box">
-      <!-- 当前登录用户信息 -->
+      <!-- 当前登录用户信息 -->  
       <div class="right-box__item user-avatar-box">
         <div
           v-if="!user"

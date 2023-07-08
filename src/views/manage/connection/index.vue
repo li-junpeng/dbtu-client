@@ -8,6 +8,7 @@ import { getConnectionDetailCom } from '@/components/database/component/connecti
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import DataTable from './data-table.vue'
 import CreateConnection from './create-connection.vue'
+import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 
 defineOptions({
   name: 'ConnectionPage'
@@ -40,7 +41,7 @@ const onChangeDetailComponent = (row: ConnectionInfo<BaseConnectionDetail>) => {
 }
 
 // 创建连接、编辑连接
-const createConnectionRef = ref()
+const createConnectionRef = useComponentRef(CreateConnection)
 const toCreateConnection = () => {
   createConnectionRef.value?.open()
 }
@@ -89,8 +90,7 @@ const toCreateConnection = () => {
     <div
       v-if="detailComponent === null"
       class="dbtu-vertical-center dbtu-un-user-select no-data"
-    >暂无数据
-    </div>
+    >暂无数据</div>
     <component
       v-else
       :is="detailComponent"

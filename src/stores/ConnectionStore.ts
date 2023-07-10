@@ -17,6 +17,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
      */
     async create(data: ConnectionInfo<BaseConnectionDetail>): Promise<IResponse<ConnectionInfo<BaseConnectionDetail>>> {
       data.id = Date.now()
+      data.status = 'no_connection'
       this.connections.push(data)
       return Promise.resolve({
         status: 'success',

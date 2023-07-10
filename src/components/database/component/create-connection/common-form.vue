@@ -6,8 +6,9 @@
 -->
 <script setup lang="ts">
 import { ElButton, ElForm, ElFormItem, ElInput } from 'element-plus'
-import type { PropType } from 'vue'
+import { ref } from 'vue'
 import { usePropValue } from '@/common/utils/VueUtils'
+import type { BasePropDefine } from '@/components/database/component/create-connection/common-form'
 import { useCommonForm } from '@/components/database/component/create-connection/common-form'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 
@@ -15,30 +16,37 @@ defineOptions({
   name: 'CreateConnectionFormCommonHeaderComponent'
 })
 
-const props = defineProps({
-  modelValue: {
-    type: Object as PropType<ConnectionInfo<BaseConnectionDetail>>,
-    required: true
-  },
-  labelWidth: {
-    type: String,
-    default: '80px'
-  },
-  rules: {
-    type: Object as PropType<any>
-  }
+interface PropDefine extends BasePropDefine<BaseConnectionDetail> {
+  labelWidth?: string
+  rules?: any
+}
+
+const props = withDefaults(defineProps<PropDefine>(), {
+  labelWidth: '80px',
+  rules: {}
 })
 
 const emits = defineEmits(['update:modelValue'])
 
 const formData = usePropValue<ConnectionInfo<BaseConnectionDetail>>(props.modelValue, emits)
-
 const {
   isTestConnecting,
   onTestConnection
-} = useCommonForm(formData)
+} = useCommonForm(props, formData, {
+  beforeTestConnection: () => {
+    onChangeFormDisabled(true)
+  },
+  afterTestConnection: () => {
+    onChangeFormDisabled(false)
+  }
+})
 
 const formRef = useComponentRef(ElForm)
+
+const formDisabled = ref(false)
+const onChangeFormDisabled = (flag: boolean) => {
+  formDisabled.value = flag
+}
 
 defineExpose({
   formRef
@@ -51,8 +59,9 @@ defineExpose({
       <el-form
         ref="formRef"
         v-model="formData"
-        :label-width="labelWidth!"
+        :label-width="labelWidth"
         :rules="rules"
+        :disabled="formDisabled"
         label-position="left"
       >
         <el-form-item label="连接名" prop="name">

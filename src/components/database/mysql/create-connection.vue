@@ -31,6 +31,7 @@ import {
   getDatabaseDriverInfo, CharsetTypes
 } from '@/common/constants/ConnectionConstant'
 import { ObjectUtils } from '@/common/utils/ObjectUtils'
+import type { BasePropDefine } from '@/components/database/component/create-connection/common-form'
 import { useCommonForm } from '@/components/database/component/create-connection/common-form'
 import TimeZones from '@/assets/data/time-zone.json'
 
@@ -38,9 +39,7 @@ defineOptions({
   name: 'CreateMySQLConnectionForm'
 })
 
-const props = defineProps<{
-  modelValue: ConnectionInfo<MySQLConnectionInfo>
-}>()
+const props = defineProps<BasePropDefine<MySQLConnectionInfo>>()
 
 const emits = defineEmits(['update:modelValue'])
 
@@ -48,7 +47,7 @@ const commonFormRef = ref<InstanceType<typeof CommonForm> | null>(null)
 const formData = usePropValue<ConnectionInfo<MySQLConnectionInfo>>(props.modelValue, emits)
 const {
   dataInitCompleted
-} = useCommonForm(formData, {
+} = useCommonForm(props, formData, {
   initFormData: () => {
     if (NumberUtils.isEmpty(formData.value.port)) {
       formData.value.port = 3306

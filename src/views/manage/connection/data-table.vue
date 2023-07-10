@@ -19,8 +19,22 @@ defineOptions({
   name: 'ManageConnectionDataTablePage'
 })
 
-const emit = defineEmits<{
-  (e: 'selectRow', row: RowType | null): void
+const emits = defineEmits<{
+  /**
+   * 选择行的回调
+   *
+   * @param e     function name
+   * @param row   行内容
+   */
+  (e: 'selectRow', row: RowType | null): void,
+
+  /**
+   * 点击了编辑按钮
+   *
+   * @param e     function name
+   * @param row   行内容
+   */
+  (e: 'click-edit', row: RowType): void
 }>()
 
 const connectionStore = useConnectionStore()
@@ -29,7 +43,7 @@ const connections = computed(() => {
 })
 
 const onClickRow = (row: RowType) => {
-  emit('selectRow', row)
+  emits('selectRow', row)
 }
 
 const tableRef = useComponentRef(ElTable)
@@ -48,10 +62,19 @@ const onDeleteRow = (row: RowType) => {
       await MessageBox.error(message)
     }
 
-    emit('selectRow', null)
+    emits('selectRow', null)
 
     done()
   })
+}
+
+/**
+ * 点击了编辑按钮
+ *
+ * @param row   行信息
+ */
+const onClickEdit = (row: RowType) => {
+  emits('click-edit', row)
 }
 </script>
 
@@ -73,7 +96,14 @@ const onDeleteRow = (row: RowType) => {
       <el-table-column prop="host" label="主机 & 端口" align="center" width="300"/>
       <el-table-column prop="__action" label="操作" align="center" width="300">
         <template #default="{ row }">
-          <el-button :icon="IconEdit" link text>修改</el-button>
+          <el-button
+            :icon="IconEdit"
+            link
+            text
+            @click="onClickEdit(row)"
+          >
+            <span>修改</span>
+          </el-button>
           <el-button
             :icon="IconDelete"
             type="danger"

@@ -49,6 +49,10 @@ const createConnectionRef = useComponentRef(CreateConnection)
 const toCreateConnection = () => {
   createConnectionRef.value?.open()
 }
+
+const onEditRow = (row: ConnectionInfo<BaseConnectionDetail>) => {
+  createConnectionRef.value?.open(row)
+}
 </script>
 
 <template>
@@ -59,7 +63,8 @@ const toCreateConnection = () => {
           type="primary"
           :icon="IconPlus"
           @click="toCreateConnection"
-        >新建连接
+        >
+          <span>新建连接</span>
         </el-button>
         <el-select
           v-model="searchParams.dbType"
@@ -88,6 +93,7 @@ const toCreateConnection = () => {
       <data-table
         class="data-table-box"
         @select-row="onChangeDetailComponent"
+        @click-edit="onEditRow"
       />
     </el-main>
   </el-container>
@@ -95,7 +101,8 @@ const toCreateConnection = () => {
     <div
       v-if="detailComponent === null"
       class="dbtu-vertical-center dbtu-un-user-select no-data"
-    >暂无数据
+    >
+      <span>暂无数据</span>
     </div>
     <component
       v-else
@@ -106,6 +113,7 @@ const toCreateConnection = () => {
 
   <create-connection
     ref="createConnectionRef"
+    @submit-success="onChangeDetailComponent(null)"
   />
 </template>
 

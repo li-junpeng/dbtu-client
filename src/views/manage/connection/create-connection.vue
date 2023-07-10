@@ -64,7 +64,7 @@ const open = (data?: ConnectionInfo<BaseConnectionDetail>, db: DatabaseIdent = '
   } else {
     dialog.title = '编辑连接'
     dialog.isEdit = true
-    formData.value = data
+    formData.value = JSON.parse(JSON.stringify(data))
   }
 
   onClickDbItem(data ? DatabaseTypes[data.dbType] : DatabaseTypes[db])
@@ -104,22 +104,33 @@ const onCloseDialog = () => {
   dialog.visible = false
 }
 
+// 提交按钮文本
+const confirmBtnText = computed(() => {
+  return isCreateLoading.value
+    ? '正在保存'
+    : dialog.isEdit
+      ? '保存' : '创建'
+})
+
 // region 提交表单 start //
 const connectionStore = useConnectionStore()
 const isCreateLoading = ref(false)
-const onCreate = async () => {
+// 提交表单
+const onConfirm = async () => {
   isCreateLoading.value = true
 
-  const {status, message, data} = await connectionStore.create(formData.value as ConnectionInfo<BaseConnectionDetail>)
+  const submitRequestFn = dialog.isEdit ? connectionStore.updateById : connectionStore.create
+  const {status, message, data} = await submitRequestFn(formData.value as ConnectionInfo<BaseConnectionDetail>)
+  isCreateLoading.value = false
   if (status === 'success') {
     Message.success(message)
-    isCreateLoading.value = false
     onCloseDialog()
     emits('submit-success', data as ConnectionInfo<BaseConnectionDetail>)
   } else {
     await MessageBox.error(message)
   }
 }
+
 // endregion 提交表单 end //
 
 defineExpose({
@@ -180,13 +191,15 @@ defineExpose({
       <el-button
         type="info"
         @click="onCloseDialog"
-      >取消
+      >
+        <span>取消</span>
       </el-button>
       <el-button
         type="primary"
-        @click="onCreate"
+        @click="onConfirm"
         :loading="isCreateLoading"
-      >{{ isCreateLoading ? '正在保存' : '创建' }}
+      >
+        <span>{{ confirmBtnText }}</span>
       </el-button>
     </template>
   </el-dialog>

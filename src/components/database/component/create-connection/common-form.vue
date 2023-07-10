@@ -89,7 +89,14 @@ defineExpose({
     </div>
 
     <div class="form-footer">
-      <el-button link @click="onTestConnection" :loading="isTestConnecting">测试连接</el-button>
+      <el-button
+        link
+        :loading="isTestConnecting"
+        @click="onTestConnection"
+        style="padding: 0"
+      >
+        <span>测试连接</span>
+      </el-button>
     </div>
   </div>
 </template>

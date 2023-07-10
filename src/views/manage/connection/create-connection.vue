@@ -6,16 +6,22 @@
 -->
 <script setup lang="ts">
 import { computed, defineAsyncComponent, reactive, ref, shallowRef } from 'vue'
-import { ElAside, ElContainer, ElDialog, ElIcon, ElInput, ElMain, ElScrollbar, ElButton } from 'element-plus'
+import { ElAside, ElButton, ElContainer, ElDialog, ElIcon, ElInput, ElMain, ElScrollbar } from 'element-plus'
 import { Lock as IconLock, Search as IconSearch } from '@element-plus/icons-vue'
 import { DatabaseTypes } from '@/common/constants/ConnectionConstant'
 import { StringUtils } from '@/common/utils/StringUtils'
 import { getCreateConnectionCom } from '@/components/database/component/create-connection'
-import { MessageBox } from '@/components/element-plus/el-feedback-util'
+import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
+import { useConnectionStore } from '@/stores/ConnectionStore'
 
 defineOptions({
   name: 'CreateConnectionDialog'
 })
+
+const emits = defineEmits<{
+  // 连接创建/编辑成功
+  (e: 'submit-success', data: ConnectionInfo<BaseConnectionDetail>): void
+}>()
 
 const dialog = reactive({
   visible: false,
@@ -94,6 +100,28 @@ const onChangeFormComponent = () => {
   })
 }
 
+const onCloseDialog = () => {
+  dialog.visible = false
+}
+
+// region 提交表单 start //
+const connectionStore = useConnectionStore()
+const isCreateLoading = ref(false)
+const onCreate = async () => {
+  isCreateLoading.value = true
+
+  const {status, message, data} = await connectionStore.create(formData.value as ConnectionInfo<BaseConnectionDetail>)
+  if (status === 'success') {
+    Message.success(message)
+    isCreateLoading.value = false
+    onCloseDialog()
+    emits('submit-success', data as ConnectionInfo<BaseConnectionDetail>)
+  } else {
+    await MessageBox.error(message)
+  }
+}
+// endregion 提交表单 end //
+
 defineExpose({
   open
 })
@@ -149,8 +177,17 @@ defineExpose({
     </div>
 
     <template #footer>
-      <el-button type="info">取消</el-button>
-      <el-button type="primary">创建</el-button>
+      <el-button
+        type="info"
+        @click="onCloseDialog"
+      >取消
+      </el-button>
+      <el-button
+        type="primary"
+        @click="onCreate"
+        :loading="isCreateLoading"
+      >{{ isCreateLoading ? '正在保存' : '创建' }}
+      </el-button>
     </template>
   </el-dialog>
 </template>

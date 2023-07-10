@@ -80,3 +80,17 @@ interface ElSelectOption<T extends string | number | boolean | object> {
   // 是否禁用该选项, 默认false
   disabled?: boolean
 }
+
+/**
+ * 通用请求响应体
+ *
+ * @param T 响应数据的类型
+ */
+interface IResponse<T> {
+  // 状态标识
+  status: 'success' | 'fail'
+  // 数据
+  data: T | null
+  // 消息内容
+  message: string
+}

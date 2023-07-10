@@ -30,14 +30,18 @@ const dbTypes = ArrayUtils.unshift<any>(
 // 根据数据库类型，动态显示
 const selectedConnectionInfo = ref<ConnectionInfo<BaseConnectionDetail> | null>(null)
 const detailComponent = shallowRef(null)
-const onChangeDetailComponent = (row: ConnectionInfo<BaseConnectionDetail>) => {
-  const component = getConnectionDetailCom(row.dbType)
-  component().then(() => {
-    selectedConnectionInfo.value = row
-    detailComponent.value = defineAsyncComponent(component)
-  }).catch(() => {
-    MessageBox.error(`加载[ ${DatabaseTypes[row.dbType].name} ]数据库详情组件失败，请刷新页面后再试！`)
-  })
+const onChangeDetailComponent = (row: ConnectionInfo<BaseConnectionDetail> | null) => {
+  if (!row) {
+    detailComponent.value = null
+  } else {
+    const component = getConnectionDetailCom(row.dbType)
+    component().then(() => {
+      selectedConnectionInfo.value = row
+      detailComponent.value = defineAsyncComponent(component)
+    }).catch(() => {
+      MessageBox.error(`加载[ ${DatabaseTypes[row.dbType].name} ]数据库详情组件失败，请刷新页面后再试！`)
+    })
+  }
 }
 
 // 创建连接、编辑连接
@@ -55,7 +59,8 @@ const toCreateConnection = () => {
           type="primary"
           :icon="IconPlus"
           @click="toCreateConnection"
-        >新建连接</el-button>
+        >新建连接
+        </el-button>
         <el-select
           v-model="searchParams.dbType"
           style="width: 180px"
@@ -90,7 +95,8 @@ const toCreateConnection = () => {
     <div
       v-if="detailComponent === null"
       class="dbtu-vertical-center dbtu-un-user-select no-data"
-    >暂无数据</div>
+    >暂无数据
+    </div>
     <component
       v-else
       :is="detailComponent"

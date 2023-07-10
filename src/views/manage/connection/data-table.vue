@@ -5,12 +5,13 @@
  * @date 2023-06-30 22:
 -->
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed } from 'vue'
 import { ElButton, ElTable, ElTableColumn } from 'element-plus'
 import { Delete as IconDelete, Edit as IconEdit } from '@element-plus/icons-vue'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
+import { useConnectionStore } from '@/stores/ConnectionStore'
 
 type RowType = ConnectionInfo<BaseConnectionDetail>
 
@@ -19,42 +20,13 @@ defineOptions({
 })
 
 const emit = defineEmits<{
-  (e: 'selectRow', row: RowType): void
+  (e: 'selectRow', row: RowType | null): void
 }>()
 
-const connections = ref<RowType[]>([])
-for (let i = 0; i < 1; i++) {
-  connections.value.push({
-    id: 1,
-    name: '@localhost',
-    dbType: 'mysql',
-    status: 'no_connection',
-    host: 'localhost',
-    port: 3306,
-    createBy: '',
-    createTime: '',
-    updateBy: '',
-    updateTime: '',
-    detail: {
-      sessionNum: 0
-    } as MySQLConnectionInfo
-  })
-  connections.value.push({
-    id: 1,
-    name: '127.0.0.1',
-    dbType: 'sql_server_2012',
-    status: 'connected',
-    host: 'localhost',
-    port: 3306,
-    createBy: '',
-    createTime: '',
-    updateBy: '',
-    updateTime: '',
-    detail: {
-      sessionNum: 0
-    } as SQLServer2012ConnectionInfo
-  })
-}
+const connectionStore = useConnectionStore()
+const connections = computed(() => {
+  return connectionStore.connections
+})
 
 const onClickRow = (row: RowType) => {
   emit('selectRow', row)
@@ -68,12 +40,17 @@ const tableRef = useComponentRef(ElTable)
  * @param row   要删除的row
  */
 const onDeleteRow = (row: RowType) => {
-  MessageBox.deleteConfirm(TextConstant.deleteConfirm(row.name), (done) => {
-    setTimeout(() => {
-      // TODO 调后台接口删除连接
-      Message.success('删除成功')
-      done()
-    }, 1000)
+  MessageBox.deleteConfirm(TextConstant.deleteConfirm(row.name), async (done) => {
+    const {status, message} = await connectionStore.removeById(row.id as number)
+    if (status === 'success') {
+      Message.success(message)
+    } else {
+      await MessageBox.error(message)
+    }
+
+    emit('selectRow', null)
+
+    done()
   })
 }
 </script>
@@ -103,7 +80,9 @@ const onDeleteRow = (row: RowType) => {
             link
             text
             @click="onDeleteRow(row)"
-          >删除</el-button>
+          >
+            <span>删除</span>
+          </el-button>
         </template>
       </el-table-column>
     </el-table>

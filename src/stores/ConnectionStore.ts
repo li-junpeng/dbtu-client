@@ -35,7 +35,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
         const connection = this.connections[i]
         if (id === connection.id) {
           // TODO 删除之前先关掉数据库连接session
-          this.connections.slice(i, 1)
+          this.connections.splice(i, 1)
           return Promise.resolve({
             status: 'success',
             data: null,
@@ -44,7 +44,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
         }
       }
 
-      return Promise.reject("删除失败，未找到相关数据库连接，请刷新页面后再试")
+      return Promise.reject('删除失败，未找到相关数据库连接，请刷新页面后再试')
     }
 
   },

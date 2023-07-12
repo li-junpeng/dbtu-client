@@ -12,6 +12,8 @@ import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
 import { useConnectionStore } from '@/stores/ConnectionStore'
+import StatusItem from './status-item.vue'
+import { StringUtils } from '@/common/utils/StringUtils'
 
 type RowType = ConnectionInfo<BaseConnectionDetail>
 
@@ -92,8 +94,16 @@ const onClickEdit = (row: RowType) => {
       @row-click="onClickRow"
     >
       <el-table-column prop="name" label="连接名"/>
-      <el-table-column prop="status" label="状态" align="center" width="200"/>
-      <el-table-column prop="host" label="主机 & 端口" align="center" width="300"/>
+      <el-table-column prop="status" label="状态" align="center" width="200">
+        <template #default="{ row }">
+          <status-item :status="row.status"/>
+        </template>
+      </el-table-column>
+      <el-table-column prop="host" label="主机 & 端口" align="center" width="300">
+        <template #default="{ row }">
+          {{ row.host ? row.host + ':' + row.port : StringUtils.NULL_SHOW_VALUE }}
+        </template>
+      </el-table-column>
       <el-table-column prop="__action" label="操作" align="center" width="300">
         <template #default="{ row }">
           <el-button

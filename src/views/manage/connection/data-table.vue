@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { ElButton, ElTable, ElTableColumn } from 'element-plus'
-import { Delete as IconDelete, Edit as IconEdit } from '@element-plus/icons-vue'
+import { Delete as IconDelete, Edit as IconEdit, Sugar as IconSugar } from '@element-plus/icons-vue'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
@@ -78,6 +78,31 @@ const onDeleteRow = (row: RowType) => {
 const onClickEdit = (row: RowType) => {
   emits('click-edit', row)
 }
+
+/**
+ * 修改连接状态
+ *
+ * @param row  连接信息
+ */
+const onChangeConnectionStatus = (row: RowType) => {
+  switch (row.status) {
+    case 'connecting':
+      // nothing
+      break
+    case 'no_connection':
+      row.status = 'connecting'
+
+      setTimeout(() => {
+        row.status = 'connected'
+      }, 1000)
+      break
+    case 'connected':
+      row.status = 'no_connection'
+      break
+    default:
+      MessageBox.error(`未处理的连接状态: ${row.status}`)
+  }
+}
 </script>
 
 <template>
@@ -106,6 +131,22 @@ const onClickEdit = (row: RowType) => {
       </el-table-column>
       <el-table-column prop="__action" label="操作" align="center" width="300">
         <template #default="{ row }">
+          <el-button
+            :icon="IconSugar"
+            link
+            text
+            :disabled="row.status === 'connecting'"
+            :loading="row.status === 'connecting'"
+            @click="onChangeConnectionStatus(row)"
+          >
+            <span>{{
+                row.status === 'connected'
+                  ? '关闭连接'
+                  : row.status === 'no_connection'
+                    ? '打开连接'
+                    : '正在连接'
+              }}</span>
+          </el-button>
           <el-button
             :icon="IconEdit"
             link

@@ -1,24 +1,76 @@
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { StringUtils } from '@/common/utils/StringUtils'
 import { TinyColor } from '@ctrl/tinycolor'
 import { FONT_SIZE_DEFAULT, FONT_SIZE_MAX, FONT_SIZE_MIN } from '@/common/constants/SystemConstant'
 import { useDark } from '@vueuse/core'
 
+// region icons start //
+import IconTheme from '@/icons/svg/theme.vue'
+import IconProxy from '@/icons/svg/proxy.vue'
+import IconKeymap from '@/icons/svg/keymap.vue'
+import IconSecurity from '@/icons/svg/security.vue'
+// endregion icons end //
+
+export const navTabs = [
+  {
+    key: 'theme',
+    title: '主题',
+    icon: IconTheme,
+    component: './setting-theme.vue'
+  },
+  {
+    key: 'proxy',
+    title: '代理服务器',
+    icon: IconProxy,
+    component: './setting-proxy-server.vue'
+  },
+  {
+    key: 'keymap',
+    title: '快捷键',
+    icon: IconKeymap,
+    component: ''
+  },
+  {
+    key: 'security',
+    title: '隐私与安全',
+    icon: IconSecurity,
+    iconSize: 16,
+    component: ''
+  }
+] as SystemSettingTabItem[]
+
 export const useSystemSettingStore = defineStore('useSystemSettingStore', {
   state: () => {
     return {
-      setting: getDefaultSetting()
+      setting: getDefaultSetting(),
+      // 系统设置对话框的可见性
+      visible: ref(false),
+      // 当前激活的选项卡
+      activeTab: ref<SystemSettingTabItem | null>(null)
     }
   },
 
   actions: {
 
-    getSetting(): SystemSetting {
-      return this.setting
+    /**
+     * 打开对话框
+     *
+     * @param tabKey  默认选中的选项卡标识
+     */
+    open(tabKey?: SystemSettingTabKey) {
+      let tabItem = StringUtils.isNotEmpty(tabKey as string)
+        ? navTabs.find(tab => tab.key === tabKey)
+        : this.activeTab
+      if (!tabItem) {
+        tabItem = navTabs[0]
+      }
+      this.activeTab = tabItem
+      this.visible = true
     },
 
-    setSetting(setting: SystemSetting) {
-      this.setting = setting
+    getSetting(): SystemSetting {
+      return this.setting
     },
 
     /**

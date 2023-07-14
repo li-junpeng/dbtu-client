@@ -9,6 +9,7 @@ import IconGithub from '@/icons/svg/app-github.vue'
 import IconNotify from '@/icons/svg/notify.vue'
 // store
 import { useUserInfoStore } from '@/stores/UserInfoStore'
+import { useSystemSettingStore } from '@/stores/SystemSettingStore'
 // 组件
 import SystemSettingDialog from '@/components/system-setting/index.vue'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
@@ -35,9 +36,10 @@ const toLogin = () => {
 }
 
 // 系统设置对话框实例
+const systemSettingStore = useSystemSettingStore()
 const systemSettingDialogRef = useComponentRef(SystemSettingDialog)
 const openSystemSettingDialog = () => {
-  systemSettingDialogRef.value?.onOpen()
+  systemSettingStore.open()
 }
 </script>
 
@@ -45,7 +47,7 @@ const openSystemSettingDialog = () => {
   <div class="page-header">
     <div class="left-box">DB兔，稳而快</div>
     <div class="dbtu-un-user-select right-box">
-      <!-- 当前登录用户信息 -->  
+      <!-- 当前登录用户信息 -->
       <div class="right-box__item user-avatar-box">
         <div
           v-if="!user"

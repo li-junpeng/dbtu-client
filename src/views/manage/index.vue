@@ -16,7 +16,7 @@ defineOptions({
     <el-header style="--el-header-padding: 0; --el-header-height: auto;">
       <page-header/>
     </el-header>
-    <el-container style="height: calc(100% - 60px)">
+    <el-container style="height: calc(100% - 40px)">
       <!-- 导航菜单 -->
       <el-aside width="40">
         <navigation-menu class="nav-menu"/>

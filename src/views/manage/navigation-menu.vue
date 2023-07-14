@@ -80,7 +80,7 @@ onMounted(() => {
   .menu-box {
     color: var(--dbtu-font-color);
     line-height: 34px;
-    padding: 5px;
+    padding: 3px;
     display: flex;
     flex-direction: column;
 
@@ -94,7 +94,7 @@ onMounted(() => {
       gap: 8px;
 
       &.hide-label {
-        height: 29px;
+        height: 33px;
         border-radius: var(--dbtu-border-radius);
         justify-content: center;
       }

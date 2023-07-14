@@ -6,18 +6,33 @@ export const useConnectionStore = defineStore('useConnectionStore', {
 
   state: () => {
     return {
-      connections: [] as ConnectionInfoType[]
+      connections: [] as (ConnectionInfoType | ConnectionGroup)[]
     }
   },
 
   actions: {
 
     /**
+     * 创建分组
+     *
+     * @param data  分组数据
+     */
+    createGroup(data: ConnectionGroup): Promise<IResponse<ConnectionGroup>> {
+      data.id = Date.now()
+      this.connections.push(data)
+      return Promise.resolve({
+        status: 'success',
+        data,
+        message: '分组创建成功'
+      })
+    },
+
+    /**
      * 创建连接
      *
      * @param data
      */
-    create(data: ConnectionInfo<BaseConnectionDetail>): Promise<IResponse<ConnectionInfoType>> {
+    createConnection(data: ConnectionInfo<BaseConnectionDetail>): Promise<IResponse<ConnectionInfoType>> {
       data.id = Date.now()
       data.status = 'no_connection'
       this.connections.push(data)

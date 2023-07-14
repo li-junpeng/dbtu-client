@@ -119,7 +119,7 @@ const isCreateLoading = ref(false)
 const onConfirm = async () => {
   isCreateLoading.value = true
 
-  const submitRequestFn = dialog.isEdit ? connectionStore.updateById : connectionStore.create
+  const submitRequestFn = dialog.isEdit ? connectionStore.updateById : connectionStore.createConnection
   const {status, message, data} = await submitRequestFn(formData.value as ConnectionInfo<BaseConnectionDetail>)
   isCreateLoading.value = false
   if (status === 'success') {

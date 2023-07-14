@@ -92,6 +92,14 @@ interface ConnectionInfo<T extends BaseConnectionDetail> extends BaseEntity {
   comment?: string
 }
 
+interface ConnectionGroup {
+  // 主键
+  id: number | null
+  name: string
+  dbType: 'group'
+  children?: ConnectionInfo<BaseConnectionDetail>
+}
+
 interface BaseConnectionDetail {
 }
 

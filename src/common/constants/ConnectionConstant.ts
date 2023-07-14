@@ -36,6 +36,13 @@ export const DatabaseTypes: DatabaseDefine = {
   }*/
 }
 
+export const InjectionKey = {
+  // 打开创建分组对话框
+  openCreateGroup: Symbol(),
+  // 打开创建连接对话框
+  openCreateConnection: Symbol()
+}
+
 /**
  * 数据库驱动
  */

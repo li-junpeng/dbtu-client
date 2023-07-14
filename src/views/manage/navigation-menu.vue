@@ -7,10 +7,18 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
-import { ElIcon } from 'element-plus'
+import { ElIcon, ElTooltip } from 'element-plus'
 
 defineOptions({
   name: 'NavigationMenu'
+})
+
+const props = defineProps({
+  // 是否显示标签
+  showLabel: {
+    type: Boolean,
+    default: false
+  }
 })
 
 // 获取路由定义
@@ -29,22 +37,36 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="navigation-menu">
+  <div
+    class="navigation-menu"
+    :style="{
+      width: `${showLabel ? '200px' : '40px'}`
+    }"
+  >
     <div class="menu-box">
-      <router-link
+      <el-tooltip
         v-for="menu in menus"
         :key="menu.name"
-        :to="menu.path"
-        class="dbtu-un-user-select menu-item"
-        :class="{
-          'is-active': currentRoutePath === menu.path
-        }"
+        :content="(menu.meta?.['title'] || '无法识别的菜单') as string"
+        placement="right"
+        effect="dark"
+        :enterable="false"
+        :disabled="showLabel"
       >
-        <el-icon :size="16">
-          <component :is="menu.meta?.['icon']"/>
-        </el-icon>
-        <span>{{ menu.meta?.['title'] }}</span>
-      </router-link>
+        <router-link
+          :to="menu.path"
+          class="dbtu-un-user-select menu-item"
+          :class="{
+            'hide-label': !showLabel,
+            'is-active': currentRoutePath === menu.path
+          }"
+        >
+          <el-icon :size="showLabel ? 16 : 18">
+            <component :is="menu.meta?.['icon']"/>
+          </el-icon>
+          <span v-if="showLabel">{{ menu.meta?.['title'] }}</span>
+        </router-link>
+      </el-tooltip>
     </div>
   </div>
 </template>
@@ -58,18 +80,24 @@ onMounted(() => {
   .menu-box {
     color: var(--dbtu-font-color);
     line-height: 34px;
-    padding: 5px 10px;
+    padding: 5px;
     display: flex;
     flex-direction: column;
 
     .menu-item {
       padding: 0 10px;
       cursor: pointer;
-      margin-bottom: 5px;
+      margin-bottom: 10px;
       border-radius: var(--dbtu-border-radius);
       display: flex;
       align-items: center;
       gap: 8px;
+
+      &.hide-label {
+        height: 29px;
+        border-radius: var(--dbtu-border-radius);
+        justify-content: center;
+      }
 
       &.is-active {
         color: var(--el-color-white);

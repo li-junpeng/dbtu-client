@@ -18,7 +18,7 @@ defineOptions({
     </el-header>
     <el-container style="height: calc(100% - 60px)">
       <!-- 导航菜单 -->
-      <el-aside width="200">
+      <el-aside width="40">
         <navigation-menu class="nav-menu"/>
       </el-aside>
       <!-- 二级路由, 显示具体业务模块页面 -->

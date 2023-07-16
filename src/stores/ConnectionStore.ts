@@ -1,16 +1,23 @@
 import { defineStore } from 'pinia'
 
-type ConnectionInfoType = ConnectionInfo<BaseConnectionDetail>
+export type ConnectionInfoType = ConnectionInfo<BaseConnectionDetail>
+
+export type ConnectionsType = (ConnectionInfoType | ConnectionGroup)[]
 
 export const useConnectionStore = defineStore('useConnectionStore', {
 
   state: () => {
     return {
-      connections: [] as (ConnectionInfoType | ConnectionGroup)[]
+      connections: [] as ConnectionsType
     }
   },
 
   actions: {
+
+    findOrderByName(): ConnectionsType {
+      this.connections.sort((item1, item2) => item1.name.localeCompare(item2.name))
+      return this.connections
+    },
 
     /**
      * 创建分组

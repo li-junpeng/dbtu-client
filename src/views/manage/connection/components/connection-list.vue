@@ -5,10 +5,12 @@
  * @date 2023-07-14 16-35
 -->
 <script setup lang="ts">
-import { inject } from 'vue'
-import { ElButton, ElIcon, ElTooltip } from 'element-plus'
-import { FolderAdd as IconFolderAdd, Minus as IconMinus, Plus as IconPlus } from '@element-plus/icons-vue'
+import { inject, onMounted, ref, watch } from 'vue'
+import { ElButton, ElIcon, ElTooltip, ElTreeV2 } from 'element-plus'
+import { Folder as IconFolder, FolderAdd as IconFolderAdd, Minus as IconMinus, Plus as IconPlus } from '@element-plus/icons-vue'
 import { InjectionKey } from '@/common/constants/ConnectionConstant'
+import { useConnectionStore } from '@/stores/ConnectionStore'
+import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 
 defineOptions({
   name: 'ConnectionListComponent'
@@ -17,10 +19,28 @@ defineOptions({
 const openCreateConnection = inject<(data?: ConnectionInfo<BaseConnectionDetail>, db?: DatabaseIdent) => void>(InjectionKey.openCreateConnection)
 const openCreateGroup = inject<(name?: string) => void>(InjectionKey.openCreateGroup)
 
+const treeProps = {
+  value: 'id',
+  label: 'name',
+  children: 'children',
+}
+
+const treeHeight = ref(400)
+const treeRef = useComponentRef(ElTreeV2)
+const connectionStore = useConnectionStore()
+const connections = connectionStore.findOrderByName()
+watch(() => connectionStore.connections, () => {
+  treeRef.value?.setData(connectionStore.findOrderByName())
+}, {deep: true})
+
+onMounted(() => {
+  const $dom = document.querySelector('.box-content')
+  treeHeight.value = $dom?.clientHeight || 400
+})
 </script>
 
 <template>
-  <div class="box-header">
+  <div class="dbtu-un-user-select box-header">
     <span>连接列表</span>
     <div class="btn-list">
       <el-tooltip
@@ -59,7 +79,23 @@ const openCreateGroup = inject<(name?: string) => void>(InjectionKey.openCreateG
     </div>
   </div>
   <div class="box-content">
-
+    <el-tree-v2
+      ref="treeRef"
+      :data="connections"
+      :props="treeProps"
+      :height="treeHeight"
+      :item-size="34"
+      empty-text="暂无数据库连接"
+    >
+      <template #default="{ node, data }">
+        <div class="tree-item">
+          <el-icon>
+            <IconFolder/>
+          </el-icon>
+          <span>{{ node.label }}</span>
+        </div>
+      </template>
+    </el-tree-v2>
   </div>
 </template>
 
@@ -77,8 +113,13 @@ const openCreateGroup = inject<(name?: string) => void>(InjectionKey.openCreateG
 .box-content {
   width: 100%;
   height: calc(100% - 40px);
-  background-color: red;
   overflow: auto;
 }
 
+.tree-item {
+  display: flex;
+  align-items: center;
+  line-height: 34px;
+  gap: var(--dbtu-icon-text-gap);
+}
 </style>

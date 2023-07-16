@@ -31,7 +31,7 @@ const dialog = reactive({
 const formData = ref<ConnectionGroup>({
   id: null,
   name: '',
-  dbType: 'group',
+  dbType: 'group'
 })
 const formRules = {
   name: [
@@ -55,7 +55,11 @@ const open = (data?: ConnectionGroup) => {
   } else {
     dialog.isEdit = false
     dialog.title = '创建分组'
-    formData.value.name = 'New Group'
+    formData.value = {
+      id: null,
+      name: 'New Group',
+      dbType: 'group'
+    }
   }
 
   dialog.visible = true

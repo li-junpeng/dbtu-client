@@ -47,12 +47,12 @@ export const useConnectionStore = defineStore('useConnectionStore', {
       // 转换成tree数据结构
       const groupMap: Record<number, number> = {}
       const connections = [] as ConnectionsType
-      group['group'].forEach((item: ConnectionGroup, index) => {
+      group['group']?.forEach((item: ConnectionGroup, index) => {
         groupMap[item.id as number] = index
         item.children = []
         connections.push(item)
       })
-      group['connection'].forEach(item => {
+      group['connection']?.forEach(item => {
         if (NumberUtils.isEmpty((item as ConnectionInfoType).groupId)) {
           connections.push(item)
         } else {

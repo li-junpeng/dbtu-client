@@ -57,7 +57,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
           connections.push(item)
         } else {
           // @ts-ignore
-          connections[groupMap[item.groupId]].children.push(item)
+          connections[groupMap[item.groupId]]?.children.push(item) || connections.push(item)
         }
       })
       return connections

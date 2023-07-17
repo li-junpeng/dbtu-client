@@ -68,6 +68,8 @@ interface ConnectionInfo<T extends BaseConnectionDetail> extends BaseEntity {
   id: number | null
   // 连接名
   name: string
+  // 分组ID
+  groupId?: number,
   // 数据库类型
   dbType: DatabaseIdent
   // 状态
@@ -87,7 +89,7 @@ interface ConnectionGroup {
   id: number | null
   name: string
   dbType: 'group'
-  children?: ConnectionInfo<BaseConnectionDetail>
+  children?: ConnectionInfo<BaseConnectionDetail>[]
 }
 
 interface BaseConnectionDetail {

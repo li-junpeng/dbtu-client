@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { NumberUtils } from '@/common/utils/NumberUtils'
 
 export type ConnectionInfoType = ConnectionInfo<BaseConnectionDetail>
 
@@ -14,6 +15,23 @@ export const useConnectionStore = defineStore('useConnectionStore', {
 
   actions: {
 
+    /**
+     * 获取所有的分组列表
+     *
+     * @returns 分组列表
+     */
+    findGroups(): ConnectionGroup[] {
+      const groups = this.connections.filter(item => item.dbType === 'group') as ConnectionGroup[]
+      // 按名称排序
+      groups.sort((item1, item2) => item1.name.localeCompare(item2.name))
+      return groups
+    },
+
+    /**
+     * 获取所有分组和连接
+     *
+     * @returns 连接列表
+     */
     findOrderByName(): ConnectionsType {
       this.connections.sort((item1, item2) => item1.name.localeCompare(item2.name))
       return this.connections
@@ -42,7 +60,21 @@ export const useConnectionStore = defineStore('useConnectionStore', {
     createConnection(data: ConnectionInfo<BaseConnectionDetail>): Promise<IResponse<ConnectionInfoType>> {
       data.id = Date.now()
       data.status = 'no_connection'
-      this.connections.push(data)
+      if (NumberUtils.isEmpty(data.groupId)) {
+        this.connections.push(data)
+      } else {
+        const groups = this.findGroups()
+        for (let i = 0; i < groups.length; i++) {
+          if (groups[i].id === data.groupId) {
+            if (!groups[i].children) {
+              groups[i].children = []
+            }
+            groups[i].children?.push(data)
+            break
+          }
+        }
+      }
+
       return Promise.resolve({
         status: 'success',
         data,

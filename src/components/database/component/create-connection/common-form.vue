@@ -5,12 +5,13 @@
  * @date 2023-07-04 21:
 -->
 <script setup lang="ts">
-import { ElButton, ElForm, ElFormItem, ElInput } from 'element-plus'
+import { ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElSelect, ElOption } from 'element-plus'
 import { ref } from 'vue'
 import { usePropValue } from '@/common/utils/VueUtils'
 import type { BasePropDefine } from '@/components/database/component/create-connection/common-form'
 import { useCommonForm } from '@/components/database/component/create-connection/common-form'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
+import { useConnectionStore } from '@/stores/ConnectionStore'
 
 defineOptions({
   name: 'CreateConnectionFormCommonHeaderComponent'
@@ -28,6 +29,7 @@ const props = withDefaults(defineProps<PropDefine>(), {
 
 const emits = defineEmits(['update:modelValue'])
 
+const connectionStore = useConnectionStore()
 const formData = usePropValue<ConnectionInfo<BaseConnectionDetail>>(props.modelValue, emits)
 const {
   isTestConnecting,
@@ -66,11 +68,31 @@ defineExpose({
         :disabled="formDisabled"
         label-position="left"
       >
-        <el-form-item label="连接名" prop="name">
-          <el-input
-            v-model="formData.name"
-          />
-        </el-form-item>
+        <el-row>
+          <el-col :span="13">
+            <el-form-item label="连接名" prop="name">
+              <el-input
+                v-model="formData.name"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span=" 9" :offset="2">
+            <el-form-item label="分组" prop="groupId">
+              <el-select
+                v-model="formData.groupId"
+                placeholder="请选择"
+                clearable
+              >
+                <el-option
+                  v-for="item in connectionStore.findGroups()"
+                  :key="item.id as number"
+                  :value="item.id as number"
+                  :label="item.name"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item label="说明" prop="comment">
           <el-input
             v-model="formData.comment"

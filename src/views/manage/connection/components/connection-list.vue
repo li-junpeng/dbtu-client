@@ -19,6 +19,7 @@ import Contextmenu from '@/components/ui/contextmenu/src/contextmenu-install'
 import { type ConnectionType, useConnectionStore } from '@/stores/ConnectionStore'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
+import TreeNodeIcon from './tree-node-icon.vue'
 
 defineOptions({
   name: 'ConnectionListComponent'
@@ -60,7 +61,7 @@ const treeItemContextmenu = (event: MouseEvent, data: ConnectionType) => {
         {
           label: '删除组',
           onClick: async () => {
-            const { status, message } = await connectionStore.removeGroupById(data)
+            const {status, message} = await connectionStore.removeGroupById(data)
             if (status === 'success') {
               Message.success(message)
             } else {
@@ -135,9 +136,7 @@ const treeItemContextmenu = (event: MouseEvent, data: ConnectionType) => {
           @contextmenu.prevent="treeItemContextmenu($event, data)"
         >
           <div class="tree-node__main">
-            <el-icon>
-              <IconFolder/>
-            </el-icon>
+            <tree-node-icon :node-data="data"/>
             <span>{{ node.label }}</span>
           </div>
           <el-icon

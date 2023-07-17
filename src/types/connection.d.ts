@@ -10,6 +10,17 @@ type DatabaseIdent =
  | 'mongodb'
  | 'hive'*/
 
+type ConnectionNodeType =
+  | 'connection'        // 连接
+  | 'group'             // 分组
+  | 'database'          // 数据库
+  | 'table'             // 表
+  | 'view'              // 视图
+  | 'function'          // 函数
+  | 'trigger'           // 触发器
+  | 'backup'            // 备份
+  | 'search'            // 查询
+
 /**
  * 数据库连接状态, | 正在连接 | 已连接 | 未连接
  */
@@ -60,14 +71,19 @@ interface DatabaseDefineItem {
  */
 type DatabaseDefine = Record<DatabaseIdent, DatabaseDefineItem>
 
-/**
- * 数据库连接信息
- */
-interface ConnectionInfo<T extends BaseConnectionDetail> extends BaseEntity {
+interface ConnectionTreeNode {
   // 主键
   id: number | null
   // 连接名
   name: string
+  // 节点类型
+  nodeType: ConnectionNodeType
+}
+
+/**
+ * 数据库连接信息
+ */
+interface ConnectionInfo<T extends BaseConnectionDetail> extends ConnectionTreeNode {
   // 分组ID
   groupId?: number,
   // 数据库类型
@@ -84,11 +100,7 @@ interface ConnectionInfo<T extends BaseConnectionDetail> extends BaseEntity {
   comment?: string
 }
 
-interface ConnectionGroup {
-  // 主键
-  id: number | null
-  name: string
-  dbType: 'group'
+interface ConnectionGroup extends ConnectionTreeNode {
   children?: ConnectionInfo<BaseConnectionDetail>[]
 }
 

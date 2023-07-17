@@ -25,7 +25,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
      * @returns 分组列表
      */
     findGroups(): ConnectionGroup[] {
-      const groups = this.connections.filter(item => item.dbType === 'group') as ConnectionGroup[]
+      const groups = this.connections.filter(item => item.nodeType === 'group') as ConnectionGroup[]
       // 按名称排序
       groups.sort((item1, item2) => item1.name.localeCompare(item2.name))
       return groups
@@ -48,6 +48,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
      */
     createGroup(data: ConnectionGroup): Promise<IResponse<ConnectionGroup>> {
       data.id = Date.now()
+      data.nodeType = 'group'
       this.connections.push(data)
       return Promise.resolve({
         status: 'success',
@@ -83,6 +84,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
      */
     createConnection(data: ConnectionInfo<BaseConnectionDetail>): Promise<IResponse<ConnectionInfoType>> {
       data.id = Date.now()
+      data.nodeType = 'connection'
       data.status = 'no_connection'
       if (NumberUtils.isEmpty(data.groupId)) {
         this.connections.push(data)

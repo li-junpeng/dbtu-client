@@ -27,14 +27,14 @@ const isLoading = ref(false)
 const iconCom = shallowRef()
 
 const loadCom = () => {
-  const type = props.nodeData?.dbType
+  const type = props.nodeData?.nodeType
   switch (type) {
     case 'group':
       iconCom.value = IconFolder
       break
-    case 'mysql':
-    case 'sql_server_2012':
-      iconCom.value = DatabaseIcons[type]
+    case 'connection':
+      const dbType = (props.nodeData as ConnectionInfo<BaseConnectionDetail>)?.dbType
+      iconCom.value = DatabaseIcons[dbType]
       break
   }
 

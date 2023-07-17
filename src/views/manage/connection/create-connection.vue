@@ -63,7 +63,7 @@ const open = (data?: ConnectionInfo<BaseConnectionDetail>, db: DatabaseIdent = '
     formData.value = {
       dbType: db,
       host: 'localhost',
-      name: '@localhost',
+      name: '@localhost'
     }
   } else {
     dialog.title = '编辑连接'

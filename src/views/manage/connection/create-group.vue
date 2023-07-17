@@ -80,7 +80,8 @@ const onConfirm = () => {
     }
 
     isSaving.value = true
-    const {status, message} = await connectionStore.createGroup(formData.value)
+    const fn = dialog.isEdit ? connectionStore.updateGroupById : connectionStore.createGroup
+    const {status, message} = await fn(formData.value)
     if (status === 'success') {
       dialog.visible = false
       Message.success(message)

@@ -7,17 +7,24 @@
 <script setup lang="ts">
 import { inject, onMounted, ref, watch } from 'vue'
 import { ElButton, ElIcon, ElTooltip, ElTreeV2 } from 'element-plus'
-import { Folder as IconFolder, FolderAdd as IconFolderAdd, Minus as IconMinus, Plus as IconPlus } from '@element-plus/icons-vue'
+import {
+  Folder as IconFolder,
+  FolderAdd as IconFolderAdd,
+  Minus as IconMinus,
+  Plus as IconPlus
+} from '@element-plus/icons-vue'
 import { InjectionKey } from '@/common/constants/ConnectionConstant'
-import { useConnectionStore } from '@/stores/ConnectionStore'
+import Contextmenu from '@/components/ui/contextmenu/src/contextmenu-install'
+import { type ConnectionType, useConnectionStore } from '@/stores/ConnectionStore'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
+import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 
 defineOptions({
   name: 'ConnectionListComponent'
 })
 
 const openCreateConnection = inject<(data?: ConnectionInfo<BaseConnectionDetail>, db?: DatabaseIdent) => void>(InjectionKey.openCreateConnection)
-const openCreateGroup = inject<(name?: string) => void>(InjectionKey.openCreateGroup)
+const openCreateGroup = inject<(data?: ConnectionGroup) => void>(InjectionKey.openCreateGroup)
 
 const treeProps = {
   value: 'id',
@@ -85,10 +92,14 @@ onMounted(() => {
       :props="treeProps"
       :height="treeHeight"
       :item-size="34"
+      :expand-on-click-node="false"
       empty-text="暂无数据库连接"
     >
       <template #default="{ node, data }">
-        <div class="tree-item">
+        <div
+          class="dbtu-un-user-select tree-item"
+          @contextmenu.prevent="treeItemContextmenu($event, data)"
+        >
           <el-icon>
             <IconFolder/>
           </el-icon>

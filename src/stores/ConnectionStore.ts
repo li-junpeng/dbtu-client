@@ -5,7 +5,9 @@ import { TextConstant } from '@/common/constants/TextConstant'
 
 export type ConnectionInfoType = ConnectionInfo<BaseConnectionDetail>
 
-export type ConnectionsType = (ConnectionInfoType | ConnectionGroup)[]
+export type ConnectionType = ConnectionInfoType | ConnectionGroup
+
+export type ConnectionsType = ConnectionType[]
 
 export const useConnectionStore = defineStore('useConnectionStore', {
 

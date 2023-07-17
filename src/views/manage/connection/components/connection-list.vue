@@ -44,6 +44,39 @@ onMounted(() => {
   const $dom = document.querySelector('.box-content')
   treeHeight.value = $dom?.clientHeight || 400
 })
+
+const treeItemContextmenu = (event: MouseEvent, data: ConnectionType) => {
+  if (data.dbType === 'group') {
+    Contextmenu({
+      event,
+      menus: [
+        {
+          label: '新建组',
+          onClick: () => {
+            openCreateGroup?.()
+          }
+        },
+        {
+          label: '删除组',
+          onClick: async () => {
+            const { status, message } = await connectionStore.removeGroupById(data)
+            if (status === 'success') {
+              Message.success(message)
+            } else {
+              await MessageBox.error(message)
+            }
+          }
+        },
+        {
+          label: '重命名',
+          onClick: () => {
+            openCreateGroup?.(data)
+          }
+        }
+      ]
+    })
+  }
+}
 </script>
 
 <template>
@@ -128,6 +161,7 @@ onMounted(() => {
 }
 
 .tree-item {
+  width: 100%;
   display: flex;
   align-items: center;
   line-height: 34px;

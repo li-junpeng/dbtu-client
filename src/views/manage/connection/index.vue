@@ -13,8 +13,8 @@ defineOptions({
 const createConnectionRef = useComponentRef(CreateConnection)
 const createGroupRef = useComponentRef(CreateGroup)
 
-const openCreateConnection = (data?: ConnectionInfo<BaseConnectionDetail>, db: DatabaseIdent = 'mysql') => {
-  createConnectionRef.value?.open(data, db)
+const openCreateConnection = (data?: ConnectionInfo<BaseConnectionDetail>, db: DatabaseIdent = 'mysql', groupId?: number) => {
+  createConnectionRef.value?.open(data, db, groupId)
 }
 
 const openCreateGroup = (data?: ConnectionGroup) => {

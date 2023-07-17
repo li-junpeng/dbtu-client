@@ -8,7 +8,6 @@
 import { inject, onMounted, ref, watch } from 'vue'
 import { ElButton, ElIcon, ElTooltip, ElTreeV2 } from 'element-plus'
 import {
-  Folder as IconFolder,
   FolderAdd as IconFolderAdd,
   Minus as IconMinus,
   Plus as IconPlus,
@@ -25,7 +24,9 @@ defineOptions({
   name: 'ConnectionListComponent'
 })
 
-const openCreateConnection = inject<(data?: ConnectionInfo<BaseConnectionDetail>, db?: DatabaseIdent) => void>(InjectionKey.openCreateConnection)
+const openCreateConnection = inject<
+  (data?: ConnectionInfo<BaseConnectionDetail>, db?: DatabaseIdent, groupId?: number) => void
+>(InjectionKey.openCreateConnection)
 const openCreateGroup = inject<(data?: ConnectionGroup) => void>(InjectionKey.openCreateGroup)
 
 const treeProps = {
@@ -52,6 +53,13 @@ const treeItemContextmenu = (event: MouseEvent, data: ConnectionType) => {
     Contextmenu({
       event,
       menus: [
+        {
+          label: '新建连接',
+          divided: true,
+          onClick: () => {
+            openCreateConnection?.(void 0, void 0, data.id as number)
+          }
+        },
         {
           label: '新建组',
           onClick: () => {

@@ -13,6 +13,7 @@ import { StringUtils } from '@/common/utils/StringUtils'
 import { getCreateConnectionCom } from '@/components/database/component/create-connection'
 import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import { useConnectionStore } from '@/stores/ConnectionStore'
+import { NumberUtils } from '@/common/utils/NumberUtils'
 
 defineOptions({
   name: 'CreateConnectionDialog'
@@ -28,6 +29,8 @@ const dialog = reactive({
   title: '',
   isEdit: false
 })
+
+const formData = ref<ConnectionInfo<BaseConnectionDetail> | {}>()
 
 // 搜索数据库
 const searchDb = ref<string>('')
@@ -49,10 +52,11 @@ const databases = computed(() => {
 /**
  * 打开对话卡
  *
- * @param data  表单数据（修改时传入）
- * @param db    打开对话框后，默认选中的数据库
+ * @param data      表单数据（修改时传入）
+ * @param db        打开对话框后，默认选中的数据库
+ * @param groupId   默认选中的分组
  */
-const open = (data?: ConnectionInfo<BaseConnectionDetail>, db: DatabaseIdent = 'mysql') => {
+const open = (data?: ConnectionInfo<BaseConnectionDetail>, db: DatabaseIdent = 'mysql', groupId?: number) => {
   if (!data) {
     dialog.title = '创建连接'
     dialog.isEdit = false
@@ -65,6 +69,10 @@ const open = (data?: ConnectionInfo<BaseConnectionDetail>, db: DatabaseIdent = '
     dialog.title = '编辑连接'
     dialog.isEdit = true
     formData.value = JSON.parse(JSON.stringify(data))
+  }
+
+  if (!NumberUtils.isEmpty(groupId) && formData.value) {
+    (formData.value as ConnectionInfo<BaseConnectionDetail>).groupId = groupId
   }
 
   onClickDbItem(data ? DatabaseTypes[data.dbType] : DatabaseTypes[db])
@@ -85,7 +93,6 @@ const onClickDbItem = (db: DatabaseDefineItem) => {
 }
 
 // 动态加载表单组件
-const formData = ref<ConnectionInfo<BaseConnectionDetail> | {}>()
 const formComponent = shallowRef(null)
 const onChangeFormComponent = () => {
   if (!activeDb.value) {

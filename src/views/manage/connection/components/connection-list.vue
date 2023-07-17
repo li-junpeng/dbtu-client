@@ -11,7 +11,8 @@ import {
   Folder as IconFolder,
   FolderAdd as IconFolderAdd,
   Minus as IconMinus,
-  Plus as IconPlus
+  Plus as IconPlus,
+  MoreFilled as IconMoreFilled
 } from '@element-plus/icons-vue'
 import { InjectionKey } from '@/common/constants/ConnectionConstant'
 import Contextmenu from '@/components/ui/contextmenu/src/contextmenu-install'
@@ -133,10 +134,18 @@ const treeItemContextmenu = (event: MouseEvent, data: ConnectionType) => {
           class="dbtu-un-user-select tree-item"
           @contextmenu.prevent="treeItemContextmenu($event, data)"
         >
-          <el-icon>
-            <IconFolder/>
+          <div class="tree-node__main">
+            <el-icon>
+              <IconFolder/>
+            </el-icon>
+            <span>{{ node.label }}</span>
+          </div>
+          <el-icon
+            class="tree-node__more"
+            @click.stop="treeItemContextmenu($event, data)"
+          >
+            <IconMoreFilled/>
           </el-icon>
-          <span>{{ node.label }}</span>
         </div>
       </template>
     </el-tree-v2>
@@ -164,7 +173,26 @@ const treeItemContextmenu = (event: MouseEvent, data: ConnectionType) => {
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   line-height: 34px;
   gap: var(--dbtu-icon-text-gap);
+
+  .tree-node__main {
+    display: flex;
+    align-items: center;
+    gap: var(--dbtu-icon-text-gap);
+  }
+
+  .tree-node__more {
+    display: none;
+    margin-right: 12px;
+  }
+}
+
+:deep(.el-tree-node) {
+  .el-tree-node__content:hover .tree-node__more,
+  &:focus .tree-node__more {
+    display: block;
+  }
 }
 </style>

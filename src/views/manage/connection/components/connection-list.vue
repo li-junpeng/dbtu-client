@@ -10,8 +10,8 @@ import { ElButton, ElIcon, ElTooltip, ElTreeV2 } from 'element-plus'
 import {
   FolderAdd as IconFolderAdd,
   Minus as IconMinus,
-  Plus as IconPlus,
-  MoreFilled as IconMoreFilled
+  MoreFilled as IconMoreFilled,
+  Plus as IconPlus
 } from '@element-plus/icons-vue'
 import { InjectionKey } from '@/common/constants/ConnectionConstant'
 import Contextmenu from '@/components/ui/contextmenu/src/contextmenu-install'
@@ -19,6 +19,8 @@ import { type ConnectionType, useConnectionStore } from '@/stores/ConnectionStor
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import TreeNodeIcon from './tree-node-icon.vue'
+import { NumberUtils } from '@/common/utils/NumberUtils'
+import { TextConstant } from '@/common/constants/TextConstant'
 
 defineOptions({
   name: 'ConnectionListComponent'
@@ -87,7 +89,66 @@ const groupContextmenu = (event: MouseEvent, data: ConnectionGroup) => {
 }
 
 const connectionContextmenu = (event: MouseEvent, data: ConnectionInfo<BaseConnectionDetail>) => {
-
+  Contextmenu({
+    event,
+    menus: [
+      {
+        // TODO 需要判断是否已经是打开状态
+        label: '打开连接',
+        divided: true
+      },
+      {
+        label: '编辑连接',
+        onClick: () => {
+          // TODO 如果是打开连接状态，就提示
+          openCreateConnection?.(data)
+        }
+      },
+      {
+        label: '新建连接',
+        onClick: () => {
+          openCreateConnection?.(void 0, data.dbType)
+        }
+      },
+      {
+        label: '删除连接',
+        onClick: () => {
+          MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), (done) => {
+            connectionStore.removeById(data.id as number)
+            done()
+          })
+        }
+      },
+      {
+        label: '复制连接',
+        divided: true
+      },
+      {
+        label: '新建数据库',
+        disabled: true
+      },
+      {
+        label: '新建查询',
+        disabled: true,
+        divided: true
+      },
+      {
+        label: '运行SQL文件',
+        divided: true,
+        disabled: true
+      },
+      {
+        label: '从组中移除',
+        hidden: NumberUtils.isEmpty(data.groupId),
+        onClick: () => {
+          connectionStore.removeInGroup(data)
+        }
+      },
+      {
+        label: '刷新'
+      }
+    ]
+  })
 }
 
 const treeItemContextmenu = (event: MouseEvent, data: ConnectionType) => {

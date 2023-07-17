@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { NumberUtils } from '@/common/utils/NumberUtils'
+import { groupBy } from 'lodash'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
 
@@ -37,8 +37,32 @@ export const useConnectionStore = defineStore('useConnectionStore', {
      * @returns 连接列表
      */
     findOrderByName(): ConnectionsType {
+      // 按名称排序
       this.connections.sort((item1, item2) => item1.name.localeCompare(item2.name))
-      return this.connections
+
+      // 按类型分组，目的是将group排序到最前面
+      const group = groupBy(this.connections, 'nodeType')
+      const connections = [...group['group'], ...group['connection']]
+
+      // 转换成tree数据结构
+      const groupMap: Record<number, number> = {}
+      const array = [] as ConnectionsType
+      for (let i = 0; i < connections.length; i++) {
+        const item = connections[i]
+        if (item.nodeType === 'group') {
+          (item as ConnectionGroup).children = []
+          groupMap[item.id as number] = i
+          array.push(item)
+        } else if(item.nodeType === 'connection') {
+          if ((item as ConnectionInfoType).groupId) {
+            // @ts-ignore
+            array[groupMap[item.groupId]].children.push(item)
+          } else {
+            array.push(item)
+          }
+        }
+      }
+      return array
     },
 
     /**
@@ -74,7 +98,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
         }
       }
 
-      return Promise.reject("未找到对应的分组信息，请刷新页面后再试。")
+      return Promise.reject('未找到对应的分组信息，请刷新页面后再试。')
     },
 
     /**
@@ -86,20 +110,8 @@ export const useConnectionStore = defineStore('useConnectionStore', {
       data.id = Date.now()
       data.nodeType = 'connection'
       data.status = 'no_connection'
-      if (NumberUtils.isEmpty(data.groupId)) {
-        this.connections.push(data)
-      } else {
-        const groups = this.findGroups()
-        for (let i = 0; i < groups.length; i++) {
-          if (groups[i].id === data.groupId) {
-            if (!groups[i].children) {
-              groups[i].children = []
-            }
-            groups[i].children?.push(data)
-            break
-          }
-        }
-      }
+
+      this.connections.push(data)
 
       return Promise.resolve({
         status: 'success',
@@ -111,13 +123,14 @@ export const useConnectionStore = defineStore('useConnectionStore', {
     /**
      * 根据ID修改连接信息
      *
-     * @param data   需要修改的连接信息
+     * @param data      需要修改的连接信息
      */
-    updateById(data: ConnectionInfoType): Promise<IResponse<ConnectionInfoType>> {
+    async updateById(data: ConnectionInfoType): Promise<IResponse<ConnectionInfoType>> {
       for (let i = 0; i < this.connections.length; i++) {
         if (data.id === this.connections[i].id) {
           // TODO 修改之前记得把数据库连接session断开
           this.connections[i] = data
+
           return Promise.resolve({
             status: 'success',
             data,
@@ -142,7 +155,9 @@ export const useConnectionStore = defineStore('useConnectionStore', {
       return new Promise((resolve, reject) => {
         MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), (done) => {
           if (data.children) {
-            this.connections.push(...data.children)
+            for (let i = 0; i < data.children.length; i++) {
+              data.children[i].groupId = void 0
+            }
           }
 
           for (let i = 0; i < this.connections.length; i++) {
@@ -159,9 +174,25 @@ export const useConnectionStore = defineStore('useConnectionStore', {
             data: null,
             message: '删除成功'
           })
-        }).then(() => {}).catch(() => {
+        }).then(() => {
+        }).catch(() => {
           reject()
         })
+      })
+    },
+
+    /**
+     * 将连接从分组中移出
+     *
+     * @param data
+     */
+    removeInGroup(data: ConnectionInfo<BaseConnectionDetail>): Promise<IResponse<void>> {
+      data.groupId = void 0
+
+      return Promise.resolve({
+        status: 'success',
+        data: null,
+        message: '从分组中移除成功'
       })
     },
 

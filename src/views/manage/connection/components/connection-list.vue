@@ -5,7 +5,7 @@
  * @date 2023-07-14 16-35
 -->
 <script setup lang="ts">
-import { inject, onMounted, ref, watch } from 'vue'
+import { inject, onMounted, ref } from 'vue'
 import { ElButton, ElIcon, ElTooltip, ElTreeV2 } from 'element-plus'
 import {
   FolderAdd as IconFolderAdd,
@@ -21,6 +21,7 @@ import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import TreeNodeIcon from './tree-node-icon.vue'
 import { NumberUtils } from '@/common/utils/NumberUtils'
 import { TextConstant } from '@/common/constants/TextConstant'
+import { ConnectionSessionFactory } from '@/components/database/connection-session'
 
 defineOptions({
   name: 'ConnectionListComponent'
@@ -94,34 +95,57 @@ const groupContextmenu = (event: MouseEvent, data: ConnectionGroup) => {
   })
 }
 
-const connectionContextmenu = (event: MouseEvent, data: ConnectionInfo<BaseConnectionDetail>) => {
+const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<BaseConnectionDetail>) => {
   Contextmenu({
     event,
     menus: [
       {
         // TODO 需要判断是否已经是打开状态
-        label: '打开连接',
+        label: connection.status === 'connected'
+          ? '关闭连接'
+          : connection.status === 'connecting'
+            ? '正在连接'
+            : '打开连接',
         divided: true,
-        disabled: true
+        disabled: connection.status === 'connecting',
+        onClick: async () => {
+          if (connection.status === 'no_connection') {
+            const session = ConnectionSessionFactory.createSession(connection.dbType, connection)
+            connection.status = 'connecting'
+            const {data} = await session.open()
+            setTimeout(() => {
+              connection.status = 'connected'
+              connection.children = data as ConnectionTreeNode[]
+              loadConnections()
+            }, 1000)
+          } else {
+            connection.status = 'connecting'
+            setTimeout(() => {
+              connection.status = 'no_connection'
+              connection.children = []
+              loadConnections()
+            }, 1000)
+          }
+        }
       },
       {
         label: '编辑连接',
         onClick: () => {
           // TODO 如果是打开连接状态，就提示
-          openCreateConnection?.(data)
+          openCreateConnection?.(connection)
         }
       },
       {
         label: '新建连接',
         onClick: () => {
-          openCreateConnection?.(void 0, data.dbType)
+          openCreateConnection?.(void 0, connection.dbType)
         }
       },
       {
         label: '删除连接',
         onClick: () => {
-          MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), async (done) => {
-            const {status, message} = await connectionStore.removeById(data.id as number)
+          MessageBox.deleteConfirm(TextConstant.deleteConfirm(connection.name), async (done) => {
+            const {status, message} = await connectionStore.removeById(connection.id as number)
             if (status === 'success') {
               Message.success(message)
               loadConnections()
@@ -137,7 +161,7 @@ const connectionContextmenu = (event: MouseEvent, data: ConnectionInfo<BaseConne
         label: '复制连接',
         divided: true,
         onClick: async () => {
-          const {status, message} = await connectionStore.copyConnection(data)
+          const {status, message} = await connectionStore.copyConnection(connection)
           if (status === 'success') {
             Message.success(message)
             loadConnections()
@@ -162,9 +186,9 @@ const connectionContextmenu = (event: MouseEvent, data: ConnectionInfo<BaseConne
       },
       {
         label: '从组中移除',
-        hidden: NumberUtils.isEmpty(data.groupId),
+        hidden: NumberUtils.isEmpty(connection.groupId),
         onClick: () => {
-          connectionStore.removeInGroup(data)
+          connectionStore.removeInGroup(connection)
           loadConnections()
         }
       },

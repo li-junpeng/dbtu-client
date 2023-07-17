@@ -98,10 +98,16 @@ interface ConnectionInfo<T extends BaseConnectionDetail> extends ConnectionTreeN
   detail: T
   // 说明
   comment?: string
+  // 子集
+  children?: ConnectionTreeNode[]
 }
 
 interface ConnectionGroup extends ConnectionTreeNode {
   children?: ConnectionInfo<BaseConnectionDetail>[]
+}
+
+interface DatabaseNode extends ConnectionTreeNode {
+
 }
 
 interface BaseConnectionDetail {

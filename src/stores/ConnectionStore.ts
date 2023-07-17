@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { groupBy } from 'lodash'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
+import { NumberUtils } from '@/common/utils/NumberUtils'
 
 export type ConnectionInfoType = ConnectionInfo<BaseConnectionDetail>
 
@@ -42,27 +43,24 @@ export const useConnectionStore = defineStore('useConnectionStore', {
 
       // 按类型分组，目的是将group排序到最前面
       const group = groupBy(this.connections, 'nodeType')
-      const connections = [...group['group'], ...group['connection']]
 
       // 转换成tree数据结构
       const groupMap: Record<number, number> = {}
-      const array = [] as ConnectionsType
-      for (let i = 0; i < connections.length; i++) {
-        const item = connections[i]
-        if (item.nodeType === 'group') {
-          (item as ConnectionGroup).children = []
-          groupMap[item.id as number] = i
-          array.push(item)
-        } else if(item.nodeType === 'connection') {
-          if ((item as ConnectionInfoType).groupId) {
-            // @ts-ignore
-            array[groupMap[item.groupId]].children.push(item)
-          } else {
-            array.push(item)
-          }
+      const connections = [] as ConnectionsType
+      group['group'].forEach((item: ConnectionGroup, index) => {
+        groupMap[item.id as number] = index
+        item.children = []
+        connections.push(item)
+      })
+      group['connection'].forEach(item => {
+        if (NumberUtils.isEmpty((item as ConnectionInfoType).groupId)) {
+          connections.push(item)
+        } else {
+          // @ts-ignore
+          connections[groupMap[item.groupId]].children.push(item)
         }
-      }
-      return array
+      })
+      return connections
     },
 
     /**

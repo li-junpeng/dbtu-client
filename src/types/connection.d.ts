@@ -61,16 +61,6 @@ interface DatabaseDefineItem {
 type DatabaseDefine = Record<DatabaseIdent, DatabaseDefineItem>
 
 /**
- * 连接管理中，筛选连接列表需要的参数
- */
-interface ConnectionListSearchParams {
-  // 数据库类型
-  dbType: 'all' | DatabaseTypes
-  // 连接名称
-  name?: string
-}
-
-/**
  * 数据库连接信息
  */
 interface ConnectionInfo<T extends BaseConnectionDetail> extends BaseEntity {

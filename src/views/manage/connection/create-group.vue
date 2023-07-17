@@ -31,7 +31,7 @@ const dialog = reactive({
 const formData = ref<ConnectionGroup>({
   id: null,
   name: '',
-  dbType: 'group'
+  nodeType: 'group'
 })
 const formRules = {
   name: [
@@ -58,7 +58,7 @@ const open = (data?: ConnectionGroup) => {
     formData.value = {
       id: null,
       name: 'New Group',
-      dbType: 'group'
+      nodeType: 'group'
     }
   }
 

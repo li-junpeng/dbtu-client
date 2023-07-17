@@ -41,13 +41,18 @@ const treeHeight = ref(400)
 const treeRef = useComponentRef(ElTreeV2)
 const connectionStore = useConnectionStore()
 const connections = connectionStore.findOrderByName()
-watch(() => connectionStore.connections, () => {
+
+const loadConnections = () => {
   treeRef.value?.setData(connectionStore.findOrderByName())
-}, {deep: true})
+}
 
 onMounted(() => {
   const $dom = document.querySelector('.box-content')
   treeHeight.value = $dom?.clientHeight || 400
+})
+
+defineExpose({
+  loadConnections
 })
 
 const groupContextmenu = (event: MouseEvent, data: ConnectionGroup) => {
@@ -73,6 +78,7 @@ const groupContextmenu = (event: MouseEvent, data: ConnectionGroup) => {
           const {status, message} = await connectionStore.removeGroupById(data)
           if (status === 'success') {
             Message.success(message)
+            loadConnections()
           } else {
             await MessageBox.error(message)
           }
@@ -114,8 +120,15 @@ const connectionContextmenu = (event: MouseEvent, data: ConnectionInfo<BaseConne
       {
         label: '删除连接',
         onClick: () => {
-          MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), (done) => {
-            connectionStore.removeById(data.id as number)
+          MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), async (done) => {
+            const {status, message} = await connectionStore.removeById(data.id as number)
+            if (status === 'success') {
+              Message.success(message)
+              loadConnections()
+            } else {
+              await MessageBox.error(message)
+            }
+
             done()
           })
         }
@@ -127,6 +140,7 @@ const connectionContextmenu = (event: MouseEvent, data: ConnectionInfo<BaseConne
           const {status, message} = await connectionStore.copyConnection(data)
           if (status === 'success') {
             Message.success(message)
+            loadConnections()
           } else {
             await MessageBox.error(message)
           }
@@ -151,6 +165,7 @@ const connectionContextmenu = (event: MouseEvent, data: ConnectionInfo<BaseConne
         hidden: NumberUtils.isEmpty(data.groupId),
         onClick: () => {
           connectionStore.removeInGroup(data)
+          loadConnections()
         }
       },
       {

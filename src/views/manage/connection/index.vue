@@ -12,6 +12,7 @@ defineOptions({
 
 const createConnectionRef = useComponentRef(CreateConnection)
 const createGroupRef = useComponentRef(CreateGroup)
+const connectionListRef = useComponentRef(ConnectionList)
 
 const openCreateConnection = (data?: ConnectionInfo<BaseConnectionDetail>, db: DatabaseIdent = 'mysql', groupId?: number) => {
   createConnectionRef.value?.open(data, db, groupId)
@@ -21,6 +22,10 @@ const openCreateGroup = (data?: ConnectionGroup) => {
   createGroupRef.value?.open(data)
 }
 
+const loadConnection = () => {
+  connectionListRef.value?.loadConnections()
+}
+
 provide(InjectionKey.openCreateConnection, openCreateConnection)
 provide(InjectionKey.openCreateGroup, openCreateGroup)
 </script>
@@ -28,16 +33,20 @@ provide(InjectionKey.openCreateGroup, openCreateGroup)
 <template>
   <div class="connection-container">
     <div class="connection-list">
-      <connection-list/>
+      <connection-list
+        ref="connectionListRef"
+      />
     </div>
   </div>
 
   <create-connection
     ref="createConnectionRef"
+    @submit-success="loadConnection"
   />
 
   <create-group
     ref="createGroupRef"
+    @submit-success="loadConnection"
   />
 </template>
 

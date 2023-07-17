@@ -95,7 +95,8 @@ const connectionContextmenu = (event: MouseEvent, data: ConnectionInfo<BaseConne
       {
         // TODO 需要判断是否已经是打开状态
         label: '打开连接',
-        divided: true
+        divided: true,
+        disabled: true
       },
       {
         label: '编辑连接',
@@ -121,7 +122,15 @@ const connectionContextmenu = (event: MouseEvent, data: ConnectionInfo<BaseConne
       },
       {
         label: '复制连接',
-        divided: true
+        divided: true,
+        onClick: async () => {
+          const {status, message} = await connectionStore.copyConnection(data)
+          if (status === 'success') {
+            Message.success(message)
+          } else {
+            await MessageBox.error(message)
+          }
+        }
       },
       {
         label: '新建数据库',

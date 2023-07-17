@@ -220,8 +220,35 @@ export const useConnectionStore = defineStore('useConnectionStore', {
         data: null,
         message: '删除失败，未找到相关数据库连接，请刷新页面后再试。'
       })
-    }
+    },
 
+    /**
+     * 复制连接
+     *
+     * @param data  被复制的连接
+     * @return 复制后的连接
+     */
+    copyConnection(data: ConnectionInfoType): Promise<IResponse<ConnectionInfoType>> {
+      const newData = {
+        id: Date.now(),
+        name: `${data.name}_副本`,
+        nodeType: data.nodeType,
+        dbType: data.dbType,
+        groupId: data.groupId,
+        status: 'no_connection',
+        host: data.host,
+        port: data.port,
+        comment: data.comment,
+        detail: data.detail
+      } as ConnectionInfoType
+
+      this.connections.push(newData)
+      return Promise.resolve({
+        status: 'success',
+        data: newData,
+        message: '数据库连接复制成功'
+      })
+    }
   },
 
   persist: {

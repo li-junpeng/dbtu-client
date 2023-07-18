@@ -94,3 +94,29 @@ interface IResponse<T> {
   // 消息内容
   message: string
 }
+
+/**
+ * 使其对象中的某些个必填字段变成可选字段。
+ *
+ * @example
+ * interface User {
+ *   id: number
+ *   name: string
+ *   email: string
+ *   password: string
+ *   age: number
+ *   sex: '男' | '女'
+ * }
+ *
+ * // 现在我要初始化一个用户对象，但是呢，我又不想填写`email`和`password`，可以这样使用:
+ * const user = {
+ *   id: 1,
+ *   name: 'Junpeng.Li'
+ *   age: 18,
+ *   sex: '男'
+ * } as Optional<User, 'email' | 'password'>
+ *
+ * @param T 原始对象
+ * @param K 需要变成可选的字段名，比如: 'name' | 'age' | 'password'
+ */
+type Optional<T, K extends typeof T> = Omit<T, K> & Partial<Pick<T, K>>

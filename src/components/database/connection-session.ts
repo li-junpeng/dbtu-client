@@ -3,6 +3,9 @@ import { SqlServer2012ConnectionSession } from '@/components/database/sql_server
 
 export interface ConnectionSession<T extends BaseConnectionDetail> {
 
+  /**
+   * 连接信息
+   */
   connection: ConnectionInfo<T>
 
   open(): Promise<IResponse<ConnectionTreeNode[]>>

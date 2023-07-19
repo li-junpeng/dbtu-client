@@ -17,6 +17,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
         nodeType: 'database'
       } as DatabaseNode)
     }
+    this.connection.children = nodes
 
     return Promise.resolve({
       status: 'success',
@@ -26,6 +27,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
   }
 
   close(): Promise<IResponse<void>> {
+    this.connection.children = []
     return Promise.resolve({
       status: 'success',
       data: void 0,

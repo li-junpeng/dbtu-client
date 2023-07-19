@@ -21,7 +21,8 @@ import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import TreeNodeIcon from './tree-node-icon.vue'
 import { NumberUtils } from '@/common/utils/NumberUtils'
 import { TextConstant } from '@/common/constants/TextConstant'
-import { ConnectionSessionFactory } from '@/components/database/connection-session'
+import { ConnectionSession, ConnectionSessionFactory } from '@/components/database/connection-session'
+import { useConnectionSessionStore } from '@/stores/ConnectionSessionStroe'
 
 defineOptions({
   name: 'ConnectionListComponent'
@@ -42,6 +43,7 @@ const treeProps = {
 const treeHeight = ref(400)
 const treeRef = useComponentRef(ElTreeV2)
 const connectionStore = useConnectionStore()
+const connectionSessionStore = useConnectionSessionStore()
 const connections = connectionStore.findOrderByName()
 
 const loadConnections = () => {
@@ -51,6 +53,12 @@ const loadConnections = () => {
 onMounted(() => {
   const $dom = document.querySelector('.box-content')
   treeHeight.value = $dom?.clientHeight || 400
+
+  // TODO 刷新页面后，无法创建session
+  for (let connectionId in connectionSessionStore.sessions) {
+    const connection = connectionSessionStore.sessions[connectionId].connection
+    connectionSessionStore.sessions[connectionId] = ConnectionSessionFactory.createSession(connection.dbType, connection)
+  }
 })
 
 defineExpose({
@@ -110,27 +118,37 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
         divided: true,
         disabled: connection.status === 'connecting',
         onClick: async () => {
+          const connectionId = connection.id as number
           if (connection.status === 'no_connection') {
             // 打开连接
-            const session = ConnectionSessionFactory.createSession(connection.dbType, connection)
+            const session = connectionSessionStore.create(connection)
             connection.status = 'connecting'
             const { data } = await session.open()
             setTimeout(() => {
               connection.status = 'connected'
-              connection.children = data as ConnectionTreeNode[]
-              connectionStore.setExpandKey(connection.id as number)
+              connectionStore.setExpandKey(connectionId)
               treeRef.value?.setExpandedKeys(connectionStore.defaultExpandedKeys)
               loadConnections()
             }, 1000)
           } else {
             // 关闭连接
             connection.status = 'connecting'
-            setTimeout(() => {
-              connection.status = 'no_connection'
-              connection.children = []
-              connectionStore.removeExpandKey(connection.id as number)
-              loadConnections()
-            }, 1000)
+            const session = connectionSessionStore.get(connectionId)
+            if (!session) {
+              await MessageBox.error('无法正常关闭数据库连接，请刷新页面后再试。')
+              return
+            }
+            const { status, message } = await session.close()
+            if (status === 'success') {
+              connectionSessionStore.destroy(connectionId)
+              setTimeout(() => {
+                connection.status = 'no_connection'
+                connectionStore.removeExpandKey(connectionId)
+                loadConnections()
+              }, 1000)
+            } else {
+              await MessageBox.error(message)
+            }
           }
         }
       },
@@ -200,7 +218,8 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
         }
       },
       {
-        label: '刷新'
+        label: '刷新',
+        disabled: true
       }
     ]
   })

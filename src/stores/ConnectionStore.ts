@@ -14,11 +14,33 @@ export const useConnectionStore = defineStore('useConnectionStore', {
 
   state: () => {
     return {
-      connections: [] as ConnectionsType
+      connections: [] as ConnectionsType,
+      defaultExpandedKeys: [] as number[]
     }
   },
 
   actions: {
+
+    /**
+     * 设置数据库连接树默认展开的节点key
+     *
+     * @param key  节点的key
+     */
+    setExpandKey(key: number): void {
+      this.defaultExpandedKeys.push(key)
+    },
+
+    /**
+     * 移除数据库连接默认展开的节点key
+     *
+     * @param key   节点的key
+     */
+    removeExpandKey(key: number): void {
+      const index = this.defaultExpandedKeys.indexOf(key)
+      if (index >= 0) {
+        this.defaultExpandedKeys.splice(index, 1)
+      }
+    },
 
     /**
      * 获取所有的分组列表
@@ -47,7 +69,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
       // 转换成tree数据结构
       const groupMap: Record<number, number> = {}
       const connections = [] as ConnectionsType
-      group['group']?.forEach((item: ConnectionGroup, index) => {
+      group['group']?.forEach((item, index) => {
         groupMap[item.id as number] = index
         item.children = []
         connections.push(item)
@@ -252,7 +274,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
   persist: {
     key: '__dbtu_connection',
     storage: localStorage,
-    paths: ['connections']
+    paths: ['connections', 'defaultExpandedKeys']
   }
 
 })

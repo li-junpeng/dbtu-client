@@ -76,7 +76,7 @@ const groupContextmenu = (event: MouseEvent, data: ConnectionGroup) => {
       {
         label: '删除组',
         onClick: async () => {
-          const {status, message} = await connectionStore.removeGroupById(data)
+          const { status, message } = await connectionStore.removeGroupById(data)
           if (status === 'success') {
             Message.success(message)
             loadConnections()
@@ -110,19 +110,24 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
         disabled: connection.status === 'connecting',
         onClick: async () => {
           if (connection.status === 'no_connection') {
+            // 打开连接
             const session = ConnectionSessionFactory.createSession(connection.dbType, connection)
             connection.status = 'connecting'
-            const {data} = await session.open()
+            const { data } = await session.open()
             setTimeout(() => {
               connection.status = 'connected'
               connection.children = data as ConnectionTreeNode[]
+              connectionStore.setExpandKey(connection.id as number)
+              treeRef.value?.setExpandedKeys(connectionStore.defaultExpandedKeys)
               loadConnections()
             }, 1000)
           } else {
+            // 关闭连接
             connection.status = 'connecting'
             setTimeout(() => {
               connection.status = 'no_connection'
               connection.children = []
+              connectionStore.removeExpandKey(connection.id as number)
               loadConnections()
             }, 1000)
           }
@@ -145,10 +150,11 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
         label: '删除连接',
         onClick: () => {
           MessageBox.deleteConfirm(TextConstant.deleteConfirm(connection.name), async (done) => {
-            const {status, message} = await connectionStore.removeById(connection.id as number)
+            const { status, message } = await connectionStore.removeById(connection.id as number)
             if (status === 'success') {
               Message.success(message)
               loadConnections()
+              connectionStore.removeExpandKey(connection.id as number)
             } else {
               await MessageBox.error(message)
             }
@@ -161,7 +167,7 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
         label: '复制连接',
         divided: true,
         onClick: async () => {
-          const {status, message} = await connectionStore.copyConnection(connection)
+          const { status, message } = await connectionStore.copyConnection(connection)
           if (status === 'success') {
             Message.success(message)
             loadConnections()
@@ -258,6 +264,9 @@ const treeItemContextmenu = (event: MouseEvent, data: ConnectionType) => {
       :height="treeHeight"
       :item-size="34"
       :expand-on-click-node="false"
+      :default-expanded-keys="connectionStore.defaultExpandedKeys"
+      @node-expand="data => connectionStore.setExpandKey(data.id)"
+      @node-collapse="data => connectionStore.removeExpandKey(data.id)"
       empty-text="暂无数据库连接"
     >
       <template #default="{ node, data }">

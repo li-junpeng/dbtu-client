@@ -27,6 +27,7 @@ defineOptions({
   name: 'ConnectionListComponent'
 })
 
+const tooltipShowAfter = 600
 const openCreateConnection = inject<
   (data?: ConnectionInfo<BaseConnectionDetail>, db?: DatabaseIdent, groupId?: number) => void
 >(InjectionKey.openCreateConnection)
@@ -224,6 +225,7 @@ const treeItemContextmenu = (event: MouseEvent, data: ConnectionType) => {
       <el-tooltip
         content="创建分组"
         :enterable="false"
+        :show-after="tooltipShowAfter"
       >
         <el-button
           text
@@ -240,6 +242,7 @@ const treeItemContextmenu = (event: MouseEvent, data: ConnectionType) => {
       <el-tooltip
         content="创建连接"
         :enterable="false"
+        :show-after="tooltipShowAfter"
       >
         <el-button
           :icon="IconPlus"
@@ -251,6 +254,7 @@ const treeItemContextmenu = (event: MouseEvent, data: ConnectionType) => {
       <el-tooltip
         content="最小化"
         :enterable="false"
+        :show-after="tooltipShowAfter"
       >
         <el-button :icon="IconMinus" text link></el-button>
       </el-tooltip>

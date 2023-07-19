@@ -52,6 +52,7 @@ onMounted(() => {
         effect="dark"
         :enterable="false"
         :disabled="showLabel"
+        :show-after="600"
       >
         <router-link
           :to="menu.path"

@@ -35,12 +35,31 @@ export const MessageBox = {
     fn: (done: () => void) => void,
     title: string = '确认删除'
   ): Promise<MessageBoxData> => {
-    return ElMessageBox.confirm(msg, title, {
+    return MessageBox.confirm({
+      msg,
+      title,
+      confirmText: '删除',
+      useLoading: true,
+      loadingText: '正在删除'
+    }, fn)
+  },
+
+  confirm: (
+    option: {
+      msg: string,
+      title?: string,
+      confirmText?: string,
+      useLoading?: boolean,
+      loadingText?: string
+    },
+    fn: (done: () => void) => void,
+  ): Promise<MessageBoxData> => {
+    return ElMessageBox.confirm(option.msg, option.title || '警告', {
       type: 'warning',
       cancelButtonClass: 'el-button--info',
       cancelButtonText: '取消',
       confirmButtonClass: 'el-button--danger',
-      confirmButtonText: '删除',
+      confirmButtonText: option.confirmText || '确定',
       autofocus: false,
       draggable: true,
       closeOnClickModal: false,
@@ -48,9 +67,13 @@ export const MessageBox = {
       closeOnHashChange: true,
       // 点击【确定】后，将【确定】按钮改成加载状态
       beforeClose: (action: Action, instance: MessageBoxState, done: () => void) => {
+        if (!option.useLoading) {
+          return
+        }
+
         if (action === 'confirm') {
           instance.confirmButtonLoading = true
-          instance.confirmButtonText = '正在删除'
+          instance.confirmButtonText = option.loadingText || '正在处理'
           fn(done)
         } else {
           done()
@@ -58,7 +81,6 @@ export const MessageBox = {
       }
     })
   }
-
 }
 
 export const Message = {

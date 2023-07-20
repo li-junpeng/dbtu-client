@@ -115,7 +115,7 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
         loadConnections()
       }, 1000)
     } else {
-      await MessageBox.error(message)
+      throw new Error(message)
     }
   }
 
@@ -127,16 +127,15 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
       await MessageBox.error('无法正常关闭数据库连接，请刷新页面后再试。')
       return
     }
+
     const { status, message } = await session.close()
     if (status === 'success') {
+      connection.status = 'no_connection'
+      connectionStore.removeExpandKey(connectionId)
       connectionSessionStore.destroy(connectionId)
-      setTimeout(() => {
-        connection.status = 'no_connection'
-        connectionStore.removeExpandKey(connectionId)
-        loadConnections()
-      }, 1000)
+      loadConnections()
     } else {
-      await MessageBox.error(message)
+      throw new Error(message)
     }
   }
 
@@ -152,18 +151,38 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
         divided: true,
         disabled: connection.status === 'connecting',
         onClick: async () => {
-          if (connection.status === 'no_connection') {
-            await openConnection()
-          } else {
-            await closeConnection()
+          try {
+            if (connection.status === 'no_connection') {
+              await openConnection()
+            } else {
+              await closeConnection()
+            }
+          } catch (e) {
+            await MessageBox.error((e as Error).message)
           }
         }
       },
       {
         label: '编辑连接',
+        disabled: connection.status === 'connecting',
         onClick: () => {
-          // TODO 如果是打开连接状态，就提示
-          openCreateConnection?.(connection)
+          if (connection.status === 'connected') {
+            MessageBox.confirm({
+              msg: '此操作必须要关闭连接，确定要关闭连接吗？',
+              useLoading: true,
+              loadingText: '正在关闭'
+            }, async (done) => {
+              try {
+                await closeConnection()
+                done()
+                openCreateConnection?.(connection)
+              } catch (e) {
+                await MessageBox.error((e as Error).message)
+              }
+            })
+          } else {
+            openCreateConnection?.(connection)
+          }
         }
       },
       {

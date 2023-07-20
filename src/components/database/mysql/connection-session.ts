@@ -51,6 +51,13 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
         break
       case 'table_instance':
         TableInstanceContextmenu(event, data as TableInstanceNode)
+        break
+      case 'view':
+        ViewContextmenu(event, data as ViewNode)
+        break
+      case 'view_instance':
+        ViewInstanceContextmenu(event, data as ViewInstanceNode)
+        break
     }
   }
 }
@@ -80,7 +87,15 @@ const DatabaseContextmenu = (event: MouseEvent, data: DatabaseNode) => {
         id: Date.now() + 2,
         sessionId: data.sessionId,
         name: '视图',
-        nodeType: 'view'
+        nodeType: 'view',
+        children: ['getAfterMissData', 'getMissData', 'getMorMissData', 'getNormalData'].map((item, index) => {
+          return {
+            id: index + 1,
+            name: item,
+            sessionId: data.sessionId,
+            nodeType: 'view_instance'
+          }
+        }) as ViewInstanceNode[]
       } as ViewNode)
       data.children.push({
         id: Date.now() + 3,
@@ -270,6 +285,70 @@ const TableInstanceContextmenu = (event: MouseEvent, data: TableInstanceNode) =>
             label: '仅结构'
           }
         ]
+      },
+      {
+        label: '复制'
+      },
+      {
+        label: '重命名',
+        divided: true
+      },
+      {
+        label: '刷新'
+      },
+      {
+        label: '对象信息'
+      }
+    ]
+  })
+}
+
+const ViewContextmenu = (event: MouseEvent, data: ViewNode) => {
+  console.log(data)
+
+  Contextmenu({
+    event,
+    menus: [
+      {
+        label: '新建视图',
+        divided: true
+      },
+      {
+        label: '导出向导',
+        divided: true
+      },
+      {
+        label: '刷新'
+      }
+    ]
+  })
+}
+
+const ViewInstanceContextmenu = (event: MouseEvent, data: ViewInstanceNode) => {
+  console.log(data)
+
+  Contextmenu({
+    event,
+    menus: [
+      {
+        label: '打开视图'
+      },
+      {
+        label: '设计视图'
+      },
+      {
+        label: '新建视图'
+      },
+      {
+        label: '删除视图'
+      },
+      {
+        label: '设置权限',
+        divided: true
+      },
+      {
+        label: '导出向导',
+        divided: true
       },
       {
         label: '复制'

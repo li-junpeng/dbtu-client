@@ -50,6 +50,7 @@ const loadCom = () => {
       iconCom.value = IconTable
       break
     case 'view':
+    case 'view_instance':
       iconCom.value = IconView
       break
     case 'function':

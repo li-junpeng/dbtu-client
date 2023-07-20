@@ -17,6 +17,7 @@ type ConnectionNodeType =
   | 'table'             // 表
   | 'table_instance'    // 表实例
   | 'view'              // 视图
+  | 'view_instance'     // 视图实例
   | 'function'          // 函数
   | 'trigger'           // 触发器
   | 'backup'            // 备份
@@ -128,6 +129,9 @@ interface TableInstanceNode extends ConnectionTreeNode {
 
 interface ViewNode extends ConnectionTreeNode {
   children?: ConnectionTreeNode[]
+}
+
+interface ViewInstanceNode extends ConnectionTreeNode {
 }
 
 interface FunctionNode extends ConnectionTreeNode {

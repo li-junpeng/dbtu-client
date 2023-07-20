@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import type { ConnectionSession } from '@/components/database/connection-session'
 import { ConnectionSessionFactory } from '@/components/database/connection-session'
+import { useConnectionStore } from '@/stores/ConnectionStore'
 
 export const useConnectionSessionStore = defineStore('useConnectionSessionStore', {
 
@@ -28,6 +29,23 @@ export const useConnectionSessionStore = defineStore('useConnectionSessionStore'
     },
 
     /**
+     * 刷新数据库连接信息
+     */
+    refresh(): void {
+      if (Object.keys(this.sessions).length === 0) {
+        return
+      }
+
+      useConnectionStore().connections.forEach(item => {
+        if (item.nodeType === 'connection') {
+          if (this.sessions[item.id as number]) {
+            this.create(item as ConnectionInfo<BaseConnectionDetail>)
+          }
+        }
+      })
+    },
+
+    /**
      * 销毁
      *
      * @param connectionId   数据库连接的ID
@@ -41,7 +59,11 @@ export const useConnectionSessionStore = defineStore('useConnectionSessionStore'
   persist: {
     key: '__dbtu_connection_session',
     storage: localStorage,
-    paths: ['sessions']
+    paths: ['sessions'],
+    afterRestore: ctx => {
+      setTimeout(() => {
+        ctx.store.refresh()
+      }, 1000)
+    }
   }
-
 })

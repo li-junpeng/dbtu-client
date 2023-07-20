@@ -21,7 +21,6 @@ import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import TreeNodeIcon from './tree-node-icon.vue'
 import { NumberUtils } from '@/common/utils/NumberUtils'
 import { TextConstant } from '@/common/constants/TextConstant'
-import { ConnectionSession, ConnectionSessionFactory } from '@/components/database/connection-session'
 import { useConnectionSessionStore } from '@/stores/ConnectionSessionStroe'
 
 defineOptions({
@@ -48,17 +47,12 @@ const connections = connectionStore.findOrderByName()
 
 const loadConnections = () => {
   treeRef.value?.setData(connectionStore.findOrderByName())
+  connectionSessionStore.refresh()
 }
 
 onMounted(() => {
   const $dom = document.querySelector('.box-content')
   treeHeight.value = $dom?.clientHeight || 400
-
-  // TODO 刷新页面后，无法创建session
-  for (let connectionId in connectionSessionStore.sessions) {
-    const connection = connectionSessionStore.sessions[connectionId].connection
-    connectionSessionStore.sessions[connectionId] = ConnectionSessionFactory.createSession(connection.dbType, connection)
-  }
 })
 
 defineExpose({
@@ -105,11 +99,51 @@ const groupContextmenu = (event: MouseEvent, data: ConnectionGroup) => {
 }
 
 const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<BaseConnectionDetail>) => {
+
+  const connectionId = connection.id as number
+
+  // 打开连接
+  const openConnection = async () => {
+    const session = connectionSessionStore.create(connection)
+    connection.status = 'connecting'
+    const { status, message } = await session.open()
+    if (status === 'success') {
+      setTimeout(() => {
+        connection.status = 'connected'
+        connectionStore.setExpandKey(connectionId)
+        treeRef.value?.setExpandedKeys(connectionStore.defaultExpandedKeys)
+        loadConnections()
+      }, 1000)
+    } else {
+      await MessageBox.error(message)
+    }
+  }
+
+  // 关闭连接
+  const closeConnection = async () => {
+    connection.status = 'connecting'
+    const session = connectionSessionStore.get(connectionId)
+    if (!session) {
+      await MessageBox.error('无法正常关闭数据库连接，请刷新页面后再试。')
+      return
+    }
+    const { status, message } = await session.close()
+    if (status === 'success') {
+      connectionSessionStore.destroy(connectionId)
+      setTimeout(() => {
+        connection.status = 'no_connection'
+        connectionStore.removeExpandKey(connectionId)
+        loadConnections()
+      }, 1000)
+    } else {
+      await MessageBox.error(message)
+    }
+  }
+
   Contextmenu({
     event,
     menus: [
       {
-        // TODO 需要判断是否已经是打开状态
         label: connection.status === 'connected'
           ? '关闭连接'
           : connection.status === 'connecting'
@@ -118,37 +152,10 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
         divided: true,
         disabled: connection.status === 'connecting',
         onClick: async () => {
-          const connectionId = connection.id as number
           if (connection.status === 'no_connection') {
-            // 打开连接
-            const session = connectionSessionStore.create(connection)
-            connection.status = 'connecting'
-            const { data } = await session.open()
-            setTimeout(() => {
-              connection.status = 'connected'
-              connectionStore.setExpandKey(connectionId)
-              treeRef.value?.setExpandedKeys(connectionStore.defaultExpandedKeys)
-              loadConnections()
-            }, 1000)
+            await openConnection()
           } else {
-            // 关闭连接
-            connection.status = 'connecting'
-            const session = connectionSessionStore.get(connectionId)
-            if (!session) {
-              await MessageBox.error('无法正常关闭数据库连接，请刷新页面后再试。')
-              return
-            }
-            const { status, message } = await session.close()
-            if (status === 'success') {
-              connectionSessionStore.destroy(connectionId)
-              setTimeout(() => {
-                connection.status = 'no_connection'
-                connectionStore.removeExpandKey(connectionId)
-                loadConnections()
-              }, 1000)
-            } else {
-              await MessageBox.error(message)
-            }
+            await closeConnection()
           }
         }
       },
@@ -169,11 +176,12 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
         label: '删除连接',
         onClick: () => {
           MessageBox.deleteConfirm(TextConstant.deleteConfirm(connection.name), async (done) => {
-            const { status, message } = await connectionStore.removeById(connection.id as number)
+            const { status, message } = await connectionStore.removeById(connectionId)
             if (status === 'success') {
               Message.success(message)
+              connectionStore.removeExpandKey(connectionId)
+              connectionSessionStore.destroy(connectionId)
               loadConnections()
-              connectionStore.removeExpandKey(connection.id as number)
             } else {
               await MessageBox.error(message)
             }

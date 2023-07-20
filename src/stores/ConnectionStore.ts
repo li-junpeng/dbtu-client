@@ -14,6 +14,8 @@ export const useConnectionStore = defineStore('useConnectionStore', {
 
   state: () => {
     return {
+      // 通过改变这个值来刷新连接列表（有watch行为)
+      refreshConnectionFlag: 1,
       connections: [] as ConnectionsType,
       defaultExpandedKeys: [] as number[]
     }

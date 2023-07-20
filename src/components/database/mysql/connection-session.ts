@@ -1,5 +1,8 @@
 import type { ConnectionSession } from '@/components/database/connection-session'
 import Contextmenu from '@/components/ui/contextmenu/src/contextmenu-install'
+import { useConnectionStore } from '@/stores/ConnectionStore'
+
+const connectionStore = useConnectionStore()
 
 export class MySQLConnectionSession implements ConnectionSession<MySQLConnectionInfo> {
 
@@ -16,6 +19,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
         id: Date.now() + i,
         name: 'test_database_' + i,
         nodeType: 'database',
+        status: 'disable',
         sessionId: this.connection.id
       } as DatabaseNode)
     }
@@ -50,17 +54,70 @@ const DatabaseContextmenu = (event: MouseEvent, data: DatabaseNode) => {
   const id = data.id as number
 
   const openDatabase = () => {
+    data.status = 'loading'
+    setTimeout(() => {
+      data.children = []
+      data.children.push({
+        id: Date.now() + 1,
+        sessionId: data.sessionId,
+        name: '表',
+        nodeType: 'table',
+        children: []
+      } as TableNode)
+      data.children.push({
+        id: Date.now() + 2,
+        sessionId: data.sessionId,
+        name: '视图',
+        nodeType: 'view'
+      } as ViewNode)
+      data.children.push({
+        id: Date.now() + 3,
+        sessionId: data.sessionId,
+        name: '函数',
+        nodeType: 'function'
+      } as FunctionNode)
+      data.children.push({
+        id: Date.now() + 4,
+        sessionId: data.sessionId,
+        name: '查询',
+        nodeType: 'search'
+      } as SearchNode)
+      data.children.push({
+        id: Date.now() + 5,
+        sessionId: data.sessionId,
+        name: '备份',
+        nodeType: 'backup'
+      } as BackupNode)
 
+      data.status = 'enable'
+      connectionStore.setExpandKey(id)
+      connectionStore.refreshConnectionFlag++
+    }, 1000)
+  }
+
+  const closeDatabase = () => {
+    data.status = 'loading'
+    setTimeout(() => {
+      data.children = []
+      data.status = 'disable'
+      connectionStore.removeExpandKey(id)
+      connectionStore.refreshConnectionFlag++
+    }, 1000)
   }
 
   Contextmenu({
     event,
     menus: [
       {
-        label: '打开数据库',
+        label: data.status === 'disable' ? '打开数据库' : data.status === 'enable' ? '关闭数据库' : '正在打开数据库',
         divided: true,
+        disabled: data.status === 'loading',
         onClick: () => {
-          openDatabase()
+          if (data.status === 'disable') {
+            openDatabase()
+          } else {
+            closeDatabase()
+          }
         }
       },
       {

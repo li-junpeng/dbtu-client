@@ -29,6 +29,11 @@ type ConnectionStatusType =
   | 'connected'
   | 'no_connection'
 
+type CommonStatusType =
+  | 'disable'
+  | 'loading'
+  | 'enable'
+
 /**
  * 认证方式的key
  */
@@ -109,7 +114,27 @@ interface ConnectionGroup extends ConnectionTreeNode {
 }
 
 interface DatabaseNode extends ConnectionTreeNode {
-  status: ConnectionStatusType
+  status: CommonStatusType
+  children?: ConnectionTreeNode[]
+}
+
+interface TableNode extends ConnectionTreeNode {
+  children?: ConnectionTreeNode[]
+}
+
+interface ViewNode extends ConnectionTreeNode {
+  children?: ConnectionTreeNode[]
+}
+
+interface FunctionNode extends ConnectionTreeNode {
+  children?: ConnectionTreeNode[]
+}
+
+interface SearchNode extends ConnectionTreeNode {
+  children?: ConnectionTreeNode[]
+}
+
+interface BackupNode extends ConnectionTreeNode {
   children?: ConnectionTreeNode[]
 }
 

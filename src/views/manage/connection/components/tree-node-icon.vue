@@ -12,6 +12,11 @@ import { Folder as IconFolder, Loading as IconLoading } from '@element-plus/icon
 import type { ConnectionType } from '@/stores/ConnectionStore'
 import { DatabaseIcons } from '@/components/database/db-icons'
 import IconDatabase from '@/icons/svg/database.vue'
+import IconTable from '@/icons/svg/table.vue'
+import IconView from '@/icons/svg/view.vue'
+import IconFunction from '@/icons/svg/function.vue'
+import IconSearchSql from '@/icons/svg/search-sql.vue'
+import IconBackup from '@/icons/svg/backup.vue'
 
 defineOptions({
   name: 'ConnectionTreeNodeIconComponent'
@@ -40,6 +45,21 @@ const loadCom = () => {
     case 'database':
       iconCom.value = IconDatabase
       break
+    case 'table':
+      iconCom.value = IconTable
+      break
+    case 'view':
+      iconCom.value = IconView
+      break
+    case 'function':
+      iconCom.value = IconFunction
+      break
+    case 'search':
+      iconCom.value = IconSearchSql
+      break
+    case 'backup':
+      iconCom.value = IconBackup
+      break
   }
 
   isLoading.value = false
@@ -55,9 +75,13 @@ const setLoading = (b: boolean) => {
 }
 
 watch(() => props.nodeData, data => {
-  if (data?.nodeType === 'connection') {
-    const status = (data as ConnectionInfo<BaseConnectionDetail>).status
-    setLoading(status === 'connecting')
+  switch (data?.nodeType) {
+    case 'connection':
+      setLoading((data as ConnectionInfo<BaseConnectionDetail>).status === 'connecting')
+      break
+    case 'database':
+      setLoading((data as DatabaseNode).status === 'loading')
+      break
   }
 }, {deep: true})
 

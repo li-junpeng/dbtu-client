@@ -5,7 +5,7 @@
  * @date 2023-07-14 16-35
 -->
 <script setup lang="ts">
-import { inject, onMounted, ref } from 'vue'
+import { inject, onMounted, ref, watch } from 'vue'
 import { ElButton, ElIcon, ElTooltip, ElTreeV2 } from 'element-plus'
 import {
   FolderAdd as IconFolderAdd,
@@ -49,6 +49,14 @@ const loadConnections = () => {
   treeRef.value?.setData(connectionStore.findOrderByName())
   connectionSessionStore.refresh()
 }
+
+watch(() => connectionStore.refreshConnectionFlag, () => {
+  loadConnections()
+})
+
+watch(() => connectionStore.defaultExpandedKeys, () => {
+  treeRef.value?.setExpandedKeys(connectionStore.defaultExpandedKeys)
+}, {deep: true})
 
 onMounted(() => {
   const $dom = document.querySelector('.box-content')
@@ -111,7 +119,6 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
       setTimeout(() => {
         connection.status = 'connected'
         connectionStore.setExpandKey(connectionId)
-        treeRef.value?.setExpandedKeys(connectionStore.defaultExpandedKeys)
         loadConnections()
       }, 1000)
     } else {

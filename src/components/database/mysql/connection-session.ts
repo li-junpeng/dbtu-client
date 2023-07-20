@@ -70,6 +70,12 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
       case 'search_instance':
         SearchInstanceContextmenu(event, data as SearchInstanceNode)
         break
+      case 'backup':
+        BackupContextmenu(event, data as BackupNode)
+        break
+      case 'backup_instance':
+        BackupInstanceContextmenu(event, data as BackupInstanceNode)
+        break
     }
   }
 }
@@ -141,7 +147,15 @@ const DatabaseContextmenu = (event: MouseEvent, data: DatabaseNode) => {
         id: Date.now() + 5,
         sessionId: data.sessionId,
         name: '备份',
-        nodeType: 'backup'
+        nodeType: 'backup',
+        children: ['20230705095432', '2023-03-07_1456', '清空个人地图数据前', '清空模板组件数据前'].map((item, index) => {
+          return {
+            id: index + 1,
+            name: item,
+            sessionId: data.sessionId,
+            nodeType: 'backup_instance'
+          }
+        }) as BackupInstanceNode[]
       } as BackupNode)
 
       data.status = 'enable'
@@ -490,6 +504,67 @@ const SearchInstanceContextmenu = (event: MouseEvent, data: SearchInstanceNode) 
       },
       {
         label: '导出向导',
+        divided: true
+      },
+      {
+        label: '复制'
+      },
+      {
+        label: '重命名',
+        divided: true
+      },
+      {
+        label: '刷新'
+      },
+      {
+        label: '对象信息'
+      }
+    ]
+  })
+}
+
+const BackupContextmenu = (event: MouseEvent, data: BackupNode) => {
+  console.log(data)
+
+  Contextmenu({
+    event,
+    menus: [
+      {
+        label: '新建备份',
+        divided: true
+      },
+      {
+        label: '从文件中还原备份'
+      },
+      {
+        label: '从文件中提取SQL',
+        divided: true
+      },
+      {
+        label: '刷新'
+      }
+    ]
+  })
+}
+
+const BackupInstanceContextmenu = (event: MouseEvent, data: BackupInstanceNode) => {
+  console.log(data)
+
+  Contextmenu({
+    event,
+    menus: [
+      {
+        label: '还原备份'
+      },
+      {
+        label: '新建备份'
+      },
+      {
+        label: '删除备份',
+        divided: true
+      },
+      {
+        label: '提取SQL',
         divided: true
       },
       {

@@ -276,6 +276,8 @@ const treeItemContextmenu = (event: MouseEvent, data: ConnectionType) => {
     case 'function_instance':
     case 'search':
     case 'search_instance':
+    case 'backup':
+    case 'backup_instance':
       const session = connectionSessionStore.get(data.sessionId as number)
       if (!session) {
         MessageBox.error('未找到数据库连接会话信息，请刷新页面后再试。')

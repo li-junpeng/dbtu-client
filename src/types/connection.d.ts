@@ -22,6 +22,7 @@ type ConnectionNodeType =
   | 'function_instance' // 函数实例
   | 'trigger'           // 触发器
   | 'backup'            // 备份
+  | 'backup_instance'   // 备份实例
   | 'search'            // 查询
   | 'search_instance'   // 查询实例
 
@@ -152,6 +153,9 @@ interface SearchInstanceNode extends ConnectionTreeNode {
 
 interface BackupNode extends ConnectionTreeNode {
   children?: ConnectionTreeNode[]
+}
+
+interface BackupInstanceNode extends ConnectionTreeNode {
 }
 
 interface BaseConnectionDetail {

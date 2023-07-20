@@ -19,6 +19,7 @@ type ConnectionNodeType =
   | 'view'              // 视图
   | 'view_instance'     // 视图实例
   | 'function'          // 函数
+  | 'function_instance' // 函数实例
   | 'trigger'           // 触发器
   | 'backup'            // 备份
   | 'search'            // 查询
@@ -136,6 +137,9 @@ interface ViewInstanceNode extends ConnectionTreeNode {
 
 interface FunctionNode extends ConnectionTreeNode {
   children?: ConnectionTreeNode[]
+}
+
+interface FunctionInstanceNode extends ConnectionTreeNode {
 }
 
 interface SearchNode extends ConnectionTreeNode {

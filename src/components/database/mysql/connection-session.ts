@@ -58,6 +58,12 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
       case 'view_instance':
         ViewInstanceContextmenu(event, data as ViewInstanceNode)
         break
+      case 'function':
+        FunctionContextmenu(event, data as FunctionNode)
+        break
+      case 'function_instance':
+        FunctionInstanceContextmenu(event, data as FunctionInstanceNode)
+        break
     }
   }
 }
@@ -101,7 +107,15 @@ const DatabaseContextmenu = (event: MouseEvent, data: DatabaseNode) => {
         id: Date.now() + 3,
         sessionId: data.sessionId,
         name: '函数',
-        nodeType: 'function'
+        nodeType: 'function',
+        children: ['fun_diff_day_dur', 'fun_name_day_dur', 'proc_init_normal', 'proc_init_unusual', 'proc_leave_everyday'].map((item, index) => {
+          return {
+            id: index + 1,
+            name: item,
+            sessionId: data.sessionId,
+            nodeType: 'function_instance'
+          }
+        }) as FunctionInstanceNode[]
       } as FunctionNode)
       data.children.push({
         id: Date.now() + 4,
@@ -348,6 +362,62 @@ const ViewInstanceContextmenu = (event: MouseEvent, data: ViewInstanceNode) => {
       },
       {
         label: '导出向导',
+        divided: true
+      },
+      {
+        label: '复制'
+      },
+      {
+        label: '重命名',
+        divided: true
+      },
+      {
+        label: '刷新'
+      },
+      {
+        label: '对象信息'
+      }
+    ]
+  })
+}
+
+const FunctionContextmenu = (event: MouseEvent, data: FunctionNode) => {
+  console.log(data)
+
+  Contextmenu({
+    event,
+    menus: [
+      {
+        label: '新建函数',
+        divided: true
+      },
+      {
+        label: '刷新'
+      }
+    ]
+  })
+}
+
+const FunctionInstanceContextmenu = (event: MouseEvent, data: FunctionNode) => {
+  console.log(data)
+
+  Contextmenu({
+    event,
+    menus: [
+      {
+        label: '设计函数'
+      },
+      {
+        label: '新建函数'
+      },
+      {
+        label: '删除函数'
+      },
+      {
+        label: '运行函数'
+      },
+      {
+        label: '设置权限',
         divided: true
       },
       {

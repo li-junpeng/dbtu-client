@@ -54,6 +54,7 @@ const loadCom = () => {
       iconCom.value = IconView
       break
     case 'function':
+    case 'function_instance':
       iconCom.value = IconFunction
       break
     case 'search':

@@ -46,6 +46,7 @@ const loadCom = () => {
       iconCom.value = IconDatabase
       break
     case 'table':
+    case 'table_instance':
       iconCom.value = IconTable
       break
     case 'view':

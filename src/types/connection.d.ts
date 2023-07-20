@@ -15,6 +15,7 @@ type ConnectionNodeType =
   | 'group'             // 分组
   | 'database'          // 数据库
   | 'table'             // 表
+  | 'table_instance'    // 表实例
   | 'view'              // 视图
   | 'function'          // 函数
   | 'trigger'           // 触发器
@@ -120,6 +121,9 @@ interface DatabaseNode extends ConnectionTreeNode {
 
 interface TableNode extends ConnectionTreeNode {
   children?: ConnectionTreeNode[]
+}
+
+interface TableInstanceNode extends ConnectionTreeNode {
 }
 
 interface ViewNode extends ConnectionTreeNode {

@@ -46,6 +46,11 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
       case 'database':
         DatabaseContextmenu(event, data as DatabaseNode)
         break
+      case 'table':
+        TableContextmenu(event, data as TableNode)
+        break
+      case 'table_instance':
+        TableInstanceContextmenu(event, data as TableInstanceNode)
     }
   }
 }
@@ -62,7 +67,14 @@ const DatabaseContextmenu = (event: MouseEvent, data: DatabaseNode) => {
         sessionId: data.sessionId,
         name: '表',
         nodeType: 'table',
-        children: []
+        children: ['administrative_cont', 'administrative_cont_pdf', 'sys_user', 'sys_role', 'sys_user_role', 'sys_log'].map((item, index) => {
+          return {
+            id: index + 1,
+            name: item,
+            sessionId: data.sessionId,
+            nodeType: 'table_instance'
+          }
+        }) as TableInstanceNode[]
       } as TableNode)
       data.children.push({
         id: Date.now() + 2,
@@ -164,6 +176,113 @@ const DatabaseContextmenu = (event: MouseEvent, data: DatabaseNode) => {
       {
         label: '刷新',
         disabled: true
+      }
+    ]
+  })
+}
+
+const TableContextmenu = (event: MouseEvent, data: TableNode) => {
+  console.log(data)
+
+
+  Contextmenu({
+    event,
+    menus: [
+      {
+        label: '新建表',
+        divided: true
+      },
+      {
+        label: '导入向导'
+      },
+      {
+        label: '导出向导',
+        divided: true
+      },
+      {
+        label: '运行SQL文件'
+      },
+      {
+        label: '在数据库中查找',
+        divided: true
+      },
+      {
+        label: '刷新'
+      }
+    ]
+  })
+}
+
+const TableInstanceContextmenu = (event: MouseEvent, data: TableInstanceNode) => {
+  console.log(data)
+
+  Contextmenu({
+    event,
+    menus: [
+      {
+        label: '打开表'
+      },
+      {
+        label: '设计表'
+      },
+      {
+        label: '新建表'
+      },
+      {
+        label: '删除表'
+      },
+      {
+        label: '清空表'
+      },
+      {
+        label: '截断表'
+      },
+      {
+        label: '复制表',
+        children: [
+          {
+            label: '结构和数据'
+          },
+          {
+            label: '仅结构'
+          }
+        ]
+      },
+      {
+        label: '设置权限',
+        divided: true
+      },
+      {
+        label: '导入向导'
+      },
+      {
+        label: '导出向导',
+        divided: true
+      },
+      {
+        label: '转储SQL文件',
+        divided: true,
+        children: [
+          {
+            label: '结构和数据'
+          },
+          {
+            label: '仅结构'
+          }
+        ]
+      },
+      {
+        label: '复制'
+      },
+      {
+        label: '重命名',
+        divided: true
+      },
+      {
+        label: '刷新'
+      },
+      {
+        label: '对象信息'
       }
     ]
   })

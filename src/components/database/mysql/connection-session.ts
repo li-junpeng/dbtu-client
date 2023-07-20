@@ -79,6 +79,13 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
     }
   }
 
+  onClickNode(data: ConnectionTreeNode) {
+    switch (data.nodeType) {
+      case 'table':
+        ClickNode.table(data as TableNode)
+        break
+    }
+  }
 }
 
 const TreeNodeContextmenu = {
@@ -585,6 +592,15 @@ const TreeNodeContextmenu = {
         }
       ]
     })
+  }
+
+}
+
+const ClickNode = {
+
+  table: (data: TableNode) => {
+    // TODO 在对象面板中显示table列表，数据从${data.children}获取
+    console.log(data)
   }
 
 }

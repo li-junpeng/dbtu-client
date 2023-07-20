@@ -26,6 +26,13 @@ export interface ConnectionSession<T extends BaseConnectionDetail> {
    */
   nodeContextmenu(event: MouseEvent, data: ConnectionTreeNode): void
 
+  /**
+   * 点击了连接树节点的事件
+   *
+   * @param data    节点数据
+   */
+  onClickNode(data: ConnectionTreeNode): void
+
 }
 
 export class ConnectionSessionFactory {

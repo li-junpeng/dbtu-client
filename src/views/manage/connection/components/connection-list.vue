@@ -15,7 +15,7 @@ import {
 } from '@element-plus/icons-vue'
 import { InjectionKey } from '@/common/constants/ConnectionConstant'
 import Contextmenu from '@/components/ui/contextmenu/src/contextmenu-install'
-import { type ConnectionType, useConnectionStore } from '@/stores/ConnectionStore'
+import { useConnectionStore } from '@/stores/ConnectionStore'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import TreeNodeIcon from './tree-node-icon.vue'
@@ -259,7 +259,7 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
   })
 }
 
-const treeItemContextmenu = (event: MouseEvent, data: ConnectionType) => {
+const treeItemContextmenu = (event: MouseEvent, data: ConnectionTreeNode) => {
   switch (data.nodeType) {
     case 'group':
       groupContextmenu(event, data as ConnectionGroup)
@@ -281,9 +281,21 @@ const treeItemContextmenu = (event: MouseEvent, data: ConnectionType) => {
       const session = connectionSessionStore.get(data.sessionId as number)
       if (!session) {
         MessageBox.error('未找到数据库连接会话信息，请刷新页面后再试。')
+      } else {
+        session.nodeContextmenu(event, data)
       }
-      session.nodeContextmenu(event, data)
       break
+  }
+}
+
+const onClickTreeItem = (data: ConnectionTreeNode) => {
+  if (data.nodeType !== 'group' && data.nodeType !== 'connection') {
+    const session = connectionSessionStore.get(data.sessionId as number)
+    if (!session) {
+      MessageBox.error('未找到数据库连接会话信息，请刷新页面后再试。')
+    } else {
+      session.onClickNode(data)
+    }
   }
 }
 </script>
@@ -346,6 +358,7 @@ const treeItemContextmenu = (event: MouseEvent, data: ConnectionType) => {
       <template #default="{ node, data }">
         <div
           class="dbtu-un-user-select tree-item"
+          @click="onClickTreeItem(data)"
           @contextmenu.prevent="treeItemContextmenu($event, data)"
         >
           <div class="tree-node__main">

@@ -27,4 +27,7 @@ export class SqlServer2012ConnectionSession implements ConnectionSession<SQLServ
   nodeContextmenu(event: MouseEvent, data: ConnectionTreeNode) {
   }
 
+  onClickNode(data: ConnectionTreeNode) {
+  }
+
 }

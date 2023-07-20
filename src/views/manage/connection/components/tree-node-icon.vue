@@ -58,6 +58,7 @@ const loadCom = () => {
       iconCom.value = IconFunction
       break
     case 'search':
+    case 'search_instance':
       iconCom.value = IconSearchSql
       break
     case 'backup':

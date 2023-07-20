@@ -23,6 +23,7 @@ type ConnectionNodeType =
   | 'trigger'           // 触发器
   | 'backup'            // 备份
   | 'search'            // 查询
+  | 'search_instance'   // 查询实例
 
 /**
  * 数据库连接状态, | 正在连接 | 已连接 | 未连接
@@ -144,6 +145,9 @@ interface FunctionInstanceNode extends ConnectionTreeNode {
 
 interface SearchNode extends ConnectionTreeNode {
   children?: ConnectionTreeNode[]
+}
+
+interface SearchInstanceNode extends ConnectionTreeNode {
 }
 
 interface BackupNode extends ConnectionTreeNode {

@@ -64,6 +64,12 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
       case 'function_instance':
         FunctionInstanceContextmenu(event, data as FunctionInstanceNode)
         break
+      case 'search':
+        SearchContextmenu(event, data as SearchNode)
+        break
+      case 'search_instance':
+        SearchInstanceContextmenu(event, data as SearchInstanceNode)
+        break
     }
   }
 }
@@ -121,7 +127,15 @@ const DatabaseContextmenu = (event: MouseEvent, data: DatabaseNode) => {
         id: Date.now() + 4,
         sessionId: data.sessionId,
         name: '查询',
-        nodeType: 'search'
+        nodeType: 'search',
+        children: ['select_rb_by_user', 'select_report_by_user'].map((item, index) => {
+          return {
+            id: index + 1,
+            name: item,
+            sessionId: data.sessionId,
+            nodeType: 'search_instance'
+          }
+        }) as SearchInstanceNode[]
       } as SearchNode)
       data.children.push({
         id: Date.now() + 5,
@@ -398,7 +412,7 @@ const FunctionContextmenu = (event: MouseEvent, data: FunctionNode) => {
   })
 }
 
-const FunctionInstanceContextmenu = (event: MouseEvent, data: FunctionNode) => {
+const FunctionInstanceContextmenu = (event: MouseEvent, data: FunctionInstanceNode) => {
   console.log(data)
 
   Contextmenu({
@@ -418,6 +432,64 @@ const FunctionInstanceContextmenu = (event: MouseEvent, data: FunctionNode) => {
       },
       {
         label: '设置权限',
+        divided: true
+      },
+      {
+        label: '复制'
+      },
+      {
+        label: '重命名',
+        divided: true
+      },
+      {
+        label: '刷新'
+      },
+      {
+        label: '对象信息'
+      }
+    ]
+  })
+}
+
+const SearchContextmenu = (event: MouseEvent, data: SearchNode) => {
+  console.log(data)
+
+  Contextmenu({
+    event,
+    menus: [
+      {
+        label: '新建查询',
+        divided: true
+      },
+      {
+        label: '打开外部查询',
+        divided: true
+      },
+      {
+        label: '刷新'
+      }
+    ]
+  })
+}
+
+const SearchInstanceContextmenu = (event: MouseEvent, data: SearchInstanceNode) => {
+  console.log(data)
+
+  Contextmenu({
+    event,
+    menus: [
+      {
+        label: '设计查询'
+      },
+      {
+        label: '新建查询'
+      },
+      {
+        label: '删除查询',
+        divided: true
+      },
+      {
+        label: '导出向导',
         divided: true
       },
       {

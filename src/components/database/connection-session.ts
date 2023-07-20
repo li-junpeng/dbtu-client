@@ -8,9 +8,23 @@ export interface ConnectionSession<T extends BaseConnectionDetail> {
    */
   connection: ConnectionInfo<T>
 
+  /**
+   * 打开连接
+   */
   open(): Promise<IResponse<ConnectionTreeNode[]>>
 
+  /**
+   * 关闭连接
+   */
   close(): Promise<IResponse<void>>
+
+  /**
+   * 获取连接树节点的右键菜单
+   *
+   * @param event   鼠标事件对象
+   * @param data
+   */
+  nodeContextmenu(event: MouseEvent, data: ConnectionTreeNode): void
 
 }
 

@@ -78,6 +78,8 @@ interface ConnectionTreeNode {
   name: string
   // 节点类型
   nodeType: ConnectionNodeType
+  // session id, 除了nodeType = 'group' 和 'connection'，这个值应该为必填项
+  sessionId?: number
 }
 
 /**
@@ -107,7 +109,8 @@ interface ConnectionGroup extends ConnectionTreeNode {
 }
 
 interface DatabaseNode extends ConnectionTreeNode {
-
+  status: ConnectionStatusType
+  children?: ConnectionTreeNode[]
 }
 
 interface BaseConnectionDetail {

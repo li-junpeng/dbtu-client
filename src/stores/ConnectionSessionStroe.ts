@@ -63,7 +63,7 @@ export const useConnectionSessionStore = defineStore('useConnectionSessionStore'
     afterRestore: ctx => {
       setTimeout(() => {
         ctx.store.refresh()
-      }, 1000)
+      }, 300)
     }
   }
 })

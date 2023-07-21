@@ -10,7 +10,10 @@ export default defineConfig({
   plugins: [
     vue(),
     ElementPlus({
-      useSource: true
+      useSource: true,
+      // Do not include the prefix in the name.
+      // example: ElAutoResizer = AutoResizer, Because the character `el` is configurable
+      ignoreComponents: ['AutoResizer']
     })
   ],
   resolve: {

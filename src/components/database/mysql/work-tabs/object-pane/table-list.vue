@@ -5,25 +5,77 @@
  * @date 2023-07-21 11-16
 -->
 <script setup lang="ts">
+import { computed } from 'vue'
 import { type ObjectPaneProps } from '@/views/manage/connection/work-tabs/object-pane'
-import { ElButton } from 'element-plus'
+import { type Column, ElAutoResizer, ElButton, ElTableV2, ElIcon } from 'element-plus'
 import {
-  FolderOpened as IconFolderOpened,
-  EditPen as IconEditPen,
   CirclePlus as IconCirclePlus,
-  Delete as IconDelete
+  Delete as IconDelete,
+  EditPen as IconEditPen,
+  FolderOpened as IconFolderOpened
 } from '@element-plus/icons-vue'
 import IconDbImport from '@/icons/svg/db-import.vue'
 import IconDbExport from '@/icons/svg/db-export.vue'
+import IconTable from '@/icons/svg/table.vue'
 
 defineOptions({
   name: 'MySQLWorkTabObjectPaneComponent'
 })
 
 const props = defineProps<ObjectPaneProps<TableNode>>()
+const columns = [
+  {
+    key: 'name',
+    dataKey: 'name',
+    title: '表名',
+    width: 400
+  },
+  {
+    key: 'autoValue',
+    dataKey: 'autoValue',
+    title: '自动递增值',
+    width: 100,
+    align: 'right'
+  },
+  {
+    key: 'modifyDate',
+    dataKey: 'modifyDate',
+    title: '修改日期',
+    width: 150
+  },
+  {
+    key: 'dataLength',
+    dataKey: 'dataLength',
+    title: '数据长度',
+    width: 100
+  },
+  {
+    key: 'engine',
+    dataKey: 'engine',
+    title: '引擎',
+    width: 100
+  },
+  {
+    key: 'rowNumbers',
+    dataKey: 'rowNumbers',
+    title: '行',
+    width: 100
+  },
+  {
+    key: 'comment',
+    dataKey: 'comment',
+    title: '注释',
+    width: 400
+  }
+] as Column[]
+
+const tableData = computed(() => {
+  return props.data.children || []
+})
 </script>
 
 <template>
+  <!-- 头部工具栏 -->
   <div class="header-toolbox">
     <el-button
       text
@@ -71,15 +123,74 @@ const props = defineProps<ObjectPaneProps<TableNode>>()
       <span>导出向导</span>
     </el-button>
   </div>
+  <!-- 数据列表 -->
+  <div class="table-list-wrapper">
+    <el-auto-resizer>
+      <template #default="{ height, width }">
+        <el-table-v2
+          row-key="id"
+          :columns="columns"
+          :data="tableData"
+          :width="width"
+          :height="height"
+          :header-height="34"
+          :row-height="34"
+          class="table-list-v2"
+        >
+          <template #cell="{ column, rowData }">
+            <div
+              v-if="column.key === 'name'"
+              class="table-name-cell"
+            >
+              <el-icon>
+                <IconTable/>
+              </el-icon>
+              <span>{{ rowData[column.key] }}</span>
+            </div>
+            <span v-else>{{ rowData[column.key] }}</span>
+          </template>
+        </el-table-v2>
+      </template>
+    </el-auto-resizer>
+  </div>
 </template>
 
 <style scoped lang="scss">
 .header-toolbox {
   width: 100%;
   height: 40px;
-  border-bottom: 1px solid var(--dbtu-divide-borer-color);
   display: flex;
   align-items: center;
   padding: 0 10px;
+}
+
+.table-list-wrapper {
+  width: 100%;
+  height: calc(100% - 40px);
+  color: var(--dbtu-font-color);
+  padding: 0 10px;
+
+  :deep(.table-list-v2) {
+    .el-table-v2__header-row,
+    .el-table-v2__row {
+      border-bottom: none;
+      cursor: default;
+    }
+
+    .el-table-v2__row:hover {
+      background-color: var(--dbtu-hover-color);
+    }
+
+    .el-table-v2__header-cell-text {
+      color: var(--dbtu-font-color);
+    }
+
+    .table-name-cell {
+      display: flex;
+      align-items: center;
+      line-height: 34px;
+      gap: var(--dbtu-icon-text-gap);
+    }
+  }
 }
 </style>

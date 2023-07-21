@@ -1,7 +1,6 @@
 import type { ConnectionSession } from '@/components/database/connection-session'
 import Contextmenu from '@/components/ui/contextmenu/src/contextmenu-install'
 import { useConnectionStore } from '@/stores/ConnectionStore'
-import { useConnectionSessionStore } from '@/stores/ConnectionSessionStroe'
 import { useWorkTabStore } from '@/stores/WorkTabStore'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
@@ -289,6 +288,8 @@ const TreeNodeContextmenu = {
     const deleteTable = () => {
       MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), (done) => {
         // TODO 掉接口删除表，然后重新刷新列表
+        data.name = 'administrative_cont_' + Date.now().toString().substring(9, 13)
+
         done()
         connectionStore.refreshConnectionFlag++
       }).then(() => {

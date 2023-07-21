@@ -3,7 +3,7 @@ import { provide } from 'vue'
 import ConnectionList from './components/connection-list.vue'
 import CreateConnection from './create-connection.vue'
 import CreateGroup from './create-group.vue'
-import WorkTabs from './work-tabs.vue'
+import WorkTabs from './work-tabs/index.vue'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import { InjectionKey } from '@/common/constants/ConnectionConstant'
 

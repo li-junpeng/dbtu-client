@@ -3,6 +3,7 @@ import { provide } from 'vue'
 import ConnectionList from './components/connection-list.vue'
 import CreateConnection from './create-connection.vue'
 import CreateGroup from './create-group.vue'
+import WorkTabs from './work-tabs.vue'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import { InjectionKey } from '@/common/constants/ConnectionConstant'
 
@@ -37,6 +38,10 @@ provide(InjectionKey.openCreateGroup, openCreateGroup)
         ref="connectionListRef"
       />
     </div>
+
+    <work-tabs
+      class="connection-content"
+    />
   </div>
 
   <create-connection
@@ -55,6 +60,7 @@ provide(InjectionKey.openCreateGroup, openCreateGroup)
   width: 100%;
   height: 100%;
   overflow: hidden;
+  display: flex;
 
   .connection-list {
     width: 300px;
@@ -62,6 +68,10 @@ provide(InjectionKey.openCreateGroup, openCreateGroup)
     overflow: auto;
     border-right: 1px solid var(--dbtu-divide-borer-color);
     flex-shrink: 0;
+  }
+
+  .connection-content {
+    flex: 1;
   }
 }
 </style>

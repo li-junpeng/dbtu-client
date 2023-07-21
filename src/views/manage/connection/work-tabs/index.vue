@@ -7,6 +7,7 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
 import { ElTabs, ElTabPane } from 'element-plus'
+import ObjectPane from './object-pane.vue'
 
 defineOptions({
   name: 'ConnectionWorkTabsComponent'
@@ -25,7 +26,7 @@ const tabs = reactive({
       style="width: 100%;height: 100%;"
     >
       <el-tab-pane label="&emsp;对象&emsp;" name="object-pane">
-
+        <object-pane/>
       </el-tab-pane>
       <el-tab-pane
         v-for="i in 3"

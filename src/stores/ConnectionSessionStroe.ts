@@ -13,8 +13,8 @@ export const useConnectionSessionStore = defineStore('useConnectionSessionStore'
 
   actions: {
 
-    get(connectionId: number): ConnectionSession<BaseConnectionDetail> {
-      return this.sessions[connectionId]
+    get(sessionId: number): ConnectionSession<BaseConnectionDetail> {
+      return this.sessions[sessionId]
     },
 
     /**

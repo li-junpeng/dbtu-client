@@ -1,8 +1,13 @@
 import type { ConnectionSession } from '@/components/database/connection-session'
 import Contextmenu from '@/components/ui/contextmenu/src/contextmenu-install'
 import { useConnectionStore } from '@/stores/ConnectionStore'
+import { useConnectionSessionStore } from '@/stores/ConnectionSessionStroe'
+import { useWorkTabStore } from '@/stores/WorkTabStore'
+import { MessageBox } from '@/components/element-plus/el-feedback-util'
+import { TextConstant } from '@/common/constants/TextConstant'
 
 const connectionStore = useConnectionStore()
+const workTabStore = useWorkTabStore()
 
 export class MySQLConnectionSession implements ConnectionSession<MySQLConnectionInfo> {
 
@@ -281,7 +286,14 @@ const TreeNodeContextmenu = {
   },
 
   tableInstance: (event: MouseEvent, data: TableInstanceNode) => {
-    console.log(data)
+    const deleteTable = () => {
+      MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), (done) => {
+        // TODO 掉接口删除表，然后重新刷新列表
+        done()
+        connectionStore.refreshConnectionFlag++
+      }).then(() => {
+      })
+    }
 
     Contextmenu({
       event,
@@ -296,7 +308,10 @@ const TreeNodeContextmenu = {
           label: '新建表'
         },
         {
-          label: '删除表'
+          label: '删除表',
+          onClick: () => {
+            deleteTable()
+          }
         },
         {
           label: '清空表'
@@ -599,8 +614,10 @@ const TreeNodeContextmenu = {
 const ClickNode = {
 
   table: (data: TableNode) => {
-    // TODO 在对象面板中显示table列表，数据从${data.children}获取
-    console.log(data)
+    workTabStore.setObjectPane({
+      props: data,
+      component: () => import('@/components/database/mysql/work-tabs/object-pane/table-list.vue')
+    })
   }
 
 }

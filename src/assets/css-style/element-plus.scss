@@ -100,11 +100,20 @@
   border-radius: var(--dbtu-border-radius);
 }
 
-.el-button.is-link.is-loading {
-  color: var(--dbtu-font-color-disabled);
+.el-button {
+  &.is-link {
+    &:hover,
+    &:focus {
+      color: var(--dbtu-theme-color);
+    }
 
-  &:before {
-    background-color: transparent;
+    &.is-loading {
+      color: var(--dbtu-font-color-disabled);
+
+      &:before {
+        background-color: transparent;
+      }
+    }
   }
 }
 

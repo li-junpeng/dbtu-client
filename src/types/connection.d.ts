@@ -115,7 +115,7 @@ interface ConnectionInfo<T extends BaseConnectionDetail> extends ConnectionTreeN
 }
 
 interface ConnectionGroup extends ConnectionTreeNode {
-  nodeType: 'connection'
+  nodeType: 'group'
   children?: ConnectionInfo<BaseConnectionDetail>[]
 }
 

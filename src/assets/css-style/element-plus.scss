@@ -102,8 +102,8 @@
 
 .el-button {
   &.is-link {
-    &:hover,
-    &:focus {
+    &:not(.is-disabled):hover,
+    &:not(.is-disabled):focus {
       color: var(--dbtu-theme-color);
     }
 

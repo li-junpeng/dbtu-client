@@ -20,3 +20,46 @@ const workTabStore = useWorkTabStore()
     :data="workTabStore.objectPaneProps"
   />
 </template>
+
+<style lang="scss">
+#pane-object-pane {
+  .header-toolbox {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+  }
+
+  .table-list-wrapper {
+    width: 100%;
+    height: calc(100% - 40px);
+    color: var(--dbtu-font-color);
+    padding: 0 10px;
+
+    .table-list-v2 {
+      .el-table-v2__header-row,
+      .el-table-v2__row {
+        border-bottom: none;
+        cursor: default;
+      }
+
+      .el-table-v2__row:hover {
+        background-color: var(--dbtu-hover-color);
+      }
+
+      .el-table-v2__header-cell-text {
+        color: var(--dbtu-font-color);
+      }
+
+      .table-name-cell {
+        display: flex;
+        align-items: center;
+        line-height: 34px;
+        gap: var(--dbtu-icon-text-gap);
+      }
+    }
+  }
+}
+</style>
+

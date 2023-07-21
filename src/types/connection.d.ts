@@ -115,47 +115,74 @@ interface ConnectionInfo<T extends BaseConnectionDetail> extends ConnectionTreeN
 }
 
 interface ConnectionGroup extends ConnectionTreeNode {
+  nodeType: 'connection'
   children?: ConnectionInfo<BaseConnectionDetail>[]
 }
 
 interface DatabaseNode extends ConnectionTreeNode {
+  nodeType: 'database'
   status: CommonStatusType
   children?: ConnectionTreeNode[]
 }
 
 interface TableNode extends ConnectionTreeNode {
+  nodeType: 'table'
   children?: ConnectionTreeNode[]
 }
 
 interface TableInstanceNode extends ConnectionTreeNode {
+  nodeType: 'table_instance'
+}
+
+interface MySqlInstanceNode extends TableInstanceNode {
+  // 自动递增值
+  autoIncrement: number | null
+  // 修改日期
+  updateTime: string | null
+  // 数据长度, 单位: byte
+  dataLength: number
+  // 引擎
+  engine: string
+  // 行
+  rowsNum: number
+  // 注释
+  comment: string | null
 }
 
 interface ViewNode extends ConnectionTreeNode {
+  nodeType: 'view'
   children?: ConnectionTreeNode[]
 }
 
 interface ViewInstanceNode extends ConnectionTreeNode {
+  nodeType: 'view_instance'
 }
 
 interface FunctionNode extends ConnectionTreeNode {
+  nodeType: 'function'
   children?: ConnectionTreeNode[]
 }
 
 interface FunctionInstanceNode extends ConnectionTreeNode {
+  nodeType: 'function_instance'
 }
 
 interface SearchNode extends ConnectionTreeNode {
+  nodeType: 'search'
   children?: ConnectionTreeNode[]
 }
 
 interface SearchInstanceNode extends ConnectionTreeNode {
+  nodeType: 'search_instance'
 }
 
 interface BackupNode extends ConnectionTreeNode {
+  nodeType: 'backup'
   children?: ConnectionTreeNode[]
 }
 
 interface BackupInstanceNode extends ConnectionTreeNode {
+  nodeType: 'backup_instance'
 }
 
 interface BaseConnectionDetail {

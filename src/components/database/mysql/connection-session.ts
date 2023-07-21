@@ -111,9 +111,15 @@ const TreeNodeContextmenu = {
               id: index + 1,
               name: item,
               sessionId: data.sessionId,
-              nodeType: 'table_instance'
+              nodeType: 'table_instance',
+              engine: 'InnoDB',
+              rowsNum: 0,
+              dataLength: 16384,
+              autoIncrement: 0,
+              comment: '我是注释呀，哈哈哈哈' + index,
+              updateTime: '2023-05-07 08:57:32'
             }
-          }) as TableInstanceNode[]
+          }) as MySqlInstanceNode[]
         } as TableNode)
         data.children.push({
           id: Date.now() + 2,

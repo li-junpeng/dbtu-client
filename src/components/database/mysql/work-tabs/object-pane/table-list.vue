@@ -31,23 +31,27 @@ const columns = [
     width: 400
   },
   {
-    key: 'autoValue',
-    dataKey: 'autoValue',
+    key: 'autoIncrement',
+    dataKey: 'autoIncrement',
     title: '自动递增值',
-    width: 100,
+    width: 150,
     align: 'right'
   },
   {
-    key: 'modifyDate',
-    dataKey: 'modifyDate',
+    key: 'updateTime',
+    dataKey: 'updateTime',
     title: '修改日期',
-    width: 150
+    width: 190
   },
   {
     key: 'dataLength',
     dataKey: 'dataLength',
     title: '数据长度',
-    width: 100
+    width: 100,
+    align: 'right',
+    cellRenderer: ({ cellData }) => {
+      return `${cellData / 1024} KB`
+    }
   },
   {
     key: 'engine',
@@ -56,8 +60,8 @@ const columns = [
     width: 100
   },
   {
-    key: 'rowNumbers',
-    dataKey: 'rowNumbers',
+    key: 'rowsNum',
+    dataKey: 'rowsNum',
     title: '行',
     width: 100
   },
@@ -69,8 +73,8 @@ const columns = [
   }
 ] as Column[]
 
-const tableData = computed(() => {
-  return props.data.children || []
+const tableData = computed<MySqlInstanceNode[]>(() => {
+  return (props.data.children || []) as MySqlInstanceNode[]
 })
 </script>
 
@@ -154,43 +158,3 @@ const tableData = computed(() => {
     </el-auto-resizer>
   </div>
 </template>
-
-<style scoped lang="scss">
-.header-toolbox {
-  width: 100%;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  padding: 0 10px;
-}
-
-.table-list-wrapper {
-  width: 100%;
-  height: calc(100% - 40px);
-  color: var(--dbtu-font-color);
-  padding: 0 10px;
-
-  :deep(.table-list-v2) {
-    .el-table-v2__header-row,
-    .el-table-v2__row {
-      border-bottom: none;
-      cursor: default;
-    }
-
-    .el-table-v2__row:hover {
-      background-color: var(--dbtu-hover-color);
-    }
-
-    .el-table-v2__header-cell-text {
-      color: var(--dbtu-font-color);
-    }
-
-    .table-name-cell {
-      display: flex;
-      align-items: center;
-      line-height: 34px;
-      gap: var(--dbtu-icon-text-gap);
-    }
-  }
-}
-</style>

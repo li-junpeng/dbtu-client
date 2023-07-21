@@ -5,9 +5,9 @@
  * @date 2023-07-21 11-16
 -->
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { type ObjectPaneProps } from '@/views/manage/connection/work-tabs/object-pane'
-import { type Column, ElAutoResizer, ElButton, ElTableV2, ElIcon } from 'element-plus'
+import { type Column, ElAutoResizer, ElButton, ElIcon, ElTableV2, type RowClassNameGetter } from 'element-plus'
 import {
   CirclePlus as IconCirclePlus,
   Delete as IconDelete,
@@ -18,6 +18,9 @@ import IconDbImport from '@/icons/svg/db-import.vue'
 import IconDbExport from '@/icons/svg/db-export.vue'
 import IconTable from '@/icons/svg/table.vue'
 import { StringUtils } from '@/common/utils/StringUtils'
+import type { RowEventHandlerParams, RowEventHandlers } from 'element-plus/es/components/table-v2/src/row'
+import { useConnectionSessionStore } from '@/stores/ConnectionSessionStroe'
+import type { MySQLConnectionSession } from '@/components/database/mysql/connection-session'
 
 defineOptions({
   name: 'MySQLWorkTabObjectPaneComponent'
@@ -73,10 +76,36 @@ const columns = [
     width: 400
   }
 ] as Column[]
+const selectedRow = ref<MySqlInstanceNode | null>(null)
 
+// 连接会话
+const connectionSessionStore = useConnectionSessionStore()
+const connectionSession = connectionSessionStore.get(props.data.sessionId!) as MySQLConnectionSession
+
+// 表格数据
 const tableData = computed<MySqlInstanceNode[]>(() => {
   return (props.data.children || []) as MySqlInstanceNode[]
 })
+
+// 表格的事件
+const tableRowEvents: RowEventHandlers = {
+  'onClick'(params: RowEventHandlerParams) {
+    selectedRow.value = params.rowData
+    params.event.stopPropagation()
+  },
+  'onContextmenu'(params: RowEventHandlerParams) {
+    selectedRow.value = params.rowData
+    connectionSession.nodeContextmenu(params.event as MouseEvent, params.rowData)
+    params.event.preventDefault()
+  }
+}
+
+// 表格行的样式
+const tableRowClass = ({ rowData }: Parameters<RowClassNameGetter<any>>[0]) => {
+  return (rowData as MySqlInstanceNode).id === selectedRow.value?.id
+    ? 'is-selected'
+    : ''
+}
 </script>
 
 <template>
@@ -86,7 +115,7 @@ const tableData = computed<MySqlInstanceNode[]>(() => {
       text
       link
       :icon="IconFolderOpened"
-      disabled
+      :disabled="!selectedRow"
     >
       <span>打开表</span>
     </el-button>
@@ -94,7 +123,7 @@ const tableData = computed<MySqlInstanceNode[]>(() => {
       text
       link
       :icon="IconEditPen"
-      disabled
+      :disabled="!selectedRow"
     >
       <span>设计表</span>
     </el-button>
@@ -109,7 +138,8 @@ const tableData = computed<MySqlInstanceNode[]>(() => {
       text
       link
       :icon="IconDelete"
-      disabled
+      :disabled="!selectedRow"
+      @click="connectionSession.deleteTable(selectedRow!)"
     >
       <span>删除表</span>
     </el-button>
@@ -140,7 +170,11 @@ const tableData = computed<MySqlInstanceNode[]>(() => {
           :height="height"
           :header-height="34"
           :row-height="34"
+          :row-event-handlers="tableRowEvents"
+          :row-class="tableRowClass"
           class="table-list-v2"
+          @click.stop="selectedRow = null"
+          @contextmenu.prevent
         >
           <template #cell="{ column, rowData }">
             <div
@@ -153,6 +187,10 @@ const tableData = computed<MySqlInstanceNode[]>(() => {
               <span>{{ rowData[column.key] }}</span>
             </div>
             <span v-else>{{ rowData[column.key] }}</span>
+          </template>
+          <template #empty>
+            <span
+              style="color: var(--dbtu-font-color-disabled);width: 100%;height: 500px;display: flex;justify-content: center;align-items: center;">暂无数据</span>
           </template>
         </el-table-v2>
       </template>

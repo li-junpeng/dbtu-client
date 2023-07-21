@@ -54,7 +54,79 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
         TreeNodeContextmenu.table(event, data as TableNode)
         break
       case 'table_instance':
-        TreeNodeContextmenu.tableInstance(event, data as TableInstanceNode)
+        Contextmenu({
+          event,
+          menus: [
+            {
+              label: '打开表'
+            },
+            {
+              label: '设计表'
+            },
+            {
+              label: '新建表'
+            },
+            {
+              label: '删除表',
+              onClick: () => {
+                this.deleteTable(data as MySqlInstanceNode)
+              }
+            },
+            {
+              label: '清空表'
+            },
+            {
+              label: '截断表'
+            },
+            {
+              label: '复制表',
+              children: [
+                {
+                  label: '结构和数据'
+                },
+                {
+                  label: '仅结构'
+                }
+              ]
+            },
+            {
+              label: '设置权限',
+              divided: true
+            },
+            {
+              label: '导入向导'
+            },
+            {
+              label: '导出向导',
+              divided: true
+            },
+            {
+              label: '转储SQL文件',
+              divided: true,
+              children: [
+                {
+                  label: '结构和数据'
+                },
+                {
+                  label: '仅结构'
+                }
+              ]
+            },
+            {
+              label: '复制'
+            },
+            {
+              label: '重命名',
+              divided: true
+            },
+            {
+              label: '刷新'
+            },
+            {
+              label: '对象信息'
+            }
+          ]
+        })
         break
       case 'view':
         TreeNodeContextmenu.view(event, data as ViewNode)
@@ -89,6 +161,22 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
         ClickNode.table(data as TableNode)
         break
     }
+  }
+
+  /**
+   * 删除表
+   *
+   * @param data  表信息
+   */
+  deleteTable(data: MySqlInstanceNode) {
+    MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), (done) => {
+      // TODO 掉接口删除表，然后重新刷新列表
+      data.name = 'administrative_cont_' + Date.now().toString().substring(9, 13)
+
+      done()
+      connectionStore.refreshConnectionFlag++
+    }).then(() => {
+    })
   }
 }
 
@@ -285,93 +373,6 @@ const TreeNodeContextmenu = {
         },
         {
           label: '刷新'
-        }
-      ]
-    })
-  },
-
-  tableInstance: (event: MouseEvent, data: TableInstanceNode) => {
-    const deleteTable = () => {
-      MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), (done) => {
-        // TODO 掉接口删除表，然后重新刷新列表
-        data.name = 'administrative_cont_' + Date.now().toString().substring(9, 13)
-
-        done()
-        connectionStore.refreshConnectionFlag++
-      }).then(() => {
-      })
-    }
-
-    Contextmenu({
-      event,
-      menus: [
-        {
-          label: '打开表'
-        },
-        {
-          label: '设计表'
-        },
-        {
-          label: '新建表'
-        },
-        {
-          label: '删除表',
-          onClick: () => {
-            deleteTable()
-          }
-        },
-        {
-          label: '清空表'
-        },
-        {
-          label: '截断表'
-        },
-        {
-          label: '复制表',
-          children: [
-            {
-              label: '结构和数据'
-            },
-            {
-              label: '仅结构'
-            }
-          ]
-        },
-        {
-          label: '设置权限',
-          divided: true
-        },
-        {
-          label: '导入向导'
-        },
-        {
-          label: '导出向导',
-          divided: true
-        },
-        {
-          label: '转储SQL文件',
-          divided: true,
-          children: [
-            {
-              label: '结构和数据'
-            },
-            {
-              label: '仅结构'
-            }
-          ]
-        },
-        {
-          label: '复制'
-        },
-        {
-          label: '重命名',
-          divided: true
-        },
-        {
-          label: '刷新'
-        },
-        {
-          label: '对象信息'
         }
       ]
     })

@@ -44,6 +44,7 @@ const workTabStore = useWorkTabStore()
         cursor: default;
       }
 
+      .el-table-v2__row.is-selected,
       .el-table-v2__row:hover {
         background-color: var(--dbtu-hover-color);
       }

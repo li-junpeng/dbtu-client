@@ -5,8 +5,8 @@
  * @date 2023-07-14 16-35
 -->
 <script setup lang="ts">
-import { inject, onMounted, ref, watch } from 'vue'
-import { ElButton, ElIcon, ElTooltip, ElTreeV2 } from 'element-plus'
+import { inject, watch } from 'vue'
+import { ElAutoResizer, ElButton, ElIcon, ElTooltip, ElTreeV2 } from 'element-plus'
 import {
   FolderAdd as IconFolderAdd,
   Minus as IconMinus,
@@ -39,7 +39,6 @@ const treeProps = {
   children: 'children',
 }
 
-const treeHeight = ref(400)
 const treeRef = useComponentRef(ElTreeV2)
 const connectionStore = useConnectionStore()
 const connectionSessionStore = useConnectionSessionStore()
@@ -56,12 +55,7 @@ watch(() => connectionStore.refreshConnectionFlag, () => {
 
 watch(() => connectionStore.defaultExpandedKeys, () => {
   treeRef.value?.setExpandedKeys(connectionStore.defaultExpandedKeys)
-}, {deep: true})
-
-onMounted(() => {
-  const $dom = document.querySelector('.box-content')
-  treeHeight.value = $dom?.clientHeight || 400
-})
+}, { deep: true })
 
 defineExpose({
   loadConnections
@@ -343,37 +337,41 @@ const onClickTreeItem = (data: ConnectionTreeNode) => {
     </div>
   </div>
   <div class="box-content">
-    <el-tree-v2
-      ref="treeRef"
-      :data="connections"
-      :props="treeProps"
-      :height="treeHeight"
-      :item-size="34"
-      :expand-on-click-node="false"
-      :default-expanded-keys="connectionStore.defaultExpandedKeys"
-      @node-expand="data => connectionStore.setExpandKey(data.id)"
-      @node-collapse="data => connectionStore.removeExpandKey(data.id)"
-      empty-text="暂无数据库连接"
-    >
-      <template #default="{ node, data }">
-        <div
-          class="dbtu-un-user-select tree-item"
-          @click="onClickTreeItem(data)"
-          @contextmenu.prevent="treeItemContextmenu($event, data)"
+    <el-auto-resizer>
+      <template #default="{ height }">
+        <el-tree-v2
+          ref="treeRef"
+          :data="connections"
+          :props="treeProps"
+          :height="height"
+          :item-size="34"
+          :expand-on-click-node="false"
+          :default-expanded-keys="connectionStore.defaultExpandedKeys"
+          @node-expand="data => connectionStore.setExpandKey(data.id)"
+          @node-collapse="data => connectionStore.removeExpandKey(data.id)"
+          empty-text="暂无数据库连接"
         >
-          <div class="tree-node__main">
-            <tree-node-icon :node-data="data"/>
-            <span>{{ node.label }}</span>
-          </div>
-          <el-icon
-            class="tree-node__more"
-            @click.stop="treeItemContextmenu($event, data)"
-          >
-            <IconMoreFilled/>
-          </el-icon>
-        </div>
+          <template #default="{ node, data }">
+            <div
+              class="dbtu-un-user-select tree-item"
+              @click="onClickTreeItem(data)"
+              @contextmenu.prevent="treeItemContextmenu($event, data)"
+            >
+              <div class="tree-node__main">
+                <tree-node-icon :node-data="data"/>
+                <span>{{ node.label }}</span>
+              </div>
+              <el-icon
+                class="tree-node__more"
+                @click.stop="treeItemContextmenu($event, data)"
+              >
+                <IconMoreFilled/>
+              </el-icon>
+            </div>
+          </template>
+        </el-tree-v2>
       </template>
-    </el-tree-v2>
+    </el-auto-resizer>
   </div>
 </template>
 

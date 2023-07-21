@@ -17,6 +17,7 @@ import {
 import IconDbImport from '@/icons/svg/db-import.vue'
 import IconDbExport from '@/icons/svg/db-export.vue'
 import IconTable from '@/icons/svg/table.vue'
+import { StringUtils } from '@/common/utils/StringUtils'
 
 defineOptions({
   name: 'MySQLWorkTabObjectPaneComponent'
@@ -50,7 +51,7 @@ const columns = [
     width: 100,
     align: 'right',
     cellRenderer: ({ cellData }) => {
-      return `${cellData / 1024} KB`
+      return StringUtils.formatFileSize(cellData)
     }
   },
   {

@@ -21,6 +21,7 @@ import { StringUtils } from '@/common/utils/StringUtils'
 import type { RowEventHandlerParams, RowEventHandlers } from 'element-plus/es/components/table-v2/src/row'
 import { useConnectionSessionStore } from '@/stores/ConnectionSessionStroe'
 import type { MySQLConnectionSession } from '@/components/database/mysql/connection-session'
+import Contextmenu from '@/components/ui/contextmenu'
 
 defineOptions({
   name: 'MySQLWorkTabObjectPaneComponent'
@@ -97,6 +98,7 @@ const tableRowEvents: RowEventHandlers = {
     selectedRow.value = params.rowData
     connectionSession.nodeContextmenu(params.event as MouseEvent, params.rowData)
     params.event.preventDefault()
+    params.event.stopPropagation()
   }
 }
 
@@ -105,6 +107,35 @@ const tableRowClass = ({ rowData }: Parameters<RowClassNameGetter<any>>[0]) => {
   return (rowData as MySqlInstanceNode).id === selectedRow.value?.id
     ? 'is-selected'
     : ''
+}
+
+const paneContextmenu = (event: MouseEvent) => {
+  Contextmenu({
+    event,
+    menus: [
+      {
+        label: '新建表',
+        divided: true
+      },
+      {
+        label: '导入向导'
+      },
+      {
+        label: '导出向导',
+        divided: true
+      },
+      {
+        label: '运行SQL文件'
+      },
+      {
+        label: '在数据库中查找',
+        divided: true
+      },
+      {
+        label: '刷新'
+      }
+    ]
+  })
 }
 </script>
 
@@ -174,7 +205,7 @@ const tableRowClass = ({ rowData }: Parameters<RowClassNameGetter<any>>[0]) => {
           :row-class="tableRowClass"
           class="table-list-v2"
           @click.stop="selectedRow = null"
-          @contextmenu.prevent
+          @contextmenu.prevent="paneContextmenu($event)"
         >
           <template #cell="{ column, rowData }">
             <div

@@ -257,6 +257,10 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
 }
 
 const treeItemContextmenu = (event: MouseEvent, data: ConnectionTreeNode) => {
+  // 选中节点, 并手动触发点击节点事件
+  treeRef.value?.setCurrentKey(data.id as number)
+  onClickTreeItem(data)
+
   switch (data.nodeType) {
     case 'group':
       groupContextmenu(event, data as ConnectionGroup)

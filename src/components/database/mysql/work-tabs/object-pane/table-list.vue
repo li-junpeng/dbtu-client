@@ -7,8 +7,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { type ObjectPaneProps } from '@/views/manage/connection/work-tabs/object-pane'
-import { type Column, ElAutoResizer, ElButton, ElIcon, ElTableV2, type RowClassNameGetter } from 'element-plus'
+import { type Column, type RowClassNameGetter, ElAutoResizer, ElButton, ElIcon, ElTableV2, ElInput } from 'element-plus'
 import {
+  Search as IconSearch,
   CirclePlus as IconCirclePlus,
   Delete as IconDelete,
   EditPen as IconEditPen,
@@ -78,14 +79,18 @@ const columns = [
   }
 ] as Column[]
 const selectedRow = ref<MySqlInstanceNode | null>(null)
-
+const searchName = ref('')
 // 连接会话
 const connectionSessionStore = useConnectionSessionStore()
 const connectionSession = connectionSessionStore.get(props.data.sessionId!) as MySQLConnectionSession
 
 // 表格数据
 const tableData = computed<MySqlInstanceNode[]>(() => {
-  return (props.data.children || []) as MySqlInstanceNode[]
+  const array = (props.data.children || []) as MySqlInstanceNode[]
+  if (StringUtils.isEmpty(searchName.value)) {
+    return array
+  }
+  return array.filter(item => item.name.indexOf(searchName.value) >= 0)
 })
 
 // 表格的事件
@@ -142,52 +147,61 @@ const paneContextmenu = (event: MouseEvent) => {
 <template>
   <!-- 头部工具栏 -->
   <div class="header-toolbox">
-    <el-button
-      text
-      link
-      :icon="IconFolderOpened"
-      :disabled="!selectedRow"
-    >
-      <span>打开表</span>
-    </el-button>
-    <el-button
-      text
-      link
-      :icon="IconEditPen"
-      :disabled="!selectedRow"
-    >
-      <span>设计表</span>
-    </el-button>
-    <el-button
-      text
-      link
-      :icon="IconCirclePlus"
-    >
-      <span>新建表</span>
-    </el-button>
-    <el-button
-      text
-      link
-      :icon="IconDelete"
-      :disabled="!selectedRow"
-      @click="connectionSession.deleteTable(selectedRow!)"
-    >
-      <span>删除表</span>
-    </el-button>
-    <el-button
-      text
-      link
-      :icon="IconDbImport"
-    >
-      <span>导入向导</span>
-    </el-button>
-    <el-button
-      text
-      link
-      :icon="IconDbExport"
-    >
-      <span>导出向导</span>
-    </el-button>
+    <div>
+      <el-button
+        text
+        link
+        :icon="IconFolderOpened"
+        :disabled="!selectedRow"
+      >
+        <span>打开表</span>
+      </el-button>
+      <el-button
+        text
+        link
+        :icon="IconEditPen"
+        :disabled="!selectedRow"
+      >
+        <span>设计表</span>
+      </el-button>
+      <el-button
+        text
+        link
+        :icon="IconCirclePlus"
+      >
+        <span>新建表</span>
+      </el-button>
+      <el-button
+        text
+        link
+        :icon="IconDelete"
+        :disabled="!selectedRow"
+        @click="connectionSession.deleteTable(selectedRow!)"
+      >
+        <span>删除表</span>
+      </el-button>
+      <el-button
+        text
+        link
+        :icon="IconDbImport"
+      >
+        <span>导入向导</span>
+      </el-button>
+      <el-button
+        text
+        link
+        :icon="IconDbExport"
+      >
+        <span>导出向导</span>
+      </el-button>
+    </div>
+    <el-input
+      v-model="searchName"
+      :prefix-icon="IconSearch"
+      clearable
+      style="width: 300px"
+      placeholder="输入表名查询"
+    />
   </div>
   <!-- 数据列表 -->
   <div class="table-list-wrapper">
@@ -228,3 +242,9 @@ const paneContextmenu = (event: MouseEvent) => {
     </el-auto-resizer>
   </div>
 </template>
+
+<style scoped lang="scss">
+.header-toolbox {
+  justify-content: space-between;
+}
+</style>

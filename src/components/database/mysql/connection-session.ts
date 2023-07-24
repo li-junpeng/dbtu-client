@@ -71,7 +71,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
             {
               label: '删除表',
               onClick: () => {
-                this.deleteTable(data as MySqlInstanceNode)
+                this.deleteTable(data as MySqlTableNode)
               }
             },
             {
@@ -184,12 +184,16 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
           enableLoading: true,
           loadingText: '正在创建',
           onClick: async (): Promise<void> => {
-            const data = await dynamicDialogStore.ref.onSubmit() as MySqlDatabaseNode
-            data.sessionId = this.connection.id as number
-            this.connection.children?.push(data)
-            connectionStore.refreshConnectionFlag++
-            dynamicDialogStore.close()
-            return Promise.resolve()
+            try {
+              const data = await dynamicDialogStore.ref.onSubmit() as MySqlDatabaseNode
+              data.sessionId = this.connection.id as number
+              this.connection.children?.push(data)
+              connectionStore.refreshConnectionFlag++
+              dynamicDialogStore.close()
+              return Promise.resolve()
+            } catch (e) {
+              return Promise.reject((e as Error).message)
+            }
           }
         }
       ]
@@ -201,7 +205,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
    *
    * @param data  表信息
    */
-  deleteTable(data: MySqlInstanceNode) {
+  deleteTable(data: MySqlTableNode) {
     MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), (done) => {
       // TODO 掉接口删除表，然后重新刷新列表
       data.name = 'administrative_cont_' + Date.now().toString().substring(9, 13)
@@ -240,7 +244,7 @@ const TreeNodeContextmenu = {
               comment: '我是注释呀，哈哈哈哈' + index,
               updateTime: '2023-05-07 08:57:32'
             }
-          }) as MySqlInstanceNode[]
+          }) as MySqlTableNode[]
         } as TableNode)
         data.children.push({
           id: Date.now() + 2,

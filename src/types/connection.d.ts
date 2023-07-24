@@ -141,7 +141,7 @@ interface TableInstanceNode extends ConnectionTreeNode {
   nodeType: 'table_instance'
 }
 
-interface MySqlInstanceNode extends TableInstanceNode {
+interface MySqlTableNode extends TableInstanceNode {
   // 自动递增值
   autoIncrement: number | null
   // 修改日期

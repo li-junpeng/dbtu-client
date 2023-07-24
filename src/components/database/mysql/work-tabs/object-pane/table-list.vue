@@ -79,15 +79,15 @@ const columns = [
     width: 400
   }
 ] as Column[]
-const selectedRow = ref<MySqlInstanceNode | null>(null)
+const selectedRow = ref<MySqlTableNode | null>(null)
 const searchName = ref('')
 // 连接会话
 const connectionSessionStore = useConnectionSessionStore()
 const connectionSession = connectionSessionStore.get(props.data.sessionId!) as MySQLConnectionSession
 
 // 表格数据
-const tableData = computed<MySqlInstanceNode[]>(() => {
-  const array = (props.data.children || []) as MySqlInstanceNode[]
+const tableData = computed<MySqlTableNode[]>(() => {
+  const array = (props.data.children || []) as MySqlTableNode[]
   if (StringUtils.isEmpty(searchName.value)) {
     return array
   }
@@ -110,7 +110,7 @@ const tableRowEvents: RowEventHandlers = {
 
 // 表格行的样式
 const tableRowClass = ({ rowData }: Parameters<RowClassNameGetter<any>>[0]) => {
-  return (rowData as MySqlInstanceNode).id === selectedRow.value?.id
+  return (rowData as MySqlTableNode).id === selectedRow.value?.id
     ? 'is-selected'
     : ''
 }

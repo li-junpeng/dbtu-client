@@ -2,11 +2,13 @@ import type { ConnectionSession } from '@/components/database/connection-session
 import Contextmenu from '@/components/ui/contextmenu/src/contextmenu-install'
 import { useConnectionStore } from '@/stores/ConnectionStore'
 import { useWorkTabStore } from '@/stores/WorkTabStore'
+import { useDynamicDialogStore } from '@/stores/DynamicDialogStore'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
 
 const connectionStore = useConnectionStore()
 const workTabStore = useWorkTabStore()
+const dynamicDialogStore = useDynamicDialogStore()
 
 export class MySQLConnectionSession implements ConnectionSession<MySQLConnectionInfo> {
 
@@ -161,6 +163,37 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
         ClickNode.table(data as TableNode)
         break
     }
+  }
+
+  openCreateDatabase() {
+    dynamicDialogStore.open({
+      title: '新建数据库',
+      width: '600px',
+      footerButtons: [
+        {
+          type: 'info',
+          text: '取消',
+          onClick: (): Promise<void> => {
+            dynamicDialogStore.close()
+            return Promise.resolve()
+          }
+        },
+        {
+          type: 'primary',
+          text: '创建',
+          enableLoading: true,
+          loadingText: '正在创建',
+          onClick: async (): Promise<void> => {
+            const data = await dynamicDialogStore.ref.onSubmit() as MySqlDatabaseNode
+            data.sessionId = this.connection.id as number
+            this.connection.children?.push(data)
+            connectionStore.refreshConnectionFlag++
+            dynamicDialogStore.close()
+            return Promise.resolve()
+          }
+        }
+      ]
+    }, () => import('@/components/database/mysql/dialogs/create-database.vue'))
   }
 
   /**

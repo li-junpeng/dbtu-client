@@ -125,6 +125,13 @@ interface DatabaseNode extends ConnectionTreeNode {
   children?: ConnectionTreeNode[]
 }
 
+interface MySqlDatabaseNode extends DatabaseNode {
+  // 字符集
+  character: string
+  // 排序规则
+  collate: string
+}
+
 interface TableNode extends ConnectionTreeNode {
   nodeType: 'table'
   children?: ConnectionTreeNode[]

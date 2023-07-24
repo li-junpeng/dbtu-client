@@ -33,6 +33,11 @@ export interface ConnectionSession<T extends BaseConnectionDetail> {
    */
   onClickNode(data: ConnectionTreeNode): void
 
+  /**
+   * 打开创建数据库对话框
+   */
+  openCreateDatabase(): void
+
 }
 
 export class ConnectionSessionFactory {

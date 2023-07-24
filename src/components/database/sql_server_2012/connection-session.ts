@@ -30,4 +30,7 @@ export class SqlServer2012ConnectionSession implements ConnectionSession<SQLServ
   onClickNode(data: ConnectionTreeNode) {
   }
 
+  openCreateDatabase() {
+  }
+
 }

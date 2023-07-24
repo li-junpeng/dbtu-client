@@ -229,7 +229,10 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
       },
       {
         label: '新建数据库',
-        disabled: true
+        onClick: () => {
+          const session = connectionSessionStore.get(connectionId)
+          session.openCreateDatabase()
+        }
       },
       {
         label: '新建查询',

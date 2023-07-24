@@ -2,6 +2,7 @@
 import { onMounted, watch } from 'vue'
 import { useDark } from '@vueuse/core'
 import { useSystemSettingStore } from '@/stores/SystemSettingStore'
+import DynamicDialog from '@/components/ui/dynamic-dialog/index.vue'
 
 // 页面加载时，更新主题
 const systemSettingStore = useSystemSettingStore()
@@ -21,6 +22,7 @@ watch(() => isDark, () => {
 
 <template>
   <RouterView/>
+  <dynamic-dialog/>
 </template>
 
 <style scoped>

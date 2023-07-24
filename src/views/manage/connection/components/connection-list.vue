@@ -347,6 +347,7 @@ const onClickTreeItem = (data: ConnectionTreeNode) => {
           :item-size="34"
           :expand-on-click-node="false"
           :default-expanded-keys="connectionStore.defaultExpandedKeys"
+          highlight-current
           @node-expand="data => connectionStore.setExpandKey(data.id)"
           @node-collapse="data => connectionStore.removeExpandKey(data.id)"
           empty-text="暂无数据库连接"
@@ -412,10 +413,13 @@ const onClickTreeItem = (data: ConnectionTreeNode) => {
   }
 }
 
-:deep(.el-tree-node) {
-  .el-tree-node__content:hover .tree-node__more,
-  &:focus .tree-node__more {
-    display: block;
+:deep(.el-tree) {
+  .el-tree-node {
+    &.is-current .tree-node__more,
+    .el-tree-node__content:hover .tree-node__more,
+    &:focus .tree-node__more {
+      display: block;
+    }
   }
 }
 </style>

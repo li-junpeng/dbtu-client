@@ -115,6 +115,9 @@ const tableRowClass = ({ rowData }: Parameters<RowClassNameGetter<any>>[0]) => {
 }
 
 const paneContextmenu = (event: MouseEvent) => {
+  // 清空选择的表
+  selectedRow.value = null
+
   Contextmenu({
     event,
     menus: [

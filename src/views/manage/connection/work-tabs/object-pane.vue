@@ -59,6 +59,10 @@ const workTabStore = useWorkTabStore()
         line-height: 34px;
         gap: var(--dbtu-icon-text-gap);
       }
+
+      .is-selected .table-name-cell {
+        color: var(--dbtu-theme-color);
+      }
     }
   }
 }

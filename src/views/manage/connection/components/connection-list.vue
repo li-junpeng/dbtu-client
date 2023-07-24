@@ -136,7 +136,7 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
       connection.status = 'no_connection'
       connectionStore.removeExpandKey(connectionId)
       connectionSessionStore.destroy(connectionId)
-      workTabStore.clearObjectPaneBySessionId(connectionId)
+      workTabStore.closeTabsBySessionId(connectionId)
       loadConnections()
     } else {
       throw new Error(message)
@@ -204,6 +204,7 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
               Message.success(message)
               connectionStore.removeExpandKey(connectionId)
               connectionSessionStore.destroy(connectionId)
+              workTabStore.closeTabsBySessionId(connectionId)
               loadConnections()
             } else {
               await MessageBox.error(message)

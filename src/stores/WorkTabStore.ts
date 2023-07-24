@@ -35,12 +35,13 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
     },
 
     /**
-     * 根据sessionId清空对象面板
+     * 根据sessionId关闭tab页
      *
      * @param sessionId   会话ID
      * @return true: 已关闭, false: 未匹配成功，未关闭
      */
-    clearObjectPaneBySessionId(sessionId: number): boolean {
+    closeTabsBySessionId(sessionId: number): boolean {
+      // 清空对象面板内容
       if (this.objectPaneProps.sessionId === sessionId) {
         this.objectPaneComponent = null
         return true

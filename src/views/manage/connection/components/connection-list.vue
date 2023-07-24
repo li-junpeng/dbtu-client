@@ -16,12 +16,13 @@ import {
 import { InjectionKey } from '@/common/constants/ConnectionConstant'
 import Contextmenu from '@/components/ui/contextmenu/src/contextmenu-install'
 import { useConnectionStore } from '@/stores/ConnectionStore'
+import { useConnectionSessionStore } from '@/stores/ConnectionSessionStroe'
+import { useWorkTabStore } from '@/stores/WorkTabStore'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import TreeNodeIcon from './tree-node-icon.vue'
 import { NumberUtils } from '@/common/utils/NumberUtils'
 import { TextConstant } from '@/common/constants/TextConstant'
-import { useConnectionSessionStore } from '@/stores/ConnectionSessionStroe'
 
 defineOptions({
   name: 'ConnectionListComponent'
@@ -42,6 +43,7 @@ const treeProps = {
 const treeRef = useComponentRef(ElTreeV2)
 const connectionStore = useConnectionStore()
 const connectionSessionStore = useConnectionSessionStore()
+const workTabStore = useWorkTabStore()
 const connections = connectionStore.findOrderByName()
 
 const loadConnections = () => {
@@ -134,6 +136,7 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
       connection.status = 'no_connection'
       connectionStore.removeExpandKey(connectionId)
       connectionSessionStore.destroy(connectionId)
+      workTabStore.clearObjectPaneBySessionId(connectionId)
       loadConnections()
     } else {
       throw new Error(message)

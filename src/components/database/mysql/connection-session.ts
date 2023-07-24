@@ -275,6 +275,14 @@ const TreeNodeContextmenu = {
     const closeDatabase = () => {
       data.status = 'loading'
       setTimeout(() => {
+        // 关闭work-tabs对象pane
+        for (let i = 0; i < (data.children?.length || 0); i++) {
+          const b = workTabStore.clearObjectPaneByProp(data.children![i])
+          if (b) {
+            break
+          }
+        }
+
         data.children = []
         data.status = 'disable'
         connectionStore.removeExpandKey(id)

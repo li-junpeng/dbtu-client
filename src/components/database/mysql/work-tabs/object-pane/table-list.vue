@@ -69,7 +69,8 @@ const columns = [
     key: 'rowsNum',
     dataKey: 'rowsNum',
     title: '行',
-    width: 100
+    width: 100,
+    align: 'right'
   },
   {
     key: 'comment',

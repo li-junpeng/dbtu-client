@@ -3,7 +3,6 @@
   "description": "dbtu(tu是tool的谐音), tu = 兔子, 意为更快速的管理数据库。",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check build-only",

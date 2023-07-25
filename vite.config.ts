@@ -6,6 +6,9 @@ import vue from '@vitejs/plugin-vue'
 // @ts-ignore element-plus 自动导入组件样式
 import ElementPlus from 'unplugin-element-plus/vite'
 
+// monaco-editor
+import MonacoEditorPlugin from 'vite-plugin-monaco-editor'
+
 export default defineConfig({
   plugins: [
     vue(),
@@ -14,7 +17,8 @@ export default defineConfig({
       // Do not include the prefix in the name.
       // example: ElAutoResizer = AutoResizer, Because the character `el` is configurable
       ignoreComponents: ['AutoResizer']
-    })
+    }),
+    MonacoEditorPlugin({})
   ],
   resolve: {
     alias: {

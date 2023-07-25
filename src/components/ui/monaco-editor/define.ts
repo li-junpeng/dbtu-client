@@ -27,7 +27,21 @@ export interface MonacoEditorProp {
    * @default 'on'
    */
   lineNumbers?: 'on' | 'off' | 'relative' | 'interval' | ((lineNumber: number) => string)
+  /**
+   * 自动换行
+   *
+   * @default 'off'
+   */
+  wordWrap?: 'on' | 'off' | 'wordWrapColumn' | 'bounded'
 
+}
+
+export const MonacoEditorPropDefault: Record<keyof MonacoEditorProp, any> = {
+  readonly: false,
+  language: 'sql',
+  folding: false,
+  lineNumbers: 'on',
+  wordWrap: 'off'
 }
 
 export interface MonacoEditorEmits {

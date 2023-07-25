@@ -8,45 +8,70 @@
 import { onMounted, ref, watch } from 'vue'
 import * as monaco from 'monaco-editor'
 import { debounce } from 'lodash'
-import type { MonacoEditorEmits } from '@/components/ui/monaco-editor/define'
+import {
+  type MonacoEditorEmits,
+  type MonacoEditorProp,
+  MonacoEditorPropDefault
+} from '@/components/ui/monaco-editor/define'
+import { useDark } from '@vueuse/core'
+import { useSystemSettingStore } from '@/stores/SystemSettingStore'
 
+const props = withDefaults(defineProps<MonacoEditorProp>(), MonacoEditorPropDefault)
+const emits = defineEmits<MonacoEditorEmits>()
 const containerRef = ref<HTMLDivElement>()
 let editor = {} as ReturnType<typeof monaco.editor.create>
 const modelValue = defineModel<string>({
   required: true
 })
+
+// region editor theme start //
+// 注册编辑器主题
+const systemSettingStore = useSystemSettingStore()
+const isDark = useDark()
 const registerTheme = () => {
-  monaco.editor.defineTheme('dbtu-theme-light', {
+  const computedStyle = getComputedStyle(document.body)
+  const { mode } = systemSettingStore.getSetting().theme
+  const baseTheme = () => {
+    if (mode === 'auto') {
+      return isDark.value ? 'vs-dark' : 'vs'
+    }
+    return mode === 'dark' ? 'vs-dark' : 'vs'
+  }
+  monaco.editor.defineTheme('dbtu-theme', {
     rules: [],
-    base: 'vs',
+    base: baseTheme(),
     inherit: true,
     colors: {
-      'editor.background': '#f2f2f2',
-      'editor.lineHighlightBackground': '#eaeaea',
-      'editorLineNumber.foreground': '#606266',
-      'editorCursor.foreground': '#606266'
+      'editor.background': computedStyle.getPropertyValue('--dbtu-background-color'),
+      'editor.lineHighlightBackground': computedStyle.getPropertyValue('--dbtu-hover-color'),
+      'editorLineNumber.foreground': computedStyle.getPropertyValue('--dbtu-font-color'),
+      'editorCursor.foreground': computedStyle.getPropertyValue('--dbtu-font-color')
     }
   })
 }
-
-const emits = defineEmits<MonacoEditorEmits>()
+// 监听主题变化
+watch(() => isDark, () => {
+  registerTheme()
+  monaco.editor.setTheme('dbtu-theme')
+}, { deep: true })
+// endregion editor theme end //
 
 const initEditor = () => {
   editor = monaco.editor.create(containerRef.value!, {
     // 官方自带三种主题vs, hc-black, or vs-dark
     theme: 'vs',
     value: modelValue.value, //编辑器初始显示文字
-    readOnly: true,
+    readOnly: props.readonly,
     readOnlyMessage: {
       value: '不允许编辑'
     },
-    lineNumbers: 'off',
+    lineNumbers: props.lineNumbers,
     // 通过保留用于呈现至少一定数量的数字的水平空间来控制行号的宽度。默认值为5。
     lineNumbersMinChars: 3,
     // 为线条装饰保留的宽度（以px为单位）。线条装饰被放置在行号和编辑器内容之间。
     // 您可以传入一个字符串，格式为浮点，后跟“ch”。例如1.3ch。默认值为10。
     lineDecorationsWidth: 7,
-    language: 'sql',
+    language: props.language,
     roundedSelection: false,
     contextmenu: false,
     scrollBeyondLastLine: false,
@@ -63,18 +88,18 @@ const initEditor = () => {
       enabled: false
     },
     // 平滑输入字符
-    cursorSmoothCaretAnimation: 'on',
+    cursorSmoothCaretAnimation: 'off',
     // 平滑滚动
     smoothScrolling: true,
     automaticLayout: true,
     // 自动换行
-    wordWrap: 'on',
+    wordWrap: props.wordWrap,
     /*padding: {
       top: 10,
       bottom: 10
     },*/
     // 代码折叠
-    folding: false,
+    folding: props.folding,
     fixedOverflowWidgets: true,
     formatOnPaste: true,
     formatOnType: true,
@@ -92,7 +117,7 @@ const initEditor = () => {
     letterSpacing: 1
   })
   // 动态修改主题
-  monaco.editor.setTheme('dbtu-theme-light')
+  monaco.editor.setTheme('dbtu-theme')
 
   // 监听内容变化
   editor.onDidChangeModelContent(() => {

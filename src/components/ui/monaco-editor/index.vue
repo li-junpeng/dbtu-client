@@ -5,11 +5,16 @@
  * @date 2023-07-25 10-02
 -->
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import * as monaco from 'monaco-editor'
+import { debounce } from 'lodash'
+import type { MonacoEditorEmits } from '@/components/ui/monaco-editor/define'
 
 const containerRef = ref<HTMLDivElement>()
-
+let editor = {} as ReturnType<typeof monaco.editor.create>
+const modelValue = defineModel<string>({
+  required: true
+})
 const registerTheme = () => {
   monaco.editor.defineTheme('dbtu-theme-light', {
     rules: [],
@@ -24,12 +29,13 @@ const registerTheme = () => {
   })
 }
 
-onMounted(() => {
-  registerTheme()
+const emits = defineEmits<MonacoEditorEmits>()
 
-  const editor = monaco.editor.create(containerRef.value!, {
-    theme: 'vs', //官方自带三种主题vs, hc-black, or vs-dark
-    value: 'CREATE TABLE `hz-data-view`\nselect * from sys_user\n\n\n\n\n\n\n\n\n select * from sys_user', //编辑器初始显示文字
+const initEditor = () => {
+  editor = monaco.editor.create(containerRef.value!, {
+    // 官方自带三种主题vs, hc-black, or vs-dark
+    theme: 'vs',
+    value: modelValue.value, //编辑器初始显示文字
     readOnly: true,
     readOnlyMessage: {
       value: '不允许编辑'
@@ -45,13 +51,13 @@ onMounted(() => {
     contextmenu: false,
     scrollBeyondLastLine: false,
     scrollbar: {
-      useShadows: false,
+      useShadows: true,
       verticalHasArrows: false,
       horizontalHasArrows: false,
-      horizontalScrollbarSize: 6,
-      verticalScrollbarSize: 6,
-      horizontalSliderSize: 6,
-      verticalSliderSize: 6
+      horizontalScrollbarSize: 0,
+      verticalScrollbarSize: 0,
+      horizontalSliderSize: 12,
+      verticalSliderSize: 12
     },
     minimap: {
       enabled: false
@@ -63,17 +69,17 @@ onMounted(() => {
     automaticLayout: true,
     // 自动换行
     wordWrap: 'on',
-    padding: {
+    /*padding: {
       top: 10,
       bottom: 10
-    },
+    },*/
     // 代码折叠
     folding: false,
     fixedOverflowWidgets: true,
     formatOnPaste: true,
     formatOnType: true,
     insertSpaces: true,
-    lineHeight: 20,
+    lineHeight: 26,
     quickSuggestions: false,
     snippetSuggestions: 'none',
     tabSize: 4,
@@ -82,11 +88,35 @@ onMounted(() => {
     glyphMargin: false,
     renderLineHighlight: 'line',
     renderWhitespace: 'none',
-    scrollBeyondLastColumn: 2
+    scrollBeyondLastColumn: 2,
+    letterSpacing: 1
   })
-
   // 动态修改主题
   monaco.editor.setTheme('dbtu-theme-light')
+
+  // 监听内容变化
+  editor.onDidChangeModelContent(() => {
+    modelValue.value = editor.getValue()
+    emits('change-text', editor.getValue())
+  })
+
+  // 失去焦点事件
+  editor.onDidBlurEditorText(() => {
+    emits('editor-blur')
+  })
+}
+
+watch(() => modelValue, debounce(() => {
+  // 因为设置了新的值后，焦点会回到最前面，所以要记录一下设置值之前的焦点位置
+  const position = editor.getPosition()
+  editor.setValue(modelValue.value)
+  // 恢复设置值之前的焦点位置
+  position && editor.setPosition(position)
+}, 300), { deep: true })
+
+onMounted(() => {
+  registerTheme()
+  initEditor()
 })
 </script>
 

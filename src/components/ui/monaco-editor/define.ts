@@ -29,3 +29,22 @@ export interface MonacoEditorProp {
   lineNumbers?: 'on' | 'off' | 'relative' | 'interval' | ((lineNumber: number) => string)
 
 }
+
+export interface MonacoEditorEmits {
+
+  /**
+   * 当编辑器的内容改变时
+   *
+   * @param e     event name
+   * @param text  编辑器的内容
+   */
+  (e: 'change-text', text: string): void
+
+  /**
+   * 编辑器失去焦点事件
+   *
+   * @param e event name
+   */
+  (e: 'editor-blur'): void
+
+}

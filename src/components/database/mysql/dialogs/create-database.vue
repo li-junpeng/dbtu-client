@@ -135,7 +135,7 @@ defineExpose({
       </el-tab-pane>
       <el-tab-pane label="SQL 预览" name="sql_preview">
         <div style="width: 560px;height: 250px;">
-          <monaco-editor/>
+          <monaco-editor v-model="sql"/>
         </div>
       </el-tab-pane>
     </el-tabs>

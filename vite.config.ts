@@ -11,7 +11,11 @@ import MonacoEditorPlugin from 'vite-plugin-monaco-editor'
 
 export default defineConfig({
   plugins: [
-    vue(),
+    vue({
+      script: {
+        defineModel: true
+      }
+    }),
     ElementPlus({
       useSource: true,
       // Do not include the prefix in the name.

@@ -174,5 +174,8 @@
   }
 }
 
-
+.el-form.hide-required-label .el-form-item__label:before {
+  content: '' !important;
+  margin-right: 0 !important;
+}
 

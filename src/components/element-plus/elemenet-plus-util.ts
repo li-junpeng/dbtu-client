@@ -1,5 +1,7 @@
 import { ref } from 'vue'
 
+export const TooltipShowAfter = 600
+
 /**
  * 获取element-plus组件的ref，此函数用来封装以下代码:
  * ``` javascript

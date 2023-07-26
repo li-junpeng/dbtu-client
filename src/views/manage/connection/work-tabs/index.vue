@@ -5,10 +5,11 @@
  * @date 2023-07-21 09-48
 -->
 <script setup lang="ts">
-import { ElTabPane, ElTabs, type TabPaneName } from 'element-plus'
+import { ElTabPane, ElTabs, type TabPaneName, ElTooltip } from 'element-plus'
 import ObjectPane from './object-pane.vue'
 import { useWorkTabStore } from '@/stores/WorkTabStore'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
+import { TooltipShowAfter } from '@/components/element-plus/elemenet-plus-util'
 
 defineOptions({
   name: 'ConnectionWorkTabsComponent'
@@ -46,10 +47,18 @@ const onRemoveTab = (name: TabPaneName) => {
       </el-tab-pane>
       <el-tab-pane
         v-for="tab in workTabStore.tabs"
-        :label="tab.saveFlag ? '* &ensp;' + tab.label : tab.label"
         :name="tab.id"
         closable
       >
+        <template #label>
+          <el-tooltip
+            :content="tab.label"
+            :enterable="false"
+            :show-after="TooltipShowAfter"
+          >
+            <span class="dbtu-text-ellipsis tab-label">{{ tab.saveFlag ? '* &ensp;' + tab.label : tab.label }}</span>
+          </el-tooltip>
+        </template>
         <component :is="tab.component" :data="tab.props"/>
       </el-tab-pane>
     </el-tabs>
@@ -90,6 +99,10 @@ const onRemoveTab = (name: TabPaneName) => {
 
     &.el-tabs--top.el-tabs--border-card > .el-tabs__header .el-tabs__item:nth-child(2):not(.is-active).is-closable:hover {
       padding-left: 20px;
+    }
+
+    .tab-label {
+      max-width: 250px;
     }
   }
 }

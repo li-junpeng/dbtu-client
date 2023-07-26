@@ -50,7 +50,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
   nodeContextmenu(event: MouseEvent, data: ConnectionTreeNode) {
     switch (data.nodeType) {
       case 'database':
-        TreeNodeContextmenu.database(event, data as DatabaseNode)
+        TreeNodeContextmenu.database(event, data as MySqlDatabaseNode, this)
         break
       case 'table':
         TreeNodeContextmenu.table(event, data as TableNode)
@@ -200,6 +200,50 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
     }, () => import('@/components/database/mysql/dialogs/create-database.vue'))
   }
 
+  openEditDatabase(data: MySqlDatabaseNode) {
+    dynamicDialogStore.open({
+      title: '编辑数据库',
+      width: '600px',
+      footerButtons: [
+        {
+          text: '取消',
+          type: 'info',
+          onClick: (): Promise<void> => {
+            dynamicDialogStore.close()
+            return Promise.resolve()
+          }
+        },
+        {
+          text: '保存',
+          type: 'primary',
+          enableLoading: true,
+          loadingText: '正在保存',
+          onClick: (): Promise<void> => {
+            return new Promise(async (resolve, reject) => {
+              try {
+                const databaseInfo = await dynamicDialogStore.ref.onSubmit() as MySqlDatabaseNode
+                for (let i = 0; i < (this.connection.children?.length || 0); i++) {
+                  if (this.connection.children![i].id === databaseInfo.id) {
+                    this.connection.children![i] = databaseInfo
+                    break
+                  }
+                }
+                connectionStore.refreshConnectionFlag++
+                dynamicDialogStore.close()
+                resolve()
+              } catch {
+                reject()
+              }
+            })
+          }
+        }
+      ],
+      afterOpen: (ref: any) => {
+        ref.setFormData(data)
+      }
+    }, () => import('@/components/database/mysql/dialogs/create-database.vue'))
+  }
+
   /**
    * 删除表
    *
@@ -219,7 +263,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
 
 const TreeNodeContextmenu = {
 
-  database: (event: MouseEvent, data: DatabaseNode) => {
+  database: (event: MouseEvent, data: MySqlDatabaseNode, session: MySQLConnectionSession) => {
     const id = data.id as number
 
     const openDatabase = () => {
@@ -344,11 +388,15 @@ const TreeNodeContextmenu = {
         },
         {
           label: '编辑数据库',
-          disabled: true
+          onClick: () => {
+            session.openEditDatabase(data)
+          }
         },
         {
           label: '新建数据库',
-          disabled: true
+          onClick: () => {
+            session.openCreateDatabase()
+          }
         },
         {
           label: '删除数据库',

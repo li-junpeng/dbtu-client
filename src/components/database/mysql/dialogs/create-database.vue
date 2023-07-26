@@ -5,7 +5,7 @@
  * @date 2023-07-24 14-39
 -->
 <script setup lang="ts">
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { ElForm, ElFormItem, ElInput, ElOption, ElSelect, ElTabPane, ElTabs } from 'element-plus'
 import CharacterAndCollate from '@/assets/data/mysql-character-collate.json'
 import { StringUtils } from '@/common/utils/StringUtils'
@@ -17,7 +17,8 @@ defineOptions({
 })
 
 const activeTab = ref('default')
-const formData = reactive<Optional<MySqlDatabaseNode, 'id' | 'status'>>({
+const isEdit = ref(false)
+const formData = ref<Optional<MySqlDatabaseNode, 'id' | 'status'>>({
   name: '',
   nodeType: 'database',
   character: '',
@@ -28,36 +29,56 @@ const formRules = {
     {
       // @ts-ignore
       validator: (a, b, callback) => {
-        if (StringUtils.isEmpty(formData.name)) {
+        if (StringUtils.isEmpty(formData.value.name)) {
           return callback('数据库名称为必填项')
         }
         callback()
       },
       trigger: 'blur'
     }
-  ]
+  ],
+  character: [
+    { required: true, message: '请选择字符集' }
+  ],
+  collate: [
+    { required: true, message: '请选择排序规则' }
+  ],
 }
 const formRef = useComponentRef(ElForm)
 const sql = ref('')
 const characters = Object.keys(CharacterAndCollate)
 const collates = computed(() => {
-  return (CharacterAndCollate as Record<string, string[]>)[formData.character]?.sort() || []
+  return (CharacterAndCollate as Record<string, string[]>)[formData.value.character]?.sort() || []
 })
+const isNoWatch = ref(false)
 
-watch(() => formData.character, () => {
-  formData.collate = ''
+watch(() => formData.value.character, () => {
+  if (isNoWatch.value) {
+    return
+  }
+  formData.value.collate = ''
 })
 
 // 根据表单内容生成sql预览
-watch(() => formData, () => {
-  let str = 'CREATE DATABASE '
-  // name
-  str += `\`${formData.name}\``
-  // 字符集
-  str += formData.character ? ` CHARACTER SET '${formData.character}'` : ''
-  // 排序规则
-  str += formData.collate ? ` COLLATE '${formData.collate}'` : ''
-  sql.value = str + ';'
+watch(() => formData.value, () => {
+  if (isNoWatch.value) {
+    return
+  }
+
+  const { name, character, collate } = formData.value
+  let str = ''
+  if (isEdit.value) {
+    str += character ? ` CHARACTER SET '${character}'` : ''
+    str += collate ? ` COLLATE '${collate}'` : ''
+    if (str) {
+      str = `ALERT DATABASE \`${name}\`` + str
+    }
+  } else {
+    str = `CREATE DATABASE \`${name}\``
+    str += character ? ` CHARACTER SET '${character}'` : ''
+    str += collate ? ` COLLATE '${collate}'` : ''
+  }
+  sql.value = str ? str + ';' : ''
 }, { deep: true })
 
 const onSubmit = (): Promise<MySqlDatabaseNode> => {
@@ -67,17 +88,29 @@ const onSubmit = (): Promise<MySqlDatabaseNode> => {
         reject()
         return
       }
-      resolve({
-        ...formData,
-        id: Date.now(),
-        status: 'disable'
-      })
+      if (isEdit.value) {
+        resolve(formData.value as MySqlDatabaseNode)
+      } else {
+        resolve({
+          ...formData.value,
+          id: Date.now(),
+          status: 'disable'
+        })
+      }
     })
   })
 }
 
+const setFormData = (data: MySqlDatabaseNode) => {
+  isEdit.value = true
+  isNoWatch.value = true
+  formData.value = JSON.parse(JSON.stringify(data))
+  nextTick(() => isNoWatch.value = false)
+}
+
 defineExpose({
-  onSubmit
+  onSubmit,
+  setFormData
 })
 
 </script>
@@ -95,15 +128,15 @@ defineExpose({
           :rules="formRules"
           label-width="100px"
           label-position="left"
+          class="hide-required-label"
         >
           <el-form-item label="数据库名" prop="name">
-            <el-input v-model="formData.name" :maxlength="40"/>
+            <el-input v-model="formData.name" :maxlength="40" :disabled="isEdit"/>
           </el-form-item>
-          <el-form-item label="字符集">
+          <el-form-item label="字符集" prop="character">
             <el-select
               v-model="formData.character"
               style="width: 100%"
-              clearable
               filterable
               placeholder="请选择"
             >
@@ -115,11 +148,10 @@ defineExpose({
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="排序规则">
+          <el-form-item label="排序规则" prop="collate">
             <el-select
               v-model="formData.collate"
               style="width: 100%"
-              clearable
               filterable
               placeholder="请选择"
             >

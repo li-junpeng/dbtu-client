@@ -142,6 +142,8 @@ interface TableInstanceNode extends ConnectionTreeNode {
 }
 
 interface MySqlTableNode extends TableInstanceNode {
+  // 数据库ID
+  databaseId: number
   // 自动递增值
   autoIncrement: number | null
   // 修改日期
@@ -243,4 +245,17 @@ interface SQLServer2012ConnectionInfo extends BaseConnectionDetail {
   username?: string
   // 密码
   password?: string
+}
+
+interface WorkTabItem {
+  // ID, 建议使用${connectionId}_${database_id}_${table_id}之类的多个ID进行拼接
+  id: string
+  // tab标签的名称
+  label: string
+  // 是否需要保存的标识，值 = true时，在标签左侧显示*字符
+  saveFlag?: boolean
+  // tab的内容组件
+  component: () => Promise<{}> | {}
+  // 传入组件的数据，propName is data
+  props?: any
 }

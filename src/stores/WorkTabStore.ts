@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { defineAsyncComponent, shallowRef } from 'vue'
+import { defineAsyncComponent, markRaw, shallowRef } from 'vue'
 
 type ObjectPaneOption = {
   props: ConnectionTreeNode,
@@ -11,7 +11,9 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
   state: () => {
     return {
       objectPaneComponent: shallowRef(),
-      objectPaneProps: {} as ConnectionTreeNode
+      objectPaneProps: {} as ConnectionTreeNode,
+      tabs: [] as WorkTabItem[],
+      activeTabId: 'object-pane'
     }
   },
 
@@ -61,8 +63,38 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
         return true
       }
       return false
-    }
+    },
 
+    /**
+     * 添加tab页
+     *
+     * @param option
+     */
+    addTab(option: WorkTabItem): Promise<void> {
+      // 重复打开同一个tab时，直接激活已创建的tab
+      if (this.activeTabId) {
+        const tab = this.tabs.find(item => item.id === option.id)
+        if (tab) {
+          this.activeTabId = tab.id
+          return Promise.resolve()
+        }
+      }
+
+      return new Promise((resolve, reject) => {
+        try {
+          // 动态加载组件
+          (option.component as () => Promise<{}>)().then(() => {
+            // @ts-ignore
+            option.component = markRaw(defineAsyncComponent(option.component as () => Promise<{}>))
+            this.tabs.push(option)
+            this.activeTabId = option.id
+            resolve()
+          })
+        } catch {
+          reject('组件加载失败，请刷新页面后再试。')
+        }
+      })
+    }
   }
 
 })

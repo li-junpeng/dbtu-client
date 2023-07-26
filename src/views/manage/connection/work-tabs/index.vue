@@ -5,23 +5,22 @@
  * @date 2023-07-21 09-48
 -->
 <script setup lang="ts">
-import { reactive } from 'vue'
-import { ElTabs, ElTabPane } from 'element-plus'
+import { ElTabPane, ElTabs } from 'element-plus'
 import ObjectPane from './object-pane.vue'
+import { useWorkTabStore } from '@/stores/WorkTabStore'
 
 defineOptions({
   name: 'ConnectionWorkTabsComponent'
 })
 
-const tabs = reactive({
-  selected: 'object-pane'
-})
+const workTabStore = useWorkTabStore()
+
 </script>
 
 <template>
   <div class="tabs-container">
     <el-tabs
-      v-model="tabs.selected"
+      v-model="workTabStore.activeTabId"
       type="border-card"
       style="width: 100%;height: 100%;"
     >
@@ -29,12 +28,12 @@ const tabs = reactive({
         <object-pane/>
       </el-tab-pane>
       <el-tab-pane
-        v-for="i in 3"
-        :label="`表 - ${i} sys_user @localhost`"
-        :name="`mysql-tables${i}`"
+        v-for="tab in workTabStore.tabs"
+        :label="tab.label"
+        :name="tab.id"
         closable
       >
-
+        <component :is="tab.component" :data="tab.props"/>
       </el-tab-pane>
     </el-tabs>
   </div>

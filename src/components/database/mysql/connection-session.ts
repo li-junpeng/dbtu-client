@@ -61,7 +61,9 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
           menus: [
             {
               label: '打开表',
-              disabled: true
+              onClick: () => {
+                this.openTableInstance(data as MySqlTableNode)
+              }
             },
             {
               label: '设计表',
@@ -280,6 +282,22 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
 
   // endregion 数据库相关操作 start //
 
+  // region 数据表相关操作 start //
+
+  openTableInstance(data: MySqlTableNode) {
+    const databaseName = this.connection.children!.find(item => item.id === data.databaseId)?.name || '未知的数据库'
+    const tabId = `${data.sessionId!}_${data.databaseId}_${data.id}`
+    workTabStore.addTab({
+      id: tabId,
+      label: `表 - ${data.name} @${databaseName} (${this.connection.name})`,
+      component: () => import('@/components/database/mysql/work-tabs/table-data.vue'),
+      props: {
+        tableInfo: data,
+        workTabId: tabId
+      }
+    }).then()
+  }
+
   /**
    * 删除表
    *
@@ -295,6 +313,8 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
     }).then(() => {
     })
   }
+
+  // endregion 数据表相关操作 end //
 }
 
 const TreeNodeContextmenu = {
@@ -315,6 +335,7 @@ const TreeNodeContextmenu = {
             return {
               id: index + 1,
               name: item,
+              databaseId: data.id,
               sessionId: data.sessionId,
               nodeType: 'table_instance',
               engine: 'InnoDB',

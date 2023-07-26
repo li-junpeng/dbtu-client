@@ -5,6 +5,7 @@ import { useWorkTabStore } from '@/stores/WorkTabStore'
 import { useDynamicDialogStore } from '@/stores/DynamicDialogStore'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
+import { useConnectionSessionStore } from '@/stores/ConnectionSessionStroe'
 
 const connectionStore = useConnectionStore()
 const workTabStore = useWorkTabStore()
@@ -165,6 +166,8 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
     }
   }
 
+  // region 数据库相关操作 start //
+
   openCreateDatabase() {
     dynamicDialogStore.open({
       title: '新建数据库',
@@ -188,7 +191,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
               const data = await dynamicDialogStore.ref.onSubmit() as MySqlDatabaseNode
               data.sessionId = this.connection.id as number
               this.connection.children?.push(data)
-              connectionStore.refreshConnectionFlag++
+              connectionStore.refreshConnectionTree()
               dynamicDialogStore.close()
               return Promise.resolve()
             } catch (e) {
@@ -228,7 +231,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
                     break
                   }
                 }
-                connectionStore.refreshConnectionFlag++
+                connectionStore.refreshConnectionTree()
                 dynamicDialogStore.close()
                 resolve()
               } catch {
@@ -244,6 +247,22 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
     }, () => import('@/components/database/mysql/dialogs/create-database.vue'))
   }
 
+  deleteDatabase(data: MySqlDatabaseNode) {
+    MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), (done) => {
+      for (let i = 0; i < this.connection.children!.length; i++) {
+        if (this.connection.children![i].id === data.id) {
+          this.connection.children!.splice(i, 1)
+          // TODO 需要判断该数据库下有没有已经打开的work-tab
+          connectionStore.refreshConnectionTree()
+          break
+        }
+      }
+      done()
+    }).then()
+  }
+
+  // endregion 数据库相关操作 start //
+
   /**
    * 删除表
    *
@@ -255,7 +274,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
       data.name = 'administrative_cont_' + Date.now().toString().substring(9, 13)
 
       done()
-      connectionStore.refreshConnectionFlag++
+      connectionStore.refreshConnectionTree()
     }).then(() => {
     })
   }
@@ -349,7 +368,7 @@ const TreeNodeContextmenu = {
 
         data.status = 'enable'
         connectionStore.setExpandKey(id)
-        connectionStore.refreshConnectionFlag++
+        connectionStore.refreshConnectionTree()
       }, 1000)
     }
 
@@ -367,7 +386,7 @@ const TreeNodeContextmenu = {
         data.children = []
         data.status = 'disable'
         connectionStore.removeExpandKey(id)
-        connectionStore.refreshConnectionFlag++
+        connectionStore.refreshConnectionTree()
       }, 1000)
     }
 
@@ -401,7 +420,9 @@ const TreeNodeContextmenu = {
         {
           label: '删除数据库',
           divided: true,
-          disabled: true
+          onClick: () => {
+            session.deleteDatabase(data)
+          }
         },
         {
           label: '新建查询',

@@ -24,6 +24,13 @@ export const useConnectionStore = defineStore('useConnectionStore', {
   actions: {
 
     /**
+     * 刷新数据库连接tree列表
+     */
+    refreshConnectionTree() {
+      this.refreshConnectionFlag++
+    },
+
+    /**
      * 设置数据库连接树默认展开的节点key
      *
      * @param key  节点的key

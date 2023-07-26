@@ -124,24 +124,30 @@ const paneContextmenu = (event: MouseEvent) => {
     menus: [
       {
         label: '新建表',
-        divided: true
+        divided: true,
+        disabled: true
       },
       {
-        label: '导入向导'
+        label: '导入向导',
+        disabled: true
       },
       {
         label: '导出向导',
-        divided: true
+        divided: true,
+        disabled: true
       },
       {
-        label: '运行SQL文件'
+        label: '运行SQL文件',
+        disabled: true
       },
       {
         label: '在数据库中查找',
-        divided: true
+        divided: true,
+        disabled: true
       },
       {
-        label: '刷新'
+        label: '刷新',
+        disabled: true
       }
     ]
   })

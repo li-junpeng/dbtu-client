@@ -5,7 +5,6 @@ import { useWorkTabStore } from '@/stores/WorkTabStore'
 import { useDynamicDialogStore } from '@/stores/DynamicDialogStore'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
-import { useConnectionSessionStore } from '@/stores/ConnectionSessionStroe'
 
 const connectionStore = useConnectionStore()
 const workTabStore = useWorkTabStore()
@@ -61,13 +60,16 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
           event,
           menus: [
             {
-              label: '打开表'
+              label: '打开表',
+              disabled: true
             },
             {
-              label: '设计表'
+              label: '设计表',
+              disabled: true
             },
             {
-              label: '新建表'
+              label: '新建表',
+              disabled: true
             },
             {
               label: '删除表',
@@ -76,57 +78,72 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
               }
             },
             {
-              label: '清空表'
+              label: '清空表',
+              disabled: true
             },
             {
-              label: '截断表'
+              label: '截断表',
+              disabled: true
             },
             {
               label: '复制表',
               children: [
                 {
-                  label: '结构和数据'
+                  label: '结构和数据',
+                  disabled: true
                 },
                 {
-                  label: '仅结构'
+                  label: '仅结构',
+                  disabled: true
                 }
-              ]
+              ],
+              disabled: true
             },
             {
               label: '设置权限',
-              divided: true
+              divided: true,
+              disabled: true
             },
             {
-              label: '导入向导'
+              label: '导入向导',
+              disabled: true
             },
             {
               label: '导出向导',
-              divided: true
+              divided: true,
+              disabled: true
             },
             {
               label: '转储SQL文件',
               divided: true,
               children: [
                 {
-                  label: '结构和数据'
+                  label: '结构和数据',
+                  disabled: true
                 },
                 {
-                  label: '仅结构'
+                  label: '仅结构',
+                  disabled: true
                 }
-              ]
+              ],
+              disabled: true
             },
             {
-              label: '复制'
+              label: '复制',
+              disabled: true
             },
             {
               label: '重命名',
-              divided: true
+              divided: true,
+              disabled: true
             },
             {
-              label: '刷新'
+              label: '刷新',
+              disabled: true
             },
             {
-              label: '对象信息'
+              label: '对象信息',
+              disabled: true
             }
           ]
         })
@@ -469,24 +486,30 @@ const TreeNodeContextmenu = {
       menus: [
         {
           label: '新建表',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
-          label: '导入向导'
+          label: '导入向导',
+          disabled: true
         },
         {
           label: '导出向导',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
-          label: '运行SQL文件'
+          label: '运行SQL文件',
+          disabled: true
         },
         {
           label: '在数据库中查找',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
-          label: '刷新'
+          label: '刷新',
+          disabled: true
         }
       ]
     })
@@ -500,14 +523,17 @@ const TreeNodeContextmenu = {
       menus: [
         {
           label: '新建视图',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
           label: '导出向导',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
-          label: '刷新'
+          label: '刷新',
+          disabled: true
         }
       ]
     })
@@ -520,37 +546,47 @@ const TreeNodeContextmenu = {
       event,
       menus: [
         {
-          label: '打开视图'
+          label: '打开视图',
+          disabled: true
         },
         {
-          label: '设计视图'
+          label: '设计视图',
+          disabled: true
         },
         {
-          label: '新建视图'
+          label: '新建视图',
+          disabled: true
         },
         {
-          label: '删除视图'
+          label: '删除视图',
+          disabled: true
         },
         {
           label: '设置权限',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
           label: '导出向导',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
-          label: '复制'
+          label: '复制',
+          disabled: true
         },
         {
           label: '重命名',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
-          label: '刷新'
+          label: '刷新',
+          disabled: true
         },
         {
-          label: '对象信息'
+          label: '对象信息',
+          disabled: true
         }
       ]
     })
@@ -564,10 +600,12 @@ const TreeNodeContextmenu = {
       menus: [
         {
           label: '新建函数',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
-          label: '刷新'
+          label: '刷新',
+          disabled: true
         }
       ]
     })
@@ -580,33 +618,42 @@ const TreeNodeContextmenu = {
       event,
       menus: [
         {
-          label: '设计函数'
+          label: '设计函数',
+          disabled: true
         },
         {
-          label: '新建函数'
+          label: '新建函数',
+          disabled: true
         },
         {
-          label: '删除函数'
+          label: '删除函数',
+          disabled: true
         },
         {
-          label: '运行函数'
+          label: '运行函数',
+          disabled: true
         },
         {
           label: '设置权限',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
-          label: '复制'
+          label: '复制',
+          disabled: true
         },
         {
           label: '重命名',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
-          label: '刷新'
+          label: '刷新',
+          disabled: true
         },
         {
-          label: '对象信息'
+          label: '对象信息',
+          disabled: true
         }
       ]
     })
@@ -620,14 +667,17 @@ const TreeNodeContextmenu = {
       menus: [
         {
           label: '新建查询',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
           label: '打开外部查询',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
-          label: '刷新'
+          label: '刷新',
+          disabled: true
         }
       ]
     })
@@ -640,31 +690,39 @@ const TreeNodeContextmenu = {
       event,
       menus: [
         {
-          label: '设计查询'
+          label: '设计查询',
+          disabled: true
         },
         {
-          label: '新建查询'
+          label: '新建查询',
+          disabled: true
         },
         {
           label: '删除查询',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
           label: '导出向导',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
-          label: '复制'
+          label: '复制',
+          disabled: true
         },
         {
           label: '重命名',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
-          label: '刷新'
+          label: '刷新',
+          disabled: true
         },
         {
-          label: '对象信息'
+          label: '对象信息',
+          disabled: true
         }
       ]
     })
@@ -678,17 +736,21 @@ const TreeNodeContextmenu = {
       menus: [
         {
           label: '新建备份',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
-          label: '从文件中还原备份'
+          label: '从文件中还原备份',
+          disabled: true
         },
         {
           label: '从文件中提取SQL',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
-          label: '刷新'
+          label: '刷新',
+          disabled: true
         }
       ]
     })
@@ -701,31 +763,39 @@ const TreeNodeContextmenu = {
       event,
       menus: [
         {
-          label: '还原备份'
+          label: '还原备份',
+          disabled: true
         },
         {
-          label: '新建备份'
+          label: '新建备份',
+          disabled: true
         },
         {
           label: '删除备份',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
           label: '提取SQL',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
-          label: '复制'
+          label: '复制',
+          disabled: true
         },
         {
           label: '重命名',
-          divided: true
+          divided: true,
+          disabled: true
         },
         {
-          label: '刷新'
+          label: '刷新',
+          disabled: true
         },
         {
-          label: '对象信息'
+          label: '对象信息',
+          disabled: true
         }
       ]
     })

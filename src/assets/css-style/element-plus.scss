@@ -95,6 +95,50 @@
 
 }
 
+.el-table-v2 {
+  .el-table-v2__header-cell-text,
+  .el-table-v2__cell-text {
+    color: var(--dbtu-font-color);
+  }
+
+  .el-table-v2__cell-text {
+    cursor: default;
+  }
+
+  &.table-border {
+    .el-table-v2__header-row,
+    .el-table-v2__row {
+      border-bottom: none;
+    }
+
+    .el-table-v2__row:hover {
+      background-color: transparent;
+
+      .el-table-v2__row-cell {
+        background-color: var(--dbtu-hover-color);
+      }
+    }
+
+    .el-table-v2__header-cell,
+    .el-table-v2__row-cell {
+      border-bottom: 1px solid var(--dbtu-divide-borer-color);
+      border-right: 1px solid var(--dbtu-divide-borer-color);
+    }
+
+    .el-table-v2__row .el-table-v2__row-cell:first-child {
+      border-left: 1px solid var(--dbtu-divide-borer-color);
+    }
+
+    .el-table-v2__header-cell {
+      border-top: 1px solid var(--dbtu-divide-borer-color);
+
+      &:first-child {
+        border-left: 1px solid var(--dbtu-divide-borer-color);
+      }
+    }
+  }
+}
+
 .el-message-box {
   background-color: var(--dbtu-background-color);
   border-radius: var(--dbtu-border-radius);

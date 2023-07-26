@@ -152,6 +152,10 @@ const paneContextmenu = (event: MouseEvent) => {
     ]
   })
 }
+
+const openTable = () => {
+  selectedRow.value && connectionSession.openTableInstance(selectedRow.value)
+}
 </script>
 
 <template>
@@ -163,6 +167,7 @@ const paneContextmenu = (event: MouseEvent) => {
         link
         :icon="IconFolderOpened"
         :disabled="!selectedRow"
+        @click="openTable"
       >
         <span>打开表</span>
       </el-button>

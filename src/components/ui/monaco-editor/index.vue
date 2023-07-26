@@ -114,7 +114,8 @@ const initEditor = () => {
     renderLineHighlight: 'line',
     renderWhitespace: 'none',
     scrollBeyondLastColumn: 2,
-    letterSpacing: 1
+    letterSpacing: 1,
+    renderLineHighlightOnlyWhenFocus: true
   })
   // 动态修改主题
   monaco.editor.setTheme('dbtu-theme')

@@ -36,6 +36,10 @@ input {
   font-weight: 400;
 }
 
+.monaco-editor span {
+  font-family: Consolas, "Courier New", monospace;
+}
+
 a {
   text-decoration: none;
   color: inherit;

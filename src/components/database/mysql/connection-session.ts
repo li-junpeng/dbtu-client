@@ -295,7 +295,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
         tableInfo: data,
         workTabId: tabId
       }
-    }).then()
+    })
   }
 
   /**

@@ -42,6 +42,7 @@ export const useDynamicDialogStore = defineStore('useDynamicDialogStore', {
   actions: {
 
     open(option: DialogOption, component: () => Promise<{}>): void {
+      this.ref = null
       this.title = option.title || '新建对话框'
       this.width = option.width || 400
       this.appendToBody = option.appendToBody || false
@@ -49,8 +50,15 @@ export const useDynamicDialogStore = defineStore('useDynamicDialogStore', {
       this.footerButtons = option.footerButtons || []
       component().then(() => {
         this.component = defineAsyncComponent(component)
-        option.afterOpen?.(this.ref)
         this.visible = true
+
+        // 防止组件加载成功后this.ref值为空
+        const intervalId = setInterval(() => {
+          if (this.ref) {
+            clearInterval(intervalId)
+            option.afterOpen?.(this.ref)
+          }
+        }, 10)
       })
     },
 

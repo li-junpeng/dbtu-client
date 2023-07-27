@@ -36,7 +36,9 @@ export interface ConditionItem {
   field: string
   condition: keyof typeof JudgeConditions,
   value: number | string | boolean
-  relation: 'and' | 'or',
+  relation: 'AND' | 'OR',
   children?: ConditionItem[]
-  childrenRelation?: 'and' | 'or'
+  childrenRelation?: 'AND' | 'OR'
+  // 1 = true, 0 = false
+  use: number
 }

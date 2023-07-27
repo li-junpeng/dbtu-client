@@ -228,3 +228,9 @@
     margin-bottom: 10px;
   }
 }
+
+.el-checkbox {
+  .el-checkbox__inner {
+    border-color: var(--dbtu-theme-hover-color);
+  }
+}

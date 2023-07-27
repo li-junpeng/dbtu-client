@@ -6,7 +6,17 @@
 -->
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { ElButton, ElDrawer, ElInput, ElOption, ElScrollbar, ElSelect, ElTooltip, ElTree } from 'element-plus'
+import {
+  ElButton,
+  ElCheckbox,
+  ElDrawer,
+  ElInput,
+  ElOption,
+  ElScrollbar,
+  ElSelect,
+  ElTooltip,
+  ElTree
+} from 'element-plus'
 import type { TreeNode } from 'element-plus/es/components/tree-v2/src/types'
 import IconAddCondition from '@/icons/svg/add-condition.vue'
 import { Delete as IconDelete, EditPen as IconEditPen, Select as IconSelect } from '@element-plus/icons-vue'
@@ -50,8 +60,9 @@ const onAddCondition = (parent?: ConditionItem) => {
     field: props.fields[0],
     condition: 'equal',
     value: '?',
-    relation: 'and',
-    childrenRelation: 'and'
+    relation: 'AND',
+    childrenRelation: 'AND',
+    use: 1
   } as ConditionItem
   if (!parent) {
     conditions.push(defaultNode)
@@ -90,13 +101,30 @@ const isNotNeedValue = (value: any) => {
 }
 
 const isFirstNode = (node: TreeNode) => {
+  // 如果第一个节点是use = false 状态, 那么就以此类推, 找到第一个use = true的节点
+  const compare = (id: number, items?: ConditionItem[]): boolean => {
+    if (!items) {
+      return false
+    }
+    let flag = 0
+    for (let i = 0; i < items.length; i++) {
+      if (!items[i].use) {
+        flag++
+        continue
+      }
+      return id === items![i].id && flag === i
+    }
+    return false
+  }
+
   if (node.level === 1) {
-    return node.data.id === node.parent?.data?.[0].id
+    return compare(node.data.id, node.parent?.data as ConditionItem[])
   } else {
-    return node.data.id === node.parent?.data.children?.[0].id
+    return compare(node.data.id, node.parent?.data.children)
   }
 }
 
+const sql = ref('')
 const toSql = (): string => {
   if (conditions.length === 0) {
     return ''
@@ -139,8 +167,13 @@ const toSql = (): string => {
 
   let sql = ''
   const dg = (array: ConditionItem[]) => {
+    let flag = 1
     array.forEach((item, index) => {
-      if (index >= 1) {
+      if (!item.use) {
+        flag++
+        return
+      }
+      if (index >= flag) {
         sql += `${item.relation.toUpperCase()} `
       }
       sql += `\`${item.field}\` ${getValue(item)} `
@@ -156,8 +189,9 @@ const toSql = (): string => {
 }
 
 const onApply = () => {
+  sql.value = toSql()
   emits('apply-sizer', toSql())
-  drawer.visible = false
+  // drawer.visible = false
 }
 
 defineExpose({
@@ -178,7 +212,7 @@ defineExpose({
     <div class="toolbox">
       <el-button text link :icon="IconAddCondition" @click="onAddCondition()">添加条件</el-button>
     </div>
-    <div style="width: 100%;height: calc(100% - 40px)">
+    <div style="width: 100%;height: calc(100% - 140px)">
       <el-scrollbar>
         <el-tree
           ref="treeRef"
@@ -191,12 +225,22 @@ defineExpose({
         >
           <template #default="{ node, data }">
             <div v-if="editNodeData?.id !== data.id" class="i-tree-node">
-              <div style="display: flex;gap: 10px;flex: 1;">
-                <span v-if="!isFirstNode(node)">{{ data.relation }}</span>
-                <span style="color: var(--dbtu-theme-color);">{{ data.field }}</span>
-                <span>{{ JudgeConditions[data.condition] }}</span>
-                <span style="color: var(--dbtu-theme-color);">{{ data.value }}</span>
-                <span v-if="data.children && data.children.length >= 1">{{ data.childrenRelation }}</span>
+              <div style="display: flex;gap: 10px;flex: 1;align-items: center;line-height: 40px">
+                <el-checkbox v-model="data.use" :true-label="1" :false-label="0"/>
+                <div
+                  :style="{
+                    display: 'flex',
+                    gap: '10px',
+                    color: data.use ? 'var(--dbtu-font-color)' : 'var(--dbtu-border-disabled-color)',
+                    '--sizer-key-color': data.use ? 'var(--dbtu-theme-color)' : 'var(--dbtu-border-disabled-color)'
+                  }"
+                >
+                  <span v-if="!isFirstNode(node) && data.use">{{ data['relation'] }}</span>
+                  <span :style="{color: 'var(--sizer-key-color)'}">{{ data['field'] }}</span>
+                  <span>{{ JudgeConditions[data['condition']] }}</span>
+                  <span :style="{color: 'var(--sizer-key-color)'}">{{ data.value }}</span>
+                  <span v-if="data.children && data.children.length >= 1">{{ data['childrenRelation'] }}</span>
+                </div>
               </div>
               <div class="i-tree-node__btns">
                 <el-tooltip
@@ -234,10 +278,10 @@ defineExpose({
                   text
                   link
                   type="primary"
-                  @click="data.relation = data.relation === 'and' ? 'or' : 'and'"
+                  @click="data.relation = data.relation === 'AND' ? 'OR' : 'AND'"
                   style="width: 40px;"
                 >
-                  <span>{{ data.relation }}</span>
+                  <span>{{ data['relation'] }}</span>
                 </el-button>
                 <!-- 字段 -->
                 <el-select
@@ -276,10 +320,10 @@ defineExpose({
                   text
                   link
                   type="primary"
-                  @click="data.childrenRelation = data.childrenRelation === 'and' ? 'or' : 'and'"
+                  @click="data.childrenRelation = data.childrenRelation === 'AND' ? 'OR' : 'AND'"
                   style="width: 40px;"
                 >
-                  <span>{{ data.childrenRelation }}</span>
+                  <span>{{ data['childrenRelation'] }}</span>
                 </el-button>
               </div>
               <div>
@@ -325,7 +369,9 @@ defineExpose({
         </el-tree>
       </el-scrollbar>
     </div>
-
+    <pre style="width: 100%;height: 100px;">
+      {{sql}}
+    </pre>
     <template #footer>
       <el-button type="info" @click="drawer.visible = false">关闭</el-button>
       <el-button type="primary" @click="onApply">应用</el-button>
@@ -341,7 +387,7 @@ defineExpose({
 
 :deep(.el-tree) {
 
-  .el-tree-node:focus > .el-tree-node__content ,
+  .el-tree-node:focus > .el-tree-node__content,
   .el-tree-node__content:hover {
     .i-tree-node__btns {
       display: block;

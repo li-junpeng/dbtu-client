@@ -27,7 +27,6 @@ export const SizerDrawerPropDefault: Record<keyof SizerDrawerProp, any> = {
 }
 
 export const TreeV2Props = {
-  value: 'id',
   label: 'field',
   children: 'children'
 }

@@ -62,6 +62,8 @@ const onAddCondition = (parent?: ConditionItem) => {
     }
     children.push(defaultNode)
     parent.children = children
+    const node = treeRef.value?.getNode(parent.id)
+    node && (node.expanded = true)
   }
 }
 
@@ -176,10 +178,11 @@ defineExpose({
     <div class="toolbox">
       <el-button text link :icon="IconAddCondition" @click="onAddCondition()">添加条件</el-button>
     </div>
-    <div style="width: 100%;height: calc(100% - 140px)">
+    <div style="width: 100%;height: calc(100% - 40px)">
       <el-scrollbar>
         <el-tree
           ref="treeRef"
+          node-key="id"
           :data="conditions"
           :props="TreeV2Props"
           :expand-on-click-node="false"
@@ -338,7 +341,7 @@ defineExpose({
 
 :deep(.el-tree) {
 
-  .el-tree-node:focus,
+  .el-tree-node:focus > .el-tree-node__content ,
   .el-tree-node__content:hover {
     .i-tree-node__btns {
       display: block;

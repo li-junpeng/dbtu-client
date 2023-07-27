@@ -50,7 +50,8 @@ const onAddCondition = (parent?: ConditionItem) => {
     field: props.fields[0],
     condition: 'equal',
     value: '?',
-    relation: 'and'
+    relation: 'and',
+    childrenRelation: 'and'
   } as ConditionItem
   if (!parent) {
     conditions.push(defaultNode)
@@ -58,7 +59,6 @@ const onAddCondition = (parent?: ConditionItem) => {
     let children = parent.children
     if (!children) {
       children = []
-      parent.childrenRelation = 'and'
     }
     children.push(defaultNode)
     parent.children = children
@@ -142,7 +142,7 @@ const toSql = (): string => {
         sql += `${item.relation.toUpperCase()} `
       }
       sql += `\`${item.field}\` ${getValue(item)} `
-      if (item.children) {
+      if (item.children && item.children.length >= 1) {
         sql += `${item.childrenRelation!.toUpperCase()} (`
         dg(item.children)
         sql += `) `
@@ -183,6 +183,7 @@ defineExpose({
           :data="conditions"
           :props="TreeV2Props"
           :expand-on-click-node="false"
+          draggable
           empty-text="暂无筛选条件"
         >
           <template #default="{ node, data }">

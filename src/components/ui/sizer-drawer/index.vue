@@ -19,7 +19,7 @@ import {
 } from 'element-plus'
 import type { TreeNode } from 'element-plus/es/components/tree-v2/src/types'
 import IconAddCondition from '@/icons/svg/add-condition.vue'
-import { Delete as IconDelete, EditPen as IconEditPen, Select as IconSelect } from '@element-plus/icons-vue'
+import { Delete as IconDelete, EditPen as IconEditPen, CloseBold as IconCloseBold } from '@element-plus/icons-vue'
 import {
   type ConditionItem,
   type SizerDrawerProp,
@@ -328,14 +328,14 @@ defineExpose({
               <div>
                 <!-- 按钮组 -->
                 <el-tooltip
-                  content="保存"
+                  content="取消编辑"
                   :enterable="false"
                   :show-after="TooltipShowAfter"
                 >
                   <el-button
                     text
                     link
-                    :icon="IconSelect"
+                    :icon="IconCloseBold"
                     :disabled="isNotNeedValue(data.condition) && !data.value"
                     @click="editNodeData = null"
                   ></el-button>

@@ -5,7 +5,7 @@
  * @date 2023-07-26 16-53
 -->
 <script setup lang="ts">
-import { computed, type PropType } from 'vue'
+import { computed, type PropType, ref } from 'vue'
 import type { Column } from 'element-plus'
 import { ElAutoResizer, ElButton, ElTableV2, ElTooltip } from 'element-plus'
 import {
@@ -34,8 +34,9 @@ const props = defineProps({
   }
 })
 const sizerDrawerRef = useComponentRef(SizerDrawer)
-
 const fields = [] as string[]
+// 查询条件
+const whereSql = ref('')
 const columns = computed<Column[]>(() => {
   const row = MockData.RECORDS[0]
   const columns = []
@@ -51,7 +52,7 @@ const columns = computed<Column[]>(() => {
   return columns
 })
 const tableData = computed(() => {
-    return MockData.RECORDS
+  return MockData.RECORDS
 })
 
 const openSizerDrawer = () => {
@@ -140,6 +141,7 @@ const openSizerDrawer = () => {
     ref="sizerDrawerRef"
     title="数据筛选"
     :fields="fields"
+    @apply-sizer="sql => whereSql = sql"
   />
 </template>
 

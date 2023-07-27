@@ -10,7 +10,7 @@ import { ElForm, ElFormItem, ElInput, ElOption, ElSelect, ElTabPane, ElTabs } fr
 import CharacterAndCollate from '@/assets/data/mysql-character-collate.json'
 import { StringUtils } from '@/common/utils/StringUtils'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
-import MonacoEditor from '@/components/ui/monaco-editor/index.vue'
+import SqlCodePreview from '@/components/ui/sql-code-preview/index.vue'
 
 defineOptions({
   name: 'MySQLCreateDatabaseDialog'
@@ -167,12 +167,13 @@ defineExpose({
       </el-tab-pane>
       <el-tab-pane label="SQL 预览" name="sql_preview">
         <div style="width: 560px;height: 250px;">
-          <monaco-editor
+<!--          <monaco-editor
             v-model="sql"
             readonly
             line-numbers="off"
             word-wrap="on"
-          />
+          />-->
+          <sql-code-preview :code="sql"/>
         </div>
       </el-tab-pane>
     </el-tabs>

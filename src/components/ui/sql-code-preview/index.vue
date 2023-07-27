@@ -8,7 +8,6 @@
 import { computed } from 'vue'
 import { ElScrollbar } from 'element-plus'
 import hljs from 'highlight.js'
-import 'highlight.js/styles/vs.css'
 
 defineOptions({
   name: 'SqlCodePreviewComponent'
@@ -35,7 +34,7 @@ const codeHtml = computed(() => {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .dbtu-code-preview {
   width: 100%;
   height: 100%;
@@ -57,6 +56,10 @@ const codeHtml = computed(() => {
       .hljs-addition, .hljs-attribute, .hljs-literal, .hljs-section, .hljs-string,
       .hljs-template-tag, .hljs-template-variable, .hljs-title, .hljs-type {
         color: #af670a;
+      }
+
+      span {
+        font-family: Consolas, "Courier New", monospace;
       }
     }
   }

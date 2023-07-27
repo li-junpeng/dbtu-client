@@ -19,8 +19,9 @@ import IconSizer from '@/icons/svg/sizer.vue'
 import IconSort from '@/icons/svg/sort.vue'
 import IconDbImport from '@/icons/svg/db-import.vue'
 import IconDbExport from '@/icons/svg/db-export.vue'
-import { TooltipShowAfter } from '@/components/element-plus/elemenet-plus-util'
+import { TooltipShowAfter, useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import MockData from '@/assets/data/mock-table-data-test.json'
+import SizerDrawer from '@/components/ui/sizer-drawer/index.vue'
 
 defineExpose({
   name: 'MySQLWorkTabTableDataComponent'
@@ -32,7 +33,9 @@ const props = defineProps({
     required: true
   }
 })
+const sizerDrawerRef = useComponentRef(SizerDrawer)
 
+const fields = [] as string[]
 const columns = computed<Column[]>(() => {
   const row = MockData.RECORDS[0]
   const columns = []
@@ -43,12 +46,17 @@ const columns = computed<Column[]>(() => {
       title: key,
       width: 150
     })
+    fields.push(key)
   }
   return columns
 })
 const tableData = computed(() => {
-  return MockData.RECORDS
+    return MockData.RECORDS
 })
+
+const openSizerDrawer = () => {
+  sizerDrawerRef.value?.open()
+}
 
 </script>
 
@@ -56,7 +64,7 @@ const tableData = computed(() => {
   <div class="table-data-container">
     <!-- 头部工具栏 -->
     <div class="header-toolbox">
-      <el-button text link :icon="IconSizer" disabled>
+      <el-button text link :icon="IconSizer" @click="openSizerDrawer()">
         <span>筛选</span>
       </el-button>
       <el-button text link :icon="IconSort" disabled>
@@ -127,6 +135,12 @@ const tableData = computed(() => {
       </div>
     </div>
   </div>
+
+  <sizer-drawer
+    ref="sizerDrawerRef"
+    title="数据筛选"
+    :fields="fields"
+  />
 </template>
 
 <style scoped lang="scss">

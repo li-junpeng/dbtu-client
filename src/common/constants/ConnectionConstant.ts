@@ -166,3 +166,29 @@ export const CharsetTypes: ElSelectOption<string>[] = [
     label: 'GBK'
   }
 ]
+
+/**
+ * 条件
+ */
+export const JudgeConditions: Record<string, string> = {
+  equal: '=',
+  not_equal: '!=',
+  less: '<',
+  less_equal: '<=',
+  greater: '>',
+  greater_equal: '>=',
+  like: '包含',
+  not_link: '不包含',
+  begin_like: '开始以',
+  not_begin_like: '开始不是以',
+  end_link: '结束以',
+  noe_end_link: '结束不是以',
+  is_null: '是 null',
+  not_is_null: '不是 null',
+  is_blank: '是空的',
+  not_is_blank: '不是空的',
+  between: '介于',
+  noe_between: '不介于',
+  in: '在列表',
+  not_in: '不在列表'
+}

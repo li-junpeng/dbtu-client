@@ -337,16 +337,19 @@ defineExpose({
 }
 
 :deep(.el-tree) {
+
+  .el-tree-node:focus,
+  .el-tree-node__content:hover {
+    .i-tree-node__btns {
+      display: block;
+    }
+  }
+
   .el-tree-node__content {
     height: 40px;
 
     .i-tree-node__btns {
       display: none;
-    }
-    &:hover {
-      .i-tree-node__btns {
-        display: block;
-      }
     }
 
     .i-tree-node {

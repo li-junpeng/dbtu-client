@@ -177,10 +177,25 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
     }
   }
 
+  getDatabase(databaseId: number): MySqlDatabaseNode | null {
+    for (let i = 0; i < this.connection.children!.length; i++) {
+      const database = this.connection.children![i] as MySqlDatabaseNode
+      if (database.id === databaseId) {
+        return database
+      }
+    }
+
+    return null
+  }
+
   onClickNode(data: ConnectionTreeNode) {
     switch (data.nodeType) {
       case 'table':
         ClickNode.table(data as TableNode)
+        break
+      case 'table_instance':
+        const database = this.getDatabase((data as MySqlTableNode).databaseId)
+        database && ClickNode.table(database.children![0] as TableNode)
         break
     }
   }

@@ -5,7 +5,7 @@
  * @date 2023-07-27 09-56
 -->
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import {
   ElButton,
   ElCheckbox,
@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/sizer-drawer/define'
 import { TooltipShowAfter, useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import { JudgeConditions } from '@/common/constants/ConnectionConstant'
+import SqlCodePreview from '@/components/ui/sql-code-preview/index.vue'
 
 defineOptions({
   name: 'SizerDrawerComponent'
@@ -124,8 +125,7 @@ const isFirstNode = (node: TreeNode) => {
   }
 }
 
-const sql = ref('')
-const toSql = (): string => {
+const sql = computed(() => {
   if (conditions.length === 0) {
     return ''
   }
@@ -178,7 +178,7 @@ const toSql = (): string => {
       }
       sql += `\`${item.field}\` ${getValue(item)} `
       if (item.children && item.children.length >= 1) {
-        sql += `${item.childrenRelation!.toUpperCase()} (`
+        sql += `${item.childrenRelation!.toUpperCase()} ( `
         dg(item.children)
         sql += `) `
       }
@@ -186,12 +186,11 @@ const toSql = (): string => {
   }
   dg(conditions)
   return sql
-}
+})
 
 const onApply = () => {
-  sql.value = toSql()
-  emits('apply-sizer', toSql())
-  // drawer.visible = false
+  emits('apply-sizer', sql.value)
+  drawer.visible = false
 }
 
 defineExpose({
@@ -212,7 +211,7 @@ defineExpose({
     <div class="toolbox">
       <el-button text link :icon="IconAddCondition" @click="onAddCondition()">添加条件</el-button>
     </div>
-    <div style="width: 100%;height: calc(100% - 140px)">
+    <div style="width: 100%;height: calc(100% - 270px)">
       <el-scrollbar>
         <el-tree
           ref="treeRef"
@@ -369,9 +368,10 @@ defineExpose({
         </el-tree>
       </el-scrollbar>
     </div>
-    <pre style="width: 100%;height: 100px;">
-      {{sql}}
-    </pre>
+    <div style="width: 100%;height: 200px;">
+      <p class="dbtu-un-user-select code-preview-title">代码预览</p>
+      <sql-code-preview :code="sql"/>
+    </div>
     <template #footer>
       <el-button type="info" @click="drawer.visible = false">关闭</el-button>
       <el-button type="primary" @click="onApply">应用</el-button>
@@ -383,6 +383,13 @@ defineExpose({
 .toolbox {
   width: 100%;
   height: 40px;
+}
+
+.code-preview-title {
+  color: var(--dbtu-font-color);
+  border-top: 1px solid var(--dbtu-divide-borer-color);
+  padding: 10px 0;
+  margin-top: 10px;
 }
 
 :deep(.el-tree) {

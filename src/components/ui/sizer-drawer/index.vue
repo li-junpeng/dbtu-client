@@ -424,7 +424,7 @@ defineExpose({
       </el-scrollbar>
     </div>
     <div style="width: 100%;height: 200px;">
-      <p class="dbtu-un-user-select code-preview-title">代码预览</p>
+      <p class="dbtu-un-user-select code-preview-title">SQL 预览</p>
       <sql-code-preview :code="sql"/>
     </div>
     <template #footer>

@@ -9,6 +9,7 @@ import type { Column } from 'element-plus'
 import { TooltipShowAfter, useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import MockData from '@/assets/data/mock-table-data-test.json'
 import SizerDrawer from '@/components/ui/sizer-drawer/index.vue'
+import DataSortDrawer from '@/components/ui/data-sort-drawer/index.vue'
 
 defineExpose({
   name: 'MySQLWorkTabTableDataComponent'
@@ -21,6 +22,7 @@ defineProps({
   }
 })
 const sizerDrawerRef = useComponentRef(SizerDrawer)
+const dataSortDrawerRef = useComponentRef(DataSortDrawer)
 const fields = [] as string[]
 // 查询条件
 const whereSql = ref('')
@@ -46,6 +48,10 @@ const openSizerDrawer = () => {
   sizerDrawerRef.value?.open()
 }
 
+const openDataFilter = () => {
+  dataSortDrawerRef.value?.open()
+}
+
 </script>
 
 <template>
@@ -58,7 +64,7 @@ const openSizerDrawer = () => {
         </template>
         <span>筛选</span>
       </el-button>
-      <el-button text link disabled>
+      <el-button text link @click="openDataFilter()">
         <template #icon>
           <DIconSort/>
         </template>
@@ -161,6 +167,11 @@ const openSizerDrawer = () => {
     title="数据筛选"
     :fields="fields"
     @apply-sizer="sql => whereSql = sql"
+  />
+
+  <data-sort-drawer
+    ref="dataSortDrawerRef"
+    :fields="fields"
   />
 </template>
 

@@ -31,7 +31,7 @@ const UnpluginVueComponentResolver = {
    * @param componentName
    * @constructor
    */
-  CustomSvg: (componentName: string) => {
+  CustomSvgIcon: (componentName: string) => {
     if (componentName.startsWith('DIcon')) {
       const componentPath = `src/icons/svg/${kebabCase2Line(componentName.slice(5))}.vue`
       return fileURLToPath(new URL(componentPath, import.meta.url)).replaceAll('\\', '/')
@@ -69,7 +69,7 @@ export default defineConfig({
       dts: true,
       resolvers: [
         ElementPlusResolver(),
-        UnpluginVueComponentResolver.CustomSvg,
+        UnpluginVueComponentResolver.CustomSvgIcon,
         UnpluginVueComponentResolver.ElementPlusIconsVue
       ],
       // 默认为自动导入src/components下的组件, 现在排除, 自己创建的组件不需要自动导入

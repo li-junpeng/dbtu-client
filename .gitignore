@@ -27,3 +27,8 @@ coverage
 *.sln
 *.sw?
 /package-lock.json
+
+# unplugin-auto-import
+/auto-imports.d.ts
+# unplugin-vue-components
+/components.d.ts

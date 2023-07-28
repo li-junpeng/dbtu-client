@@ -65,6 +65,28 @@ export const StringUtils = {
     const digitGroups = Math.floor(Math.min(FileSizeUnit.length - 1, (Math.log10(size) / Math.log10(1024))))
     const value = (size / Math.pow(1024, digitGroups)).toFixed(_option.fractionDigits).replace('.00', '')
     return value + (_option.isSpace ? ' ' : '') + FileSizeUnit[Math.floor(digitGroups)]
+  },
+
+  /**
+   * 将驼峰字符串改为短横线
+   *
+   * @example
+   * const str = 'UserName'
+   * console.log(StringUtils.kebabCase2Line(str))   // user-name
+   *
+   * const str = 'userName'
+   * console.log(StringUtils.kebabCase2Line(str))   // user-name
+   *
+   * @param str
+   */
+  kebabCase2Line(str: string): string {
+    let s = str.replace(/[A-Z]/g, item => {
+      return '-' + item.toLowerCase()
+    })
+    if (s.startsWith('-')) {
+      s = s.slice(1)
+    }
+    return s
   }
 
 }

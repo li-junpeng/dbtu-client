@@ -15,6 +15,7 @@ import {
 import { TooltipShowAfter, useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import { JudgeConditions } from '@/common/constants/ConnectionConstant'
 import SqlCodePreview from '@/components/ui/sql-code-preview/index.vue'
+import Contextmenu from '@/components/ui/contextmenu'
 
 defineOptions({
   name: 'SizerDrawerComponent'
@@ -179,6 +180,38 @@ const onApply = () => {
   drawer.visible = false
 }
 
+const treeNodeContextmenu = (event: MouseEvent, node: TreeNode, data: ConditionItem, isEditing: boolean = false) => {
+  Contextmenu({
+    event,
+    zIndex: 9999,
+    menus: [
+      {
+        label: isEditing ? '取消编辑' : '编辑条件',
+        divided: true,
+        onClick: () => {
+          if (isEditing) {
+            editNodeData.value = null
+          } else {
+            editNodeData.value = data
+          }
+        }
+      },
+      {
+        label: '添加子条件',
+        onClick: () => {
+          onAddCondition(data)
+        }
+      },
+      {
+        label: '删除',
+        onClick: () => {
+          onDeleteCondition(node, data)
+        }
+      }
+    ]
+  })
+}
+
 defineExpose({
   open
 })
@@ -214,7 +247,11 @@ defineExpose({
           empty-text="暂无筛选条件"
         >
           <template #default="{ node, data }">
-            <div v-if="editNodeData?.id !== data.id" class="i-tree-node">
+            <div
+              v-if="editNodeData?.id !== data.id"
+              class="i-tree-node"
+              @contextmenu.prevent.stop="treeNodeContextmenu($event, node, data)"
+            >
               <div style="display: flex;gap: 10px;flex: 1;align-items: center;line-height: 40px">
                 <el-checkbox v-model="data.use" :true-label="1" :false-label="0"/>
                 <div
@@ -274,7 +311,11 @@ defineExpose({
                 </el-tooltip>
               </div>
             </div>
-            <div v-else class="i-tree-node">
+            <div
+              v-else
+              class="i-tree-node"
+              @contextmenu.prevent.stop="treeNodeContextmenu($event, node, data, true)"
+            >
               <div style="display: flex;gap: 10px;">
                 <!-- 连接关系 -->
                 <el-button

@@ -5,8 +5,6 @@
  * @date 2023-07-04 21:
 -->
 <script setup lang="ts">
-import { ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElSelect, ElOption } from 'element-plus'
-import { ref } from 'vue'
 import { usePropValue } from '@/common/utils/VueUtils'
 import type { BasePropDefine } from '@/components/database/component/create-connection/common-form'
 import { useCommonForm } from '@/components/database/component/create-connection/common-form'

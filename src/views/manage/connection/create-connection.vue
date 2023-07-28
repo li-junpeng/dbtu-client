@@ -5,9 +5,6 @@
  * @date 2023-07-03 21:
 -->
 <script setup lang="ts">
-import { computed, defineAsyncComponent, reactive, ref, shallowRef } from 'vue'
-import { ElAside, ElButton, ElContainer, ElDialog, ElIcon, ElInput, ElMain, ElScrollbar } from 'element-plus'
-import { Lock as IconLock, Search as IconSearch } from '@element-plus/icons-vue'
 import { DatabaseTypes } from '@/common/constants/ConnectionConstant'
 import { StringUtils } from '@/common/utils/StringUtils'
 import { getCreateConnectionCom } from '@/components/database/component/create-connection'
@@ -160,10 +157,15 @@ defineExpose({
         <el-aside width="200px" style="height: 100%;overflow: hidden">
           <el-input
             v-model="searchDb"
-            :prefix-icon="IconSearch"
             clearable
             placeholder="输入数据库名称查询"
-          />
+          >
+            <template #prefix>
+              <el-icon>
+                <IconSearch/>
+              </el-icon>
+            </template>
+          </el-input>
           <el-scrollbar height="465px">
             <ul class="db-list-box">
               <li

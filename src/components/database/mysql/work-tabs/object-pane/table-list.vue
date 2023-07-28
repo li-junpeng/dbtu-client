@@ -5,7 +5,6 @@
  * @date 2023-07-21 11-16
 -->
 <script setup lang="ts">
-import { computed, ref } from 'vue'
 import type { ObjectPaneProps } from '@/views/manage/connection/work-tabs/object-pane'
 import type { RowEventHandlerParams, RowEventHandlers } from 'element-plus/es/components/table-v2/src/row'
 import type { Column, RowClassNameGetter } from 'element-plus'

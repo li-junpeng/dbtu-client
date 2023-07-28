@@ -51,11 +51,9 @@
 </template>
 
 <script setup lang="ts">
-import { ElIcon } from 'element-plus'
 import { ArrowRight, Loading } from '@element-plus/icons-vue'
 import { contextmenuProps } from './constants'
 import { useContextmenu } from './use-contextmenu'
-import { Ref, ref, toRef } from 'vue'
 
 const props = defineProps(contextmenuProps)
 

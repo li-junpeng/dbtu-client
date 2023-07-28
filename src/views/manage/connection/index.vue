@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { provide } from 'vue'
 import ConnectionList from './components/connection-list.vue'
 import CreateConnection from './create-connection.vue'
 import CreateGroup from './create-group.vue'

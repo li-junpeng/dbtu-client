@@ -5,10 +5,8 @@
  * @date 2023-07-01 21:
 -->
 <script setup lang="ts">
-import { ElIcon } from 'element-plus'
 import CommonHeader from '@/components/database/component/connection-detail/common-header.vue'
 import IconSvg from './icon.vue'
-import type { PropType } from 'vue'
 import { StringUtils } from '@/common/utils/StringUtils'
 
 defineProps({

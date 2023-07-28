@@ -5,8 +5,6 @@
  * @date 2023-07-27 22:
 -->
 <script setup lang="ts">
-import { computed } from 'vue'
-import { ElScrollbar } from 'element-plus'
 import hljs from 'highlight.js'
 
 defineOptions({

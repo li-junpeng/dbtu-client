@@ -5,8 +5,6 @@
  * @date 2023-07-01 21:
 -->
 <script setup lang="ts">
-import { ElIcon, ElScrollbar } from 'element-plus'
-import type { PropType } from 'vue'
 import { StringUtils } from '@/common/utils/StringUtils'
 import CommonHeader from '@/components/database/component/connection-detail/common-header.vue'
 import IconSvg from './icon.vue'
@@ -15,7 +13,7 @@ defineOptions({
   name: 'MySQLConnectionDetailComponent'
 })
 
-const props = defineProps({
+defineProps({
 
   connectionInfo: {
     type: Object as PropType<ConnectionInfo<MySQLConnectionInfo>>,

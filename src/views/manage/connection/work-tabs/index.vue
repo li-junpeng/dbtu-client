@@ -5,7 +5,7 @@
  * @date 2023-07-21 09-48
 -->
 <script setup lang="ts">
-import { ElTabPane, ElTabs, type TabPaneName, ElTooltip } from 'element-plus'
+import type { TabPaneName } from 'element-plus'
 import ObjectPane from './object-pane.vue'
 import { useWorkTabStore } from '@/stores/WorkTabStore'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'

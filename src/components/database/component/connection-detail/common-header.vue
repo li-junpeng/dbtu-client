@@ -5,8 +5,6 @@
  * @date 2023-07-03 11-25
 -->
 <script setup lang="ts">
-import { computed } from 'vue'
-import type { PropType } from 'vue'
 import { ConnectionStatus } from '@/common/constants/ConnectionConstant'
 
 defineOptions({
@@ -21,7 +19,7 @@ defineSlots<{
 const props = defineProps({
 
   connectionInfo: {
-    type: Object as PropType<ConnectionInfo<MySQLConnectionInfo>>,
+    type: Object as PropType<ConnectionInfo<BaseConnectionDetail>>,
     required: true
   }
 

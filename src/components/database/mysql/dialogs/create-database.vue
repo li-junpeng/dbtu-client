@@ -5,8 +5,7 @@
  * @date 2023-07-24 14-39
 -->
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue'
-import { ElForm, ElFormItem, ElInput, ElOption, ElSelect, ElTabPane, ElTabs } from 'element-plus'
+import type { FormRules } from 'element-plus'
 import CharacterAndCollate from '@/assets/data/mysql-character-collate.json'
 import { StringUtils } from '@/common/utils/StringUtils'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
@@ -24,10 +23,9 @@ const formData = ref<Optional<MySqlDatabaseNode, 'id' | 'status'>>({
   character: '',
   collate: ''
 })
-const formRules = {
+const formRules: FormRules = {
   name: [
     {
-      // @ts-ignore
       validator: (a, b, callback) => {
         if (StringUtils.isEmpty(formData.value.name)) {
           return callback('数据库名称为必填项')

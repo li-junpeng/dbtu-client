@@ -5,9 +5,7 @@
  * @date 2023-07-24 14-49
 -->
 <script setup lang="ts">
-import { ElDialog, ElButton } from 'element-plus'
 import { type FooterButton, useDynamicDialogStore } from '@/stores/DynamicDialogStore'
-import { onMounted, ref } from 'vue'
 
 defineOptions({
   name: 'DynamicDialogComponent'

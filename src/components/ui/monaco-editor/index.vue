@@ -5,7 +5,6 @@
  * @date 2023-07-25 10-02
 -->
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
 import * as monaco from 'monaco-editor'
 import { debounce } from 'lodash'
 import {

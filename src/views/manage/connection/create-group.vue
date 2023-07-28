@@ -5,8 +5,6 @@
  * @date 2023-07-14 17-06
 -->
 <script setup lang="ts">
-import { ElButton, ElDialog, ElForm, ElFormItem, ElInput } from 'element-plus'
-import { computed, reactive, ref } from 'vue'
 import { StringUtils } from '@/common/utils/StringUtils'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import { useConnectionStore } from '@/stores/ConnectionStore'

@@ -6,7 +6,9 @@
 export {}
 declare global {
   const EffectScope: typeof import('vue')['EffectScope']
+  const ElForm: typeof import('element-plus/es')['ElForm']
   const ElTree: typeof import('element-plus/es')['ElTree']
+  const ElTreeV2: typeof import('element-plus/es')['ElTreeV2']
   const computed: typeof import('vue')['computed']
   const createApp: typeof import('vue')['createApp']
   const customRef: typeof import('vue')['customRef']

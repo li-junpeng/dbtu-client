@@ -5,7 +5,6 @@
  * @date 2023-06-27 15-29
 -->
 <script setup lang="ts">
-import { defineAsyncComponent, shallowRef, watch } from 'vue'
 import { navTabs, useSystemSettingStore } from '@/stores/SystemSettingStore'
 
 defineOptions({

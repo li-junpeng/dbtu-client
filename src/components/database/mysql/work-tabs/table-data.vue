@@ -5,7 +5,6 @@
  * @date 2023-07-26 16-53
 -->
 <script setup lang="ts">
-import { computed, type PropType, ref } from 'vue'
 import type { Column } from 'element-plus'
 import { TooltipShowAfter, useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import MockData from '@/assets/data/mock-table-data-test.json'

@@ -5,20 +5,6 @@
  * @date 2023-07-03 23:
 -->
 <script setup lang="ts">
-import { ref } from 'vue'
-import {
-  ElCol,
-  ElFormItem,
-  ElInput,
-  ElInputNumber,
-  ElOption,
-  ElRow,
-  ElSelect,
-  ElSelectV2,
-  ElTabPane,
-  ElTabs,
-  ElSwitch
-} from 'element-plus'
 import type { FormRules } from 'element-plus'
 import { NumberUtils } from '@/common/utils/NumberUtils'
 import CommonForm from '@/components/database/component/create-connection/common-form.vue'

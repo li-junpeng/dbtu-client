@@ -5,9 +5,6 @@
  * @date 2023-06-27 21:
 -->
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { ElForm, ElFormItem, ElIcon, ElRadio, ElRadioGroup, ElSlider } from 'element-plus'
-import { Select as IconSelect } from '@element-plus/icons-vue'
 // region theme images
 import ThemeWhiteImg from '@/assets/images/theme/white.svg'
 import ThemeDarkImg from '@/assets/images/theme/dark.svg'

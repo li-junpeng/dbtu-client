@@ -5,11 +5,7 @@
  * @date 2023-07-17 15-13
 -->
 <script setup lang="ts">
-import type { PropType } from 'vue'
-import { onMounted, ref, shallowRef, watch } from 'vue'
-import { ElIcon } from 'element-plus'
 import { Folder as IconFolder, Loading as IconLoading } from '@element-plus/icons-vue'
-import type { ConnectionType } from '@/stores/ConnectionStore'
 import { DatabaseIcons } from '@/components/database/db-icons'
 import IconDatabase from '@/icons/svg/database.vue'
 import IconTable from '@/icons/svg/table.vue'
@@ -24,7 +20,7 @@ defineOptions({
 
 const props = defineProps({
   nodeData: {
-    type: Object as PropType<ConnectionType>,
+    type: Object as PropType<ConnectionTreeNode>,
     required: true
   }
 })

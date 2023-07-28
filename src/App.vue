@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
 import { useDark } from '@vueuse/core'
 import { useSystemSettingStore } from '@/stores/SystemSettingStore'
 import DynamicDialog from '@/components/ui/dynamic-dialog/index.vue'

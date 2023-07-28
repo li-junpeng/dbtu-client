@@ -5,14 +5,6 @@
  * @date 2023-07-14 16-35
 -->
 <script setup lang="ts">
-import { inject, watch } from 'vue'
-import { ElAutoResizer, ElButton, ElIcon, ElTooltip, ElTreeV2 } from 'element-plus'
-import {
-  FolderAdd as IconFolderAdd,
-  Minus as IconMinus,
-  MoreFilled as IconMoreFilled,
-  Plus as IconPlus
-} from '@element-plus/icons-vue'
 import { InjectionKey } from '@/common/constants/ConnectionConstant'
 import Contextmenu from '@/components/ui/contextmenu/src/contextmenu-install'
 import { useConnectionStore } from '@/stores/ConnectionStore'
@@ -332,18 +324,25 @@ const onClickTreeItem = (data: ConnectionTreeNode) => {
         :show-after="tooltipShowAfter"
       >
         <el-button
-          :icon="IconPlus"
           text
           link
           @click="() => openCreateConnection?.()"
-        ></el-button>
+        >
+          <template #icon>
+            <IconPlus/>
+          </template>
+        </el-button>
       </el-tooltip>
       <el-tooltip
         content="最小化"
         :enterable="false"
         :show-after="tooltipShowAfter"
       >
-        <el-button :icon="IconMinus" text link></el-button>
+        <el-button text link>
+          <template #icon>
+            <IconMinus/>
+          </template>
+        </el-button>
       </el-tooltip>
     </div>
   </div>

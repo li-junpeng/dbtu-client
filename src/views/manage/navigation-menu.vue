@@ -5,15 +5,13 @@
  * @date 2023-06-27 11:16
 -->
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
-import { ElIcon, ElTooltip } from 'element-plus'
 
 defineOptions({
   name: 'NavigationMenu'
 })
 
-const props = defineProps({
+defineProps({
   // 是否显示标签
   showLabel: {
     type: Boolean,

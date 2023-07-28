@@ -5,8 +5,6 @@
  * @date 2023-07-27 09-56
 -->
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
-import { ElTree } from 'element-plus'
 import type { TreeNode } from 'element-plus/es/components/tree-v2/src/types'
 import {
   type ConditionItem,

@@ -7,18 +7,6 @@
 <script setup lang="ts">
 import { computed, type PropType, ref } from 'vue'
 import type { Column } from 'element-plus'
-import { ElAutoResizer, ElButton, ElTableV2, ElTooltip } from 'element-plus'
-import {
-  CloseBold as IconCloseBold,
-  Plus as IconPlus,
-  RefreshRight as IconRefreshRight,
-  Select as IconSelect,
-  SemiSelect as IconSemiSelect
-} from '@element-plus/icons-vue'
-import IconSizer from '@/icons/svg/sizer.vue'
-import IconSort from '@/icons/svg/sort.vue'
-import IconDbImport from '@/icons/svg/db-import.vue'
-import IconDbExport from '@/icons/svg/db-export.vue'
 import { TooltipShowAfter, useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import MockData from '@/assets/data/mock-table-data-test.json'
 import SizerDrawer from '@/components/ui/sizer-drawer/index.vue'
@@ -27,7 +15,7 @@ defineExpose({
   name: 'MySQLWorkTabTableDataComponent'
 })
 
-const props = defineProps({
+defineProps({
   data: {
     type: Object as PropType<MySqlTableNode>,
     required: true
@@ -65,16 +53,28 @@ const openSizerDrawer = () => {
   <div class="table-data-container">
     <!-- 头部工具栏 -->
     <div class="header-toolbox">
-      <el-button text link :icon="IconSizer" @click="openSizerDrawer()">
+      <el-button text link @click="openSizerDrawer()">
+        <template #icon>
+          <DIconSizer/>
+        </template>
         <span>筛选</span>
       </el-button>
-      <el-button text link :icon="IconSort" disabled>
+      <el-button text link disabled>
+        <template #icon>
+          <DIconSort/>
+        </template>
         <span>排序</span>
       </el-button>
-      <el-button text link :icon="IconDbImport" disabled>
+      <el-button text link disabled>
+        <template #icon>
+          <DIconDbImport/>
+        </template>
         <span>导入数据</span>
       </el-button>
-      <el-button text link :icon="IconDbExport" disabled>
+      <el-button text link disabled>
+        <template #icon>
+          <DIconDbExport/>
+        </template>
         <span>导出数据</span>
       </el-button>
     </div>
@@ -103,35 +103,55 @@ const openSizerDrawer = () => {
           :enterable="false"
           :show-after="TooltipShowAfter"
         >
-          <el-button :icon="IconPlus" text link disabled></el-button>
+          <el-button text link disabled>
+            <template #icon>
+              <IconPlus/>
+            </template>
+          </el-button>
         </el-tooltip>
         <el-tooltip
           content="删除记录"
           :enterable="false"
           :show-after="TooltipShowAfter"
         >
-          <el-button :icon="IconSemiSelect" text link disabled></el-button>
+          <el-button text link disabled>
+            <template #icon>
+              <IconSemiSelect/>
+            </template>
+          </el-button>
         </el-tooltip>
         <el-tooltip
           content="应用更改"
           :enterable="false"
           :show-after="TooltipShowAfter"
         >
-          <el-button :icon="IconSelect" text link disabled></el-button>
+          <el-button text link disabled>
+            <template #icon>
+              <IconSelect/>
+            </template>
+          </el-button>
         </el-tooltip>
         <el-tooltip
           content="放弃更改"
           :enterable="false"
           :show-after="TooltipShowAfter"
         >
-          <el-button :icon="IconCloseBold" text link disabled></el-button>
+          <el-button text link disabled>
+            <template #icon>
+              <IconCloseBold/>
+            </template>
+          </el-button>
         </el-tooltip>
         <el-tooltip
           content="刷新"
           :enterable="false"
           :show-after="TooltipShowAfter"
         >
-          <el-button :icon="IconRefreshRight" text link></el-button>
+          <el-button text link>
+            <template #icon>
+              <IconRefreshRight/>
+            </template>
+          </el-button>
         </el-tooltip>
       </div>
     </div>

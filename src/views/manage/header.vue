@@ -1,12 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { ElIcon } from 'element-plus'
 import DefaultAvatarImg from '@/assets/images/avatars/avatar-30.png'
-// icons
-import IconSetting from '@/icons/svg/setting.vue'
-import IconApplication from '@/icons/svg/application.vue'
-import IconGithub from '@/icons/svg/app-github.vue'
-import IconNotify from '@/icons/svg/notify.vue'
+
 // store
 import { useUserInfoStore } from '@/stores/UserInfoStore'
 import { useSystemSettingStore } from '@/stores/SystemSettingStore'
@@ -70,7 +64,7 @@ const openSystemSettingDialog = () => {
         class="right-box__item"
       >
         <el-icon :size="18">
-          <IconNotify/>
+          <DIconNotify/>
         </el-icon>
         <span>消息</span>
       </div>
@@ -80,21 +74,21 @@ const openSystemSettingDialog = () => {
         @click="openSystemSettingDialog"
       >
         <el-icon :size="18">
-          <IconSetting/>
+          <DIconSetting/>
         </el-icon>
         <span>设置</span>
       </div>
 
       <div class="right-box__item">
         <el-icon :size="16">
-          <IconApplication/>
+          <DIconApplication/>
         </el-icon>
         <span>应用商店</span>
       </div>
 
       <div class="right-box__item">
         <el-icon :size="17">
-          <IconGithub/>
+          <DIconAppGithub/>
         </el-icon>
         <a href="https://github.com/li-junpeng/dbtu-client" target="_blank">GitHub，点个Star</a>
       </div>

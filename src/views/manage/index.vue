@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
-import { ElAside, ElContainer, ElHeader } from 'element-plus'
-
 import PageHeader from './header.vue'
 import NavigationMenu from './navigation-menu.vue'
 

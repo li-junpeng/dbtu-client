@@ -6,20 +6,8 @@
 -->
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
-import {
-  ElButton,
-  ElCheckbox,
-  ElDrawer,
-  ElInput,
-  ElOption,
-  ElScrollbar,
-  ElSelect,
-  ElTooltip,
-  ElTree
-} from 'element-plus'
+import { ElTree } from 'element-plus'
 import type { TreeNode } from 'element-plus/es/components/tree-v2/src/types'
-import IconAddCondition from '@/icons/svg/add-condition.vue'
-import { Delete as IconDelete, EditPen as IconEditPen, CloseBold as IconCloseBold } from '@element-plus/icons-vue'
 import {
   type ConditionItem,
   type SizerDrawerProp,
@@ -209,7 +197,12 @@ defineExpose({
     :size="780"
   >
     <div class="toolbox">
-      <el-button text link :icon="IconAddCondition" @click="onAddCondition()">添加条件</el-button>
+      <el-button text link @click="onAddCondition()">
+        <template #icon>
+          <DIconAddCondition/>
+        </template>
+        <span>添加条件</span>
+      </el-button>
     </div>
     <div style="width: 100%;height: calc(100% - 270px)">
       <el-scrollbar>
@@ -247,25 +240,39 @@ defineExpose({
                   :enterable="false"
                   :show-after="TooltipShowAfter"
                 >
-                  <el-button text link :icon="IconEditPen" @click="editNodeData = data"></el-button>
+                  <el-button text link @click="editNodeData = data">
+                    <template #icon>
+                      <IconEditPen/>
+                    </template>
+                  </el-button>
                 </el-tooltip>
                 <el-tooltip
                   content="添加子条件"
                   :enterable="false"
                   :show-after="TooltipShowAfter"
                 >
-                  <el-button text link
-                             :icon="IconAddCondition"
-                             @click="onAddCondition(data)"></el-button>
+                  <el-button
+                    text
+                    link
+                    @click="onAddCondition(data)">
+                    <template #icon>
+                      <DIconAddCondition/>
+                    </template>
+                  </el-button>
                 </el-tooltip>
                 <el-tooltip
                   content="删除"
                   :enterable="false"
                   :show-after="TooltipShowAfter"
                 >
-                  <el-button text link
-                             :icon="IconDelete"
-                             @click="onDeleteCondition(node, data)"></el-button>
+                  <el-button
+                    text
+                    link
+                    @click="onDeleteCondition(node, data)">
+                    <template #icon>
+                      <IconDelete/>
+                    </template>
+                  </el-button>
                 </el-tooltip>
               </div>
             </div>
@@ -335,10 +342,13 @@ defineExpose({
                   <el-button
                     text
                     link
-                    :icon="IconCloseBold"
                     :disabled="isNotNeedValue(data.condition) && !data.value"
                     @click="editNodeData = null"
-                  ></el-button>
+                  >
+                    <template #icon>
+                      <IconCloseBold/>
+                    </template>
+                  </el-button>
                 </el-tooltip>
                 <el-tooltip
                   content="添加子条件"
@@ -348,8 +358,11 @@ defineExpose({
                   <el-button
                     text
                     link
-                    :icon="IconAddCondition"
-                    @click="onAddCondition(data)"></el-button>
+                    @click="onAddCondition(data)">
+                    <template #icon>
+                      <DIconAddCondition/>
+                    </template>
+                  </el-button>
                 </el-tooltip>
                 <el-tooltip
                   content="删除"
@@ -359,8 +372,11 @@ defineExpose({
                   <el-button
                     text
                     link
-                    :icon="IconDelete"
-                    @click="onDeleteCondition(node, data)"></el-button>
+                    @click="onDeleteCondition(node, data)">
+                    <template #icon>
+                      <IconDelete/>
+                    </template>
+                  </el-button>
                 </el-tooltip>
               </div>
             </div>

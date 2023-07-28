@@ -6,8 +6,6 @@
 -->
 <script setup lang="ts">
 import { defineAsyncComponent, shallowRef, watch } from 'vue'
-import { ElDialog, ElIcon } from 'element-plus'
-import IconReset from '@/icons/svg/reset.vue'
 import { navTabs, useSystemSettingStore } from '@/stores/SystemSettingStore'
 
 defineOptions({
@@ -77,7 +75,7 @@ watch(() => systemSettingStore.activeTab, () => {
 
         <div class="reset-setting">
           <el-icon>
-            <IconReset/>
+            <DIconReset/>
           </el-icon>
           <span>恢复默认值</span>
         </div>

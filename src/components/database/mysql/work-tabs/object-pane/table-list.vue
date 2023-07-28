@@ -6,22 +6,12 @@
 -->
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { type ObjectPaneProps } from '@/views/manage/connection/work-tabs/object-pane'
-import { type Column, type RowClassNameGetter, ElAutoResizer, ElButton, ElIcon, ElTableV2, ElInput } from 'element-plus'
-import {
-  Search as IconSearch,
-  CirclePlus as IconCirclePlus,
-  Delete as IconDelete,
-  EditPen as IconEditPen,
-  FolderOpened as IconFolderOpened
-} from '@element-plus/icons-vue'
-import IconDbImport from '@/icons/svg/db-import.vue'
-import IconDbExport from '@/icons/svg/db-export.vue'
-import IconTable from '@/icons/svg/table.vue'
-import { StringUtils } from '@/common/utils/StringUtils'
+import type { ObjectPaneProps } from '@/views/manage/connection/work-tabs/object-pane'
 import type { RowEventHandlerParams, RowEventHandlers } from 'element-plus/es/components/table-v2/src/row'
-import { useConnectionSessionStore } from '@/stores/ConnectionSessionStroe'
+import type { Column, RowClassNameGetter } from 'element-plus'
 import type { MySQLConnectionSession } from '@/components/database/mysql/connection-session'
+import { useConnectionSessionStore } from '@/stores/ConnectionSessionStroe'
+import { StringUtils } from '@/common/utils/StringUtils'
 import Contextmenu from '@/components/ui/contextmenu'
 
 defineOptions({
@@ -165,58 +155,66 @@ const openTable = () => {
       <el-button
         text
         link
-        :icon="IconFolderOpened"
         :disabled="!selectedRow"
         @click="openTable"
       >
+        <template #icon>
+          <IconFolderOpened/>
+        </template>
         <span>打开表</span>
       </el-button>
       <el-button
         text
         link
-        :icon="IconEditPen"
         :disabled="!selectedRow"
       >
+        <template #icon>
+          <IconEditPen/>
+        </template>
         <span>设计表</span>
       </el-button>
-      <el-button
-        text
-        link
-        :icon="IconCirclePlus"
-      >
+      <el-button text link>
+        <template #icon>
+          <IconCirclePlus/>
+        </template>
         <span>新建表</span>
       </el-button>
       <el-button
         text
         link
-        :icon="IconDelete"
         :disabled="!selectedRow"
         @click="connectionSession.deleteTable(selectedRow!)"
       >
+        <template #icon>
+          <IconDelete/>
+        </template>
         <span>删除表</span>
       </el-button>
-      <el-button
-        text
-        link
-        :icon="IconDbImport"
-      >
+      <el-button text link>
+        <template #icon>
+          <DIconDbImport/>
+        </template>
         <span>导入向导</span>
       </el-button>
-      <el-button
-        text
-        link
-        :icon="IconDbExport"
-      >
+      <el-button text link>
+        <template #icon>
+            <DIconDbExport/>
+        </template>
         <span>导出向导</span>
       </el-button>
     </div>
     <el-input
       v-model="searchName"
-      :prefix-icon="IconSearch"
       clearable
       style="width: 300px"
       placeholder="输入表名查询"
-    />
+    >
+      <template #prefix>
+        <el-icon>
+          <IconSearch/>
+        </el-icon>
+      </template>
+    </el-input>
   </div>
   <!-- 数据列表 -->
   <div class="table-list-wrapper">
@@ -242,7 +240,7 @@ const openTable = () => {
               class="table-name-cell"
             >
               <el-icon>
-                <IconTable/>
+                <DIconTable/>
               </el-icon>
               <span>{{ rowData[column.key] }}</span>
             </div>

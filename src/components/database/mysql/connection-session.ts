@@ -549,9 +549,6 @@ const TreeNodeContextmenu = {
   },
 
   table: (event: MouseEvent, data: TableNode, session: MySQLConnectionSession) => {
-    console.log(data)
-
-
     Contextmenu({
       event,
       menus: [

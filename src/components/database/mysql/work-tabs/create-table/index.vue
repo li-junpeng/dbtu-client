@@ -14,6 +14,9 @@ import IndexToolbox from './toolbox/index.vue'
 import FkToolbox from './toolbox/fk.vue'
 import TriggerToolbox from './toolbox/trigger.vue'
 
+// tab-pane components
+import FieldTabPane from './tabs/field.vue'
+
 defineOptions({
   name: 'MySQLCreateTableComponent'
 })
@@ -54,7 +57,7 @@ const tab = reactive({
       style="--el-tab-pane-width: 80px;width: 100%;height: 100%;"
     >
       <el-tab-pane label="字段" :name="TabNames.field">
-
+        <field-tab-pane/>
       </el-tab-pane>
       <el-tab-pane label="索引" :name="TabNames.index">
 

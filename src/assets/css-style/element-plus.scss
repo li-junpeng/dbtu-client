@@ -34,12 +34,12 @@
 
 .el-input-number__text-left {
   &.is-without-controls .el-input__wrapper {
-    padding-left: 11px;
-    padding-right: 11px;
+    padding-left: 11px !important;
+    padding-right: 11px !important;
   }
 
   .el-input__inner {
-    text-align: left;
+    text-align: left !important;
   }
 }
 
@@ -69,6 +69,7 @@
   --el-table-bg-color: var(--dbtu-background-color);
   --el-table-tr-bg-color: var(--dbtu-background-color);
 
+  &.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell,
   &--enable-row-hover .el-table__body tr:hover > td.el-table__cell {
     background-color: var(--dbtu-hover-color);
   }
@@ -92,7 +93,6 @@
   .el-table__body tr.current-row > td.el-table__cell {
     background-color: var(--dbtu-hover-color);
   }
-
 }
 
 .el-table-v2 {
@@ -231,6 +231,6 @@
 
 .el-checkbox {
   .el-checkbox__inner {
-    border-color: var(--dbtu-theme-hover-color);
+    border-color: var(--dbtu-font-color-disabled);
   }
 }

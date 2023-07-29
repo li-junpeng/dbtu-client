@@ -7,9 +7,8 @@
 <script setup lang="ts">
 import type { DataSortDrawerProp, DataSortItem } from '@/components/ui/data-sort-drawer/define'
 import { DataSortDrawerPropDefault } from '@/components/ui/data-sort-drawer/define'
-import SqlCodePreview from '@/components/ui/sql-code-preview/index.vue'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
-import { computed } from 'vue'
+import SqlCodePreview from '@/components/ui/sql-code-preview/index.vue'
 
 defineOptions({
   name: 'DataSortDrawerComponent'
@@ -19,12 +18,15 @@ const drawer = reactive({
   visible: false
 })
 const props = withDefaults(defineProps<DataSortDrawerProp>(), DataSortDrawerPropDefault)
+const emits = defineEmits<{
+  (e: 'apply-sort', sql: string): void
+}>()
 const sorts = reactive<DataSortItem[]>([])
 const sql = computed(() => {
   const array: string[] = []
   sorts.forEach(item => {
     if (item.use) {
-      array.push(`\'${item.field}\' ${item.rule}`)
+      array.push(`\`${item.field}\` ${item.rule}`)
     }
   })
   return array.join(', ')
@@ -48,8 +50,13 @@ const onAddSort = () => {
   })
 }
 
-const onApply = () => {
+const onChangeRule = (item: DataSortItem) => {
+  item.rule = item.rule === 'ASC' ? 'DESC' : 'ASC'
+}
 
+const onApply = () => {
+  emits('apply-sort', sql.value)
+  drawer.visible = false
 }
 
 defineExpose({
@@ -74,6 +81,7 @@ defineExpose({
         <span>添加排序</span>
       </el-button>
     </div>
+
     <div style="width: 100%;height: calc(100% - 270px);">
       <el-scrollbar v-if="sorts.length >= 1">
         <div
@@ -86,11 +94,37 @@ defineExpose({
             :true-label="1"
             :false-label="0"
           />
-          <span class="keyword-text">{{ item.field }}</span>
+          <el-popover
+            :width="300"
+            trigger="click"
+            :hide-after="0"
+            :persistent="false"
+          >
+            <template #reference>
+              <span class="keyword-text" style="cursor: pointer">{{ item.field }}</span>
+            </template>
+            <template #default>
+              <div style="width: 100%; height: 300px;">
+                <el-scrollbar>
+                  <div
+                    v-for="field in fields"
+                    :key="field"
+                    class="data-field-item"
+                    :class="{
+                      'is-selected': item.field === field
+                    }"
+                    @click="item.field = field"
+                  >
+                    <span class="dbtu-text-ellipsis">{{ field }}</span>
+                  </div>
+                </el-scrollbar>
+              </div>
+            </template>
+          </el-popover>
           <el-button
             text
             link
-            @click="item.rule = item.rule === 'ASC' ? 'DESC' : 'ASC'"
+            @click="onChangeRule(item)"
           >
             <span>{{ item.rule }}</span>
           </el-button>
@@ -144,6 +178,29 @@ defineExpose({
 
   .keyword-text {
     color: var(--dbtu-theme-color);
+  }
+}
+
+.data-field-item {
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 10px;
+  cursor: pointer;
+
+  &:not(.is-selected):hover {
+    background-color: var(--dbtu-hover-color);
+  }
+
+  &.is-selected {
+    background-color: var(--dbtu-theme-color);
+    color: #fff;
+    border-radius: var(--dbtu-border-radius);
+  }
+
+  span {
+    display: inline-block;
+    width: 100%;
   }
 }
 </style>

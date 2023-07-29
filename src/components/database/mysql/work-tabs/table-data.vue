@@ -26,6 +26,8 @@ const dataSortDrawerRef = useComponentRef(DataSortDrawer)
 const fields = [] as string[]
 // 查询条件
 const whereSql = ref('')
+// 排序语句
+const sortSql = ref('')
 const columns = computed<Column[]>(() => {
   const row = MockData.RECORDS[0]
   const columns = []
@@ -172,6 +174,7 @@ const openDataFilter = () => {
   <data-sort-drawer
     ref="dataSortDrawerRef"
     :fields="fields"
+    @apply-sort="sql => sortSql = sql"
   />
 </template>
 

@@ -124,9 +124,9 @@ defineExpose({
               :persistent="false"
             >
               <template #reference>
-                <span class="keyword-text dbtu-text-ellipsis" style="cursor: pointer;max-width: 300px;">{{
-                    item.field
-                  }}</span>
+                <span class="keyword-text dbtu-text-ellipsis" style="cursor: pointer;max-width: 300px;">
+                  {{ item.field }}
+                </span>
               </template>
               <template #default>
                 <div style="width: 100%; height: 300px;">
@@ -136,8 +136,8 @@ defineExpose({
                       :key="field"
                       class="data-field-item"
                       :class="{
-                      'is-selected': item.field === field
-                    }"
+                        'is-selected': item.field === field
+                      }"
                       @click="item.field = field"
                     >
                       <span class="dbtu-text-ellipsis">{{ field }}</span>

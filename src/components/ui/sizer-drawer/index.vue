@@ -36,7 +36,6 @@ const emits = defineEmits<{
   (e: 'apply-sizer', sql: string): void
 }>()
 const conditions = reactive<ConditionItem[]>([])
-const editNodeData = ref<ConditionItem | null>(null)
 
 const open = () => {
   drawer.visible = true
@@ -47,7 +46,7 @@ const onAddCondition = (parent?: ConditionItem) => {
     id: Date.now(),
     field: props.fields[0],
     condition: 'equal',
-    value: '?',
+    value: '',
     relation: 'AND',
     childrenRelation: 'AND',
     use: 1
@@ -180,22 +179,16 @@ const onApply = () => {
   drawer.visible = false
 }
 
-const treeNodeContextmenu = (event: MouseEvent, node: TreeNode, data: ConditionItem, isEditing: boolean = false) => {
+const onChangeRelation = (item: ConditionItem, field: 'relation' | 'childrenRelation') => {
+  const old = item[field]
+  item[field] = old === 'AND' ? 'OR' : 'AND'
+}
+
+const treeNodeContextmenu = (event: MouseEvent, node: TreeNode, data: ConditionItem) => {
   Contextmenu({
     event,
     zIndex: 9999,
     menus: [
-      {
-        label: isEditing ? '取消编辑' : '编辑条件',
-        divided: true,
-        onClick: () => {
-          if (isEditing) {
-            editNodeData.value = null
-          } else {
-            editNodeData.value = data
-          }
-        }
-      },
       {
         label: '添加子条件',
         onClick: () => {
@@ -225,7 +218,7 @@ defineExpose({
     :append-to-body="props.appendToBody"
     :close-on-click-modal="false"
     direction="rtl"
-    :size="780"
+    :size="500"
   >
     <div class="toolbox">
       <el-button text link @click="onAddCondition()">
@@ -248,7 +241,6 @@ defineExpose({
         >
           <template #default="{ node, data }">
             <div
-              v-if="editNodeData?.id !== data.id"
               class="i-tree-node"
               @contextmenu.prevent.stop="treeNodeContextmenu($event, node, data)"
             >
@@ -262,133 +254,92 @@ defineExpose({
                     '--sizer-key-color': data.use ? 'var(--dbtu-theme-color)' : 'var(--dbtu-border-disabled-color)'
                   }"
                 >
-                  <span v-if="!isFirstNode(node) && data.use">{{ data['relation'] }}</span>
-                  <span :style="{color: 'var(--sizer-key-color)'}">{{ data['field'] }}</span>
-                  <span>{{ JudgeConditions[data['condition']] }}</span>
-                  <span :style="{color: 'var(--sizer-key-color)'}">{{ data.value }}</span>
-                  <span v-if="data.children && data.children.length >= 1">{{ data['childrenRelation'] }}</span>
+                  <!-- 与相邻节点的关系 -->
+                  <span
+                    v-if="!isFirstNode(node) && data.use"
+                    @click="onChangeRelation(data, 'relation')"
+                  >{{ data['relation'] }}</span>
+                  <!-- 字段 -->
+                  <el-popover
+                    :width="200"
+                    trigger="click"
+                    :hide-after="0"
+                    :persistent="false"
+                  >
+                    <template #reference>
+                      <span :style="{
+                        color: 'var(--sizer-key-color)'}"
+                      >{{ data['field'] }}</span>
+                    </template>
+                    <template #default>
+                      <div style="width: 100%;height: 300px;">
+                        <el-scrollbar>
+                          <div
+                            v-for="item in props.fields"
+                            :key="item"
+                            @click="data.field = item"
+                            class="data-field-item"
+                            :class="{
+                              'is-selected': data.field === item
+                            }"
+                          >
+
+                            <span class="dbtu-text-ellipsis">{{ item }}</span>
+                          </div>
+                        </el-scrollbar>
+                      </div>
+                    </template>
+                  </el-popover>
+                  <!-- 运算符 -->
+                  <el-popover
+                    :width="200"
+                    trigger="click"
+                    :hide-after="0"
+                    :persistent="false"
+                  >
+                    <template #reference>
+                      <span>{{ JudgeConditions[data['condition']] }}</span>
+                    </template>
+                    <template #default>
+                      <div style="width: 100%;height: 300px;">
+                        <el-scrollbar>
+                          <div
+                            v-for="(label, key) in JudgeConditions"
+                            :key="key"
+                            @click="data.condition = key"
+                            class="data-field-item"
+                            :class="{
+                              'is-selected': data.condition === key
+                            }"
+                          >{{ label }}
+                          </div>
+                        </el-scrollbar>
+                      </div>
+                    </template>
+                  </el-popover>
+                  <!-- 值 -->
+                  <el-popover
+                    v-if="isNotNeedValue(data.condition)"
+                    :width="300"
+                    trigger="click"
+                    :hide-after="0"
+                    :persistent="false"
+                  >
+                    <template #reference>
+                      <span :style="{color: 'var(--sizer-key-color)'}">{{ data.value || '?' }}</span>
+                    </template>
+                    <template #default>
+                      <el-input v-model="data.value"/>
+                    </template>
+                  </el-popover>
+                  <!-- 与子条件的关系 -->
+                  <span
+                    v-if="data.children && data.children.length >= 1"
+                    @click="onChangeRelation(data, 'childrenRelation')"
+                  >{{ data['childrenRelation'] }}</span>
                 </div>
               </div>
               <div class="i-tree-node__btns">
-                <el-tooltip
-                  content="编辑条件"
-                  :enterable="false"
-                  :show-after="TooltipShowAfter"
-                >
-                  <el-button text link @click="editNodeData = data">
-                    <template #icon>
-                      <IconEditPen/>
-                    </template>
-                  </el-button>
-                </el-tooltip>
-                <el-tooltip
-                  content="添加子条件"
-                  :enterable="false"
-                  :show-after="TooltipShowAfter"
-                >
-                  <el-button
-                    text
-                    link
-                    @click="onAddCondition(data)">
-                    <template #icon>
-                      <DIconAddCondition/>
-                    </template>
-                  </el-button>
-                </el-tooltip>
-                <el-tooltip
-                  content="删除"
-                  :enterable="false"
-                  :show-after="TooltipShowAfter"
-                >
-                  <el-button
-                    text
-                    link
-                    @click="onDeleteCondition(node, data)">
-                    <template #icon>
-                      <IconDelete/>
-                    </template>
-                  </el-button>
-                </el-tooltip>
-              </div>
-            </div>
-            <div
-              v-else
-              class="i-tree-node"
-              @contextmenu.prevent.stop="treeNodeContextmenu($event, node, data, true)"
-            >
-              <div style="display: flex;gap: 10px;">
-                <!-- 连接关系 -->
-                <el-button
-                  v-if="!isFirstNode(node)"
-                  text
-                  link
-                  type="primary"
-                  @click="data.relation = data.relation === 'AND' ? 'OR' : 'AND'"
-                  style="width: 40px;"
-                >
-                  <span>{{ data['relation'] }}</span>
-                </el-button>
-                <!-- 字段 -->
-                <el-select
-                  v-model="data.field"
-                  filterable
-                  style="width: 200px;"
-                >
-                  <el-option
-                    v-for="field in props.fields"
-                    :key="field"
-                    :value="field"
-                    :label="field"
-                  />
-                </el-select>
-                <!-- 判断条件 -->
-                <el-select
-                  v-model="data.condition"
-                  style="width: 120px;"
-                >
-                  <el-option
-                    v-for="(label, key) in JudgeConditions"
-                    :key="key"
-                    :value="key"
-                    :label="label"
-                  />
-                </el-select>
-                <!-- 值 -->
-                <el-input
-                  v-if="isNotNeedValue(data.condition)"
-                  v-model="data.value"
-                  style="flex: 1"
-                />
-                <!-- 与子语句连接关系 -->
-                <el-button
-                  v-if="data.children && data.children.length >= 1"
-                  text
-                  link
-                  type="primary"
-                  @click="data.childrenRelation = data.childrenRelation === 'AND' ? 'OR' : 'AND'"
-                  style="width: 40px;"
-                >
-                  <span>{{ data['childrenRelation'] }}</span>
-                </el-button>
-              </div>
-              <div>
-                <!-- 按钮组 -->
-                <el-tooltip
-                  content="取消编辑"
-                  :enterable="false"
-                  :show-after="TooltipShowAfter"
-                >
-                  <el-button
-                    text
-                    link
-                    :disabled="isNotNeedValue(data.condition) && !data.value"
-                    @click="editNodeData = null"
-                  >
-                    <template #icon>
-                      <IconCloseBold/>
-                    </template>
-                  </el-button>
-                </el-tooltip>
                 <el-tooltip
                   content="添加子条件"
                   :enterable="false"
@@ -472,6 +423,29 @@ defineExpose({
       gap: 10px;
       padding-right: 10px;
     }
+  }
+}
+
+.data-field-item {
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  padding: 0 10px;
+  cursor: pointer;
+
+  &:not(.is-selected):hover {
+    background-color: var(--dbtu-hover-color);
+  }
+
+  &.is-selected {
+    background-color: var(--dbtu-theme-color);
+    color: #fff;
+    border-radius: var(--dbtu-border-radius);
+  }
+
+  span {
+    display: inline-block;
+    width: 100%;
   }
 }
 </style>

@@ -133,17 +133,19 @@ interface MySqlDatabaseNode extends DatabaseNode {
 }
 
 interface TableNode extends ConnectionTreeNode {
+  // 数据库ID
+  databaseId: number
   nodeType: 'table'
   children?: ConnectionTreeNode[]
 }
 
 interface TableInstanceNode extends ConnectionTreeNode {
+  // 数据库ID
+  databaseId: number
   nodeType: 'table_instance'
 }
 
 interface MySqlTableNode extends TableInstanceNode {
-  // 数据库ID
-  databaseId: number
   // 自动递增值
   autoIncrement: number | null
   // 修改日期

@@ -53,7 +53,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
         TreeNodeContextmenu.database(event, data as MySqlDatabaseNode, this)
         break
       case 'table':
-        TreeNodeContextmenu.table(event, data as TableNode)
+        TreeNodeContextmenu.table(event, data as TableNode, this)
         break
       case 'table_instance':
         Contextmenu({
@@ -71,7 +71,9 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
             },
             {
               label: '新建表',
-              disabled: true
+              onClick: () => {
+                this.openCreateTable((data as MySqlTableNode).databaseId)
+              }
             },
             {
               label: '删除表',
@@ -177,6 +179,12 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
     }
   }
 
+  /**
+   * 通过数据库的ID获取数据库信息
+   *
+   * @param databaseId   数据库ID
+   * @return 数据库信息或者null
+   */
   getDatabase(databaseId: number): MySqlDatabaseNode | null {
     for (let i = 0; i < this.connection.children!.length; i++) {
       const database = this.connection.children![i] as MySqlDatabaseNode
@@ -299,6 +307,11 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
 
   // region 数据表相关操作 start //
 
+  /**
+   * 打开表实例，在work-tab中添加表数据组件
+   *
+   * @param data  表实例信息
+   */
   openTableInstance(data: MySqlTableNode) {
     const databaseName = this.connection.children!.find(item => item.id === data.databaseId)?.name || '未知的数据库'
     const tabId = `${data.sessionId!}_${data.databaseId}_${data.id}`
@@ -309,6 +322,27 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
       props: {
         tableInfo: data,
         workTabId: tabId
+      }
+    })
+  }
+
+  /**
+   * 在work-tab中打开创建表
+   *
+   * @param databaseId  数据库ID
+   */
+  openCreateTable(databaseId: number) {
+    const database = this.getDatabase(databaseId)
+    if (!database) {
+      MessageBox.error('未找到数据库信息，无法创建表，请刷新页面后再试。').then()
+      return
+    }
+    workTabStore.addTab({
+      id: `create_table_${database.sessionId}_${databaseId}`,
+      label: `创建表 - 无标题 @${database.name} (${this.connection.name})`,
+      component: () => import('@/components/database/mysql/work-tabs/create-table/index.vue'),
+      props: {
+        database
       }
     })
   }
@@ -343,6 +377,7 @@ const TreeNodeContextmenu = {
         data.children = []
         data.children.push({
           id: Date.now() + 1,
+          databaseId: data.id,
           sessionId: data.sessionId,
           name: '表',
           nodeType: 'table',
@@ -513,7 +548,7 @@ const TreeNodeContextmenu = {
     })
   },
 
-  table: (event: MouseEvent, data: TableNode) => {
+  table: (event: MouseEvent, data: TableNode, session: MySQLConnectionSession) => {
     console.log(data)
 
 
@@ -523,7 +558,9 @@ const TreeNodeContextmenu = {
         {
           label: '新建表',
           divided: true,
-          disabled: true
+          onClick: () => {
+            session.openCreateTable(data.databaseId)
+          }
         },
         {
           label: '导入向导',

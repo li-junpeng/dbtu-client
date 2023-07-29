@@ -9,6 +9,8 @@ import type { DataSortDrawerProp, DataSortItem } from '@/components/ui/data-sort
 import { DataSortDrawerPropDefault } from '@/components/ui/data-sort-drawer/define'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import SqlCodePreview from '@/components/ui/sql-code-preview/index.vue'
+import { TooltipShowAfter } from '@/components/element-plus/elemenet-plus-util'
+import Contextmenu from '@/components/ui/contextmenu'
 
 defineOptions({
   name: 'DataSortDrawerComponent'
@@ -59,6 +61,25 @@ const onApply = () => {
   drawer.visible = false
 }
 
+const onDeleteSort = (index: number) => {
+  sorts.splice(index, 1)
+}
+
+const sortItemContextmenu = (event: MouseEvent, index: number) => {
+  Contextmenu({
+    event,
+    zIndex: 9999,
+    menus: [
+      {
+        label: '删除规则',
+        onClick: () => {
+          sorts.splice(index, 1)
+        }
+      }
+    ]
+  })
+}
+
 defineExpose({
   open
 })
@@ -85,49 +106,71 @@ defineExpose({
     <div style="width: 100%;height: calc(100% - 270px);">
       <el-scrollbar v-if="sorts.length >= 1">
         <div
-          v-for="item in sorts"
+          v-for="(item, index) in sorts"
           :key="item.key"
           class="data-sort-item dbtu-un-user-select"
+          @contextmenu.prevent="sortItemContextmenu($event, index)"
         >
-          <el-checkbox
-            v-model="item.use"
-            :true-label="1"
-            :false-label="0"
-          />
-          <el-popover
-            :width="300"
-            trigger="click"
-            :hide-after="0"
-            :persistent="false"
-          >
-            <template #reference>
-              <span class="keyword-text" style="cursor: pointer">{{ item.field }}</span>
-            </template>
-            <template #default>
-              <div style="width: 100%; height: 300px;">
-                <el-scrollbar>
-                  <div
-                    v-for="field in fields"
-                    :key="field"
-                    class="data-field-item"
-                    :class="{
+          <div class="data-sort-item__left">
+            <el-checkbox
+              v-model="item.use"
+              :true-label="1"
+              :false-label="0"
+            />
+            <el-popover
+              :width="300"
+              trigger="click"
+              :hide-after="0"
+              :persistent="false"
+            >
+              <template #reference>
+                <span class="keyword-text dbtu-text-ellipsis" style="cursor: pointer;max-width: 300px;">{{
+                    item.field
+                  }}</span>
+              </template>
+              <template #default>
+                <div style="width: 100%; height: 300px;">
+                  <el-scrollbar>
+                    <div
+                      v-for="field in fields"
+                      :key="field"
+                      class="data-field-item"
+                      :class="{
                       'is-selected': item.field === field
                     }"
-                    @click="item.field = field"
-                  >
-                    <span class="dbtu-text-ellipsis">{{ field }}</span>
-                  </div>
-                </el-scrollbar>
-              </div>
-            </template>
-          </el-popover>
-          <el-button
-            text
-            link
-            @click="onChangeRule(item)"
-          >
-            <span>{{ item.rule }}</span>
-          </el-button>
+                      @click="item.field = field"
+                    >
+                      <span class="dbtu-text-ellipsis">{{ field }}</span>
+                    </div>
+                  </el-scrollbar>
+                </div>
+              </template>
+            </el-popover>
+            <el-button
+              text
+              link
+              @click="onChangeRule(item)"
+            >
+              <span>{{ item.rule }}</span>
+            </el-button>
+          </div>
+          <div class="data-sort-item__right">
+            <el-tooltip
+              content="删除规则"
+              :enterable="false"
+              :show-after="TooltipShowAfter"
+            >
+              <el-button
+                text
+                link
+                @click="onDeleteSort(index)"
+              >
+                <template #icon>
+                  <IconDelete/>
+                </template>
+              </el-button>
+            </el-tooltip>
+          </div>
         </div>
       </el-scrollbar>
       <div v-else style="position: relative;width: 100%;height: 40%;">
@@ -170,6 +213,7 @@ defineExpose({
   padding: 0 10px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
 
   &:hover {
@@ -178,6 +222,20 @@ defineExpose({
 
   .keyword-text {
     color: var(--dbtu-theme-color);
+  }
+
+  .data-sort-item__left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .data-sort-item__right {
+    display: none;
+  }
+
+  &:hover .data-sort-item__right {
+    display: block;
   }
 }
 

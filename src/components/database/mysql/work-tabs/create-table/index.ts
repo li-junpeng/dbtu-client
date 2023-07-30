@@ -19,9 +19,9 @@ export interface TableField {
   field: string
   dataType: string
   maxLength?: number
-  decimalPoint?: number
+  decimalPoint: number
   notNull: 1 | 0
   virtual: 1 | 0
-  fk?: number
+  pk: boolean
   comment?: string
 }

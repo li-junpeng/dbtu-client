@@ -68,7 +68,7 @@ const appendField = () => {
     <el-button
       text
       link
-      disabled
+      @click="tabPaneRef?.triggerPrimaryKey()"
     >
       <template #icon>
         <IconKey/>

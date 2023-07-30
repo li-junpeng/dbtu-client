@@ -20,6 +20,13 @@ const onClickRow = (row: TableField) => {
   selectedRow.value = row
 }
 
+// 当字段信息改变时，处理字段信息
+const handleField = (row: TableField) => {
+  if (row.pk) {
+    row.notNull = 1
+  }
+}
+
 /**
  * 添加字段
  *
@@ -32,7 +39,9 @@ const addField = (index?: number) => {
     dataType: '',
     notNull: 0,
     virtual: 0,
-    comment: ''
+    comment: '',
+    pk: false,
+    decimalPoint: 0
   } as TableField
   if (index === 0) {
     index = 1
@@ -68,10 +77,29 @@ const appendField = () => {
   addField(index)
 }
 
+/**
+ * 修改主键状态
+ *
+ * @param row  如果不指定字段，则默认以当前选择的字段为准
+ */
+const triggerPrimaryKey = (row?: TableField) => {
+  if (row) {
+    row.pk = !row.pk
+    handleField(row)
+  } else {
+    if (!selectedRow.value) {
+      return
+    }
+    selectedRow.value.pk = !selectedRow.value.pk
+    handleField(selectedRow.value)
+  }
+}
+
 defineExpose({
   addField,
   deleteField,
-  appendField
+  appendField,
+  triggerPrimaryKey
 })
 
 onMounted(() => {
@@ -113,7 +141,7 @@ onMounted(() => {
             filterable
           >
             <el-option
-              v-for="(item, key) in MySQLDataType"
+              v-for="key in Object.keys(MySQLDataType)"
               :key="key"
               :value="key"
               :label="key"
@@ -126,6 +154,7 @@ onMounted(() => {
           <el-input-number
             v-model="row.maxLength"
             :controls="false"
+            :min="0"
             class="el-input-number__text-left"
             style="width: 100%;"
           />
@@ -136,6 +165,7 @@ onMounted(() => {
           <el-input-number
             v-model="row.decimalPoint"
             :controls="false"
+            :min="0"
             class="el-input-number__text-left"
             style="width: 100%;"
           />
@@ -159,9 +189,16 @@ onMounted(() => {
           />
         </template>
       </el-table-column>
-      <el-table-column label="键" prop="pk" width="80px">
+      <el-table-column label="主键" prop="pk" width="80px" align="center">
         <template #default="{ row }">
-
+          <div
+            @click="triggerPrimaryKey(row)"
+            style="width: 80px;height: 35px;cursor: pointer;color: var(--dbtu-theme-color);display: flex;align-items: center;justify-content: center;line-height: 34px;gap: var(--dbtu-icon-text-gap);"
+          >
+            <el-icon v-if="row.pk">
+              <IconKey/>
+            </el-icon>
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="注释" prop="comment">

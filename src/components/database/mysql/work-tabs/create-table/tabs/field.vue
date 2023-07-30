@@ -8,6 +8,7 @@
 import { MySQLDataType } from '@/common/constants/DataTypeConstant'
 import type { TableField } from '@/components/database/mysql/work-tabs/create-table/index'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
+import { computed } from 'vue'
 
 defineOptions({
   name: 'MySQLCreateTableTabPaneComponent'
@@ -94,6 +95,30 @@ const triggerPrimaryKey = (row?: TableField) => {
     handleField(selectedRow.value)
   }
 }
+
+const sql = computed(() => {
+  const pks: string[] = []
+  const dataType = (item: TableField): string => {
+    return item.maxLength ? `(${item.maxLength}${item.decimalPoint >= 1 ? `, ` + item.decimalPoint : ''})` : ''
+  }
+
+  let str = `CREATE TABLE \`dbtu\`.\`Untitled\` (\n`
+  tableData.forEach((item, index) => {
+    str += `\t\`${item.field}\` ${item.dataType}${dataType(item)} ${item.notNull ? 'NOT NULL' : 'NULL'}`
+    if (index < tableData.length - 1) {
+      str += ',\n'
+    }
+    if (item.pk) {
+      pks.push(item.field)
+    }
+  })
+  if (pks.length >= 1) {
+    str += ',\n\tPRIMARY KEY (\`'
+    str += pks.join('`, `')
+    str += '\`)'
+  }
+  return str + '\n);'
+})
 
 defineExpose({
   addField,
@@ -211,7 +236,7 @@ onMounted(() => {
     </el-table>
   </div>
   <div class="bottom-field-option">
-
+    <pre>{{ sql }}</pre>
   </div>
 </template>
 

@@ -2,12 +2,34 @@
  * 字段的工具栏
  *
  * @author Junpeng.Li
- * @date 2023-07-29 22:
+ * @date 2023-07-29 22:21
 -->
 <script setup lang="ts">
+import FieldTabPane from '../tabs/field.vue'
+import { MessageBox } from '@/components/element-plus/el-feedback-util'
+
 defineOptions({
   name: 'MySQLCreateTableFieldToolboxComponent'
 })
+
+const props = defineProps<{
+  tabPaneRef?: InstanceType<typeof FieldTabPane>
+}>()
+const tabPaneRef = toRef(props, 'tabPaneRef')
+const addField = () => {
+  tabPaneRef.value?.addField()
+}
+
+const deleteField = () => {
+  MessageBox.deleteConfirm('您确认要删除字段吗？', (done) => {
+    tabPaneRef.value?.deleteField()
+    done()
+  })
+}
+
+const appendField = () => {
+  tabPaneRef.value?.appendField()
+}
 </script>
 
 <template>
@@ -15,7 +37,7 @@ defineOptions({
     <el-button
       text
       link
-      disabled
+      @click="addField"
     >
       <template #icon>
         <IconCirclePlus/>
@@ -25,7 +47,7 @@ defineOptions({
     <el-button
       text
       link
-      disabled
+      @click="appendField"
     >
       <template #icon>
         <IconBottomLeft/>
@@ -35,7 +57,7 @@ defineOptions({
     <el-button
       text
       link
-      disabled
+      @click="deleteField"
     >
       <template #icon>
         <IconDelete/>

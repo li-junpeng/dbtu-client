@@ -16,6 +16,7 @@ import TriggerToolbox from './toolbox/trigger.vue'
 
 // tab-pane components
 import FieldTabPane from './tabs/field.vue'
+import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 
 defineOptions({
   name: 'MySQLCreateTableComponent'
@@ -25,6 +26,7 @@ defineProps<CreateTableProp>()
 const tab = reactive({
   selected: TabNames.field
 })
+const fieldTabPaneRef = useComponentRef(FieldTabPane)
 </script>
 
 <template>
@@ -42,9 +44,12 @@ const tab = reactive({
     </el-button>
     <div
       class="item-divided"
-      v-show="![TabNames.option, TabNames.option, TabNames.sql_preview].includes(tab.selected)"
+      v-show="![TabNames.option, TabNames.comment, TabNames.sql_preview].includes(tab.selected)"
     ></div>
-    <field-toolbox v-show="tab.selected === TabNames.field"/>
+    <field-toolbox
+      v-show="tab.selected === TabNames.field"
+      :tab-pane-ref="fieldTabPaneRef"
+    />
     <index-toolbox v-show="tab.selected === TabNames.index"/>
     <fk-toolbox v-show="tab.selected === TabNames.fk"/>
     <trigger-toolbox v-show="tab.selected === TabNames.trigger"/>
@@ -57,7 +62,7 @@ const tab = reactive({
       style="--el-tab-pane-width: 80px;width: 100%;height: 100%;"
     >
       <el-tab-pane label="字段" :name="TabNames.field">
-        <field-tab-pane/>
+        <field-tab-pane ref="fieldTabPaneRef"/>
       </el-tab-pane>
       <el-tab-pane label="索引" :name="TabNames.index">
 

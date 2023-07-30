@@ -2,34 +2,82 @@
  * 字段
  *
  * @author Junpeng.Li
- * @date 2023-07-29 22:
+ * @date 2023-07-29 22:12
 -->
 <script setup lang="ts">
 import { MySQLDataType } from '@/common/constants/DataTypeConstant'
+import type { TableField } from '@/components/database/mysql/work-tabs/create-table/index'
+import { ArrayUtils } from '@/common/utils/ArrayUtils'
 
 defineOptions({
   name: 'MySQLCreateTableTabPaneComponent'
 })
 
-const tableData = reactive([{
-  field: '',
-  dataType: '',
-  maxLength: null,
-  decimalPoint: null,
-  notNull: 0,
-  virtual: 0,
-  fk: null,
-  comment: ''
-},{
-  field: '',
-  dataType: '',
-  maxLength: null,
-  decimalPoint: null,
-  notNull: 0,
-  virtual: 0,
-  fk: null,
-  comment: ''
-}])
+const selectedRow = ref<TableField | null>(null)
+const tableData = reactive<TableField[]>([])
+
+const onClickRow = (row: TableField) => {
+  selectedRow.value = row
+}
+
+/**
+ * 添加字段
+ *
+ * @param index  指定索引
+ */
+const addField = (index?: number) => {
+  const data = {
+    id: Date.now(),
+    field: '',
+    dataType: '',
+    notNull: 0,
+    virtual: 0,
+    comment: ''
+  } as TableField
+  if (index === 0) {
+    index = 1
+  }
+  if (index === undefined) {
+    tableData.push(data)
+  } else {
+    tableData.splice(index, 0, data)
+  }
+}
+
+// 删除字段
+const deleteField = () => {
+  if (!selectedRow.value) {
+    return
+  }
+  const b = ArrayUtils.remove(tableData, selectedRow.value.id, 'id')
+  if (b && tableData.length === 0) {
+    addField()
+  }
+  selectedRow.value = tableData[0]
+}
+
+// 插入字段
+const appendField = () => {
+  if (!selectedRow.value) {
+    return
+  }
+  const index = ArrayUtils.indexOf(tableData, selectedRow.value.id, 'id')
+  if (index < 0) {
+    return
+  }
+  addField(index)
+}
+
+defineExpose({
+  addField,
+  deleteField,
+  appendField
+})
+
+onMounted(() => {
+  addField()
+  selectedRow.value = tableData[0]
+})
 </script>
 
 <template>
@@ -38,7 +86,19 @@ const tableData = reactive([{
       :data="tableData"
       border
       class="el-table-editable"
+      height="390px"
+      row-key="id"
+      highlight-current-row
+      :current-row-key="selectedRow?.id"
+      @row-click="onClickRow"
     >
+      <el-table-column type="index" width="50">
+        <template #default="{ row, $index }">
+          <span
+            class="dbtu-un-user-select"
+            style="padding: 0 12px;">{{ $index + 1 }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="字段名" prop="field" width="300px">
         <template #default="{ row }">
           <el-input v-model="row.field" maxlength="100"/>
@@ -120,6 +180,7 @@ const tableData = reactive([{
 
 <style scoped lang="scss">
 @use "@/assets/css-style/el-table-editable";
+
 .top-form {
   width: 100%;
   height: 400px;
@@ -129,5 +190,26 @@ const tableData = reactive([{
   width: 100%;
   height: calc(100% - 400px);
   border-top: 1px solid var(--dbtu-divide-borer-color);
+}
+
+:deep(.el-table) {
+  .el-table__body tr.current-row > td.el-table__cell {
+    background-color: var(--dbtu-theme-hover-color);
+    color: var(--el-color-white);
+  }
+
+  .el-table__body tr.current-row > td.el-table__cell:not(:first-child) {
+    background-color: transparent;
+  }
+
+  &.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell:not(:first-child),
+  &.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell:not(:first-child) {
+    background-color: transparent;
+  }
+
+  .row-readonly-text {
+    padding: 0 11px;
+    line-height: 34px;
+  }
 }
 </style>

@@ -70,6 +70,22 @@ export const ArrayUtils = {
       }
       return false
     }
+  },
+
+  /**
+   * 与Array.indexOf()类似，不过这个方法只针对对象数组，普通数组用Array.indexOf()就够用了
+   *
+   * @param source    数组
+   * @param value     用来查找的值
+   * @param field     做比较的字段，该字段必须要在source中存在
+   */
+  indexOf(source: any[], value: any, field: string): number {
+    for (let i = 0; i < source.length; i++) {
+      if (source[i][field] === value) {
+        return i
+      }
+    }
+    return -1
   }
 
 }

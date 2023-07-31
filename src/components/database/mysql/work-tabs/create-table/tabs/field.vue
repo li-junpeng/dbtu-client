@@ -145,8 +145,8 @@ onMounted(() => {
       :current-row-key="selectedRow?.id"
       @row-click="onClickRow"
     >
-      <el-table-column type="index" width="50">
-        <template #default="{ row, $index }">
+      <el-table-column type="index" width="50" align="center">
+        <template #default="{ $index }">
           <span
             class="dbtu-un-user-select"
             style="padding: 0 12px;">{{ $index + 1 }}</span>
@@ -154,12 +154,18 @@ onMounted(() => {
       </el-table-column>
       <el-table-column label="字段名" prop="field" width="300px">
         <template #default="{ row }">
-          <el-input v-model="row.field" maxlength="100"/>
+          <el-input
+            v-if="selectedRow?.id === row.id"
+            v-model="row.field"
+            :maxlength="100"
+          />
+          <span v-else class="row-readonly-text">{{ row['field'] }}</span>
         </template>
       </el-table-column>
       <el-table-column label="类型" prop="dataType" width="180px">
         <template #default="{ row }">
           <el-select
+            v-if="selectedRow?.id === row.id"
             v-model="row.dataType"
             placeholder=" "
             clearable
@@ -172,28 +178,33 @@ onMounted(() => {
               :label="key"
             />
           </el-select>
+          <span v-else class="row-readonly-text">{{ row['dataType'] }}</span>
         </template>
       </el-table-column>
       <el-table-column label="长度" prop="maxLength" width="140px">
         <template #default="{ row }">
           <el-input-number
+            v-if="selectedRow?.id === row.id"
             v-model="row.maxLength"
             :controls="false"
             :min="0"
             class="el-input-number__text-left"
             style="width: 100%;"
           />
+          <span v-else class="row-readonly-text">{{ row['maxLength'] }}</span>
         </template>
       </el-table-column>
       <el-table-column label="小数点" prop="decimalPoint" width="140px">
         <template #default="{ row }">
           <el-input-number
+            v-if="selectedRow?.id === row.id"
             v-model="row.decimalPoint"
             :controls="false"
             :min="0"
             class="el-input-number__text-left"
             style="width: 100%;"
           />
+          <span v-else class="row-readonly-text">{{ row['decimalPoint'] }}</span>
         </template>
       </el-table-column>
       <el-table-column label="不是null" prop="notNull" width="80px" align="center">
@@ -218,7 +229,7 @@ onMounted(() => {
         <template #default="{ row }">
           <div
             @click="triggerPrimaryKey(row)"
-            style="width: 80px;height: 35px;cursor: pointer;color: var(--dbtu-theme-color);display: flex;align-items: center;justify-content: center;line-height: 34px;gap: var(--dbtu-icon-text-gap);"
+            style="width: 80px;height: 33px;cursor: pointer;color: var(--dbtu-theme-color);display: flex;align-items: center;justify-content: center;gap: var(--dbtu-icon-text-gap);"
           >
             <el-icon v-if="row.pk">
               <IconKey/>
@@ -229,8 +240,10 @@ onMounted(() => {
       <el-table-column label="注释" prop="comment">
         <template #default="{ row }">
           <el-input
+            v-if="selectedRow?.id === row.id"
             v-model="row.comment"
           />
+          <span v-else class="row-readonly-text">{{ row['comment'] }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -271,7 +284,7 @@ onMounted(() => {
 
   .row-readonly-text {
     padding: 0 11px;
-    line-height: 34px;
+    line-height: 33px;
   }
 }
 </style>

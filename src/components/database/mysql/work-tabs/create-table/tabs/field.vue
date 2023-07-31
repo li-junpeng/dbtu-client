@@ -39,6 +39,7 @@ const tableData = reactive<TableField[]>([])
 const fieldInputRef = useComponentRef(ElInput)
 const maxLengthInputRef = useComponentRef(ElInputNumber)
 const decimalPointInputRef = useComponentRef(ElInputNumber)
+const commentInputRef = useComponentRef(ElInput)
 
 const onClickRow = (row: TableField, column: TableColumn) => {
   selectedRow.value = row
@@ -218,6 +219,9 @@ watch(() => [selectedRow.value, selectedColumn.value], () => {
         break
       case 'decimalPoint':
         decimalPointInputRef.value?.focus()
+        break
+      case 'comment':
+        commentInputRef.value?.focus()
         break
     }
   })
@@ -417,6 +421,7 @@ onMounted(() => {
         <template #default="{ row }">
           <el-input
             v-if="selectedRow?.id === row.id"
+            ref="commentInputRef"
             v-model="row.comment"
           />
           <span v-else class="row-readonly-text">{{ row['comment'] }}</span>

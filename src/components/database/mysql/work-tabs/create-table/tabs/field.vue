@@ -5,13 +5,17 @@
  * @date 2023-07-29 22:12
 -->
 <script setup lang="ts">
-import { MySQLDataType } from '@/common/constants/DataTypeConstant'
 import type { TableField } from '@/components/database/mysql/work-tabs/create-table/index'
+import type { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
+import { ElInput, ElInputNumber, ElSelect } from 'element-plus'
+import { MySQLDataType } from '@/common/constants/DataTypeConstant'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
-import { computed } from 'vue'
-import Contextmenu from '@/components/ui/contextmenu'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import { debounce } from 'lodash'
+import Contextmenu from '@/components/ui/contextmenu'
+import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
+
+type TableColumn = TableColumnCtx<unknown>
 
 defineOptions({
   name: 'MySQLCreateTableTabPaneComponent'
@@ -28,10 +32,17 @@ const emits = defineEmits<{
 }>()
 
 const selectedRow = ref<TableField | null>(null)
+const selectedColumn = ref<TableColumn | null>()
 const tableData = reactive<TableField[]>([])
 
-const onClickRow = (row: TableField) => {
+// 表单组件ref
+const fieldInputRef = useComponentRef(ElInput)
+const maxLengthInputRef = useComponentRef(ElInputNumber)
+const decimalPointInputRef = useComponentRef(ElInputNumber)
+
+const onClickRow = (row: TableField, column: TableColumn) => {
   selectedRow.value = row
+  selectedColumn.value = column
 }
 
 // 当字段信息改变时，处理字段信息
@@ -191,16 +202,36 @@ const sql = computed(() => {
 })
 
 watch(() => sql.value, debounce(() => {
-  console.log(sql.value)
   emits('change-sql', sql.value)
 }, 600))
 
-const rowContextmenu = (row: TableField, column: any, event: MouseEvent) => {
-  if (column) {
-    // nothing, cancel unused warning
-  }
+// 优化: 当行被选中时，立刻使其列中的输入框获取焦点
+watch(() => [selectedRow.value, selectedColumn.value], () => {
+  nextTick(() => {
+    const column = selectedColumn.value
+    switch (column?.property) {
+      case 'field':
+        fieldInputRef.value?.focus()
+        break
+      case 'maxLength':
+        maxLengthInputRef.value?.focus()
+        break
+      case 'decimalPoint':
+        decimalPointInputRef.value?.focus()
+        break
+    }
+  })
+})
+
+const rowContextmenu = (row: TableField, column: TableColumn, event: MouseEvent) => {
   event.preventDefault()
   selectedRow.value = row
+  selectedColumn.value = column
+
+  // 数据类型列禁用右键菜单
+  if (selectedColumn.value?.property === 'dataType') {
+    return
+  }
 
   Contextmenu({
     event,
@@ -297,6 +328,7 @@ onMounted(() => {
         <template #default="{ row }">
           <el-input
             v-if="selectedRow?.id === row.id"
+            ref="fieldInputRef"
             v-model="row.field"
             :maxlength="100"
             autofocus
@@ -327,6 +359,7 @@ onMounted(() => {
         <template #default="{ row }">
           <el-input-number
             v-if="selectedRow?.id === row.id"
+            ref="maxLengthInputRef"
             v-model="row.maxLength"
             :controls="false"
             :min="0"
@@ -340,6 +373,7 @@ onMounted(() => {
         <template #default="{ row }">
           <el-input-number
             v-if="selectedRow?.id === row.id"
+            ref="decimalPointInputRef"
             v-model="row.decimalPoint"
             :controls="false"
             :min="0"

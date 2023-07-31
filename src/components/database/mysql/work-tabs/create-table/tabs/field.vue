@@ -9,6 +9,7 @@ import { MySQLDataType } from '@/common/constants/DataTypeConstant'
 import type { TableField } from '@/components/database/mysql/work-tabs/create-table/index'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
 import { computed } from 'vue'
+import Contextmenu from '@/components/ui/contextmenu'
 
 defineOptions({
   name: 'MySQLCreateTableTabPaneComponent'
@@ -120,6 +121,43 @@ const sql = computed(() => {
   return str + '\n);'
 })
 
+const rowContextmenu = (row: TableField, column: any, event: MouseEvent) => {
+  event.preventDefault()
+  // 编辑模式下禁用右键菜单
+  if (row.id === selectedRow.value?.id) {
+    return
+  }
+
+  Contextmenu({
+    event,
+    menus: [
+      {
+        label: '添加字段'
+      },
+      {
+        label: '插入字段'
+      },
+      {
+        label: '复制字段'
+      },
+      {
+        label: '删除字段',
+        divided: true
+      },
+      {
+        label: '主键',
+        divided: true
+      },
+      {
+        label: '上移'
+      },
+      {
+        label: '下移'
+      }
+    ]
+  })
+}
+
 defineExpose({
   addField,
   deleteField,
@@ -144,12 +182,17 @@ onMounted(() => {
       highlight-current-row
       :current-row-key="selectedRow?.id"
       @row-click="onClickRow"
+      @row-contextmenu="rowContextmenu"
     >
       <el-table-column type="index" width="50" align="center">
-        <template #default="{ $index }">
+        <template #default="{ row, $index }">
           <span
+            v-if="selectedRow?.id !== row.id"
             class="dbtu-un-user-select"
             style="padding: 0 12px;">{{ $index + 1 }}</span>
+          <el-icon v-else>
+            <IconEditPen/>
+          </el-icon>
         </template>
       </el-table-column>
       <el-table-column label="字段名" prop="field" width="300px">

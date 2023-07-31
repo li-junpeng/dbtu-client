@@ -50,7 +50,7 @@ const appendField = () => {
       @click="appendField"
     >
       <template #icon>
-        <IconBottomLeft/>
+        <IconTopLeft/>
       </template>
       <span>插入字段</span>
     </el-button>

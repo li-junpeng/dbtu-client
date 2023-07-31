@@ -78,6 +78,7 @@ const addField = (index?: number) => {
     tableData.splice(index, 0, data)
   }
 
+  selectedColumn.value = null
   if (index) {
     selectedRow.value = tableData[index]
   } else {
@@ -288,6 +289,22 @@ const rowContextmenu = (row: TableField, column: TableColumn, event: MouseEvent)
   })
 }
 
+/**
+ * 当改变了数据类型的值后，修改对应的数据长度以及归零小数点
+ *
+ * @param row   字段信息
+ */
+const onChangeDataType = (row: TableField) => {
+  row.maxLength = void 0
+  row.decimalPoint = 0
+
+  if (!row.dataType) {
+    return
+  }
+
+  row.maxLength = MySQLDataType[row.dataType].default
+}
+
 defineExpose({
   addField,
   deleteField,
@@ -348,6 +365,7 @@ onMounted(() => {
             placeholder=" "
             clearable
             filterable
+            @change="onChangeDataType(row)"
           >
             <el-option
               v-for="key in Object.keys(MySQLDataType)"

@@ -6,7 +6,6 @@
 -->
 <script setup lang="ts">
 import FieldTabPane from '../tabs/field.vue'
-import { MessageBox } from '@/components/element-plus/el-feedback-util'
 
 defineOptions({
   name: 'MySQLCreateTableFieldToolboxComponent'
@@ -21,15 +20,22 @@ const addField = () => {
 }
 
 const deleteField = () => {
-  MessageBox.deleteConfirm('您确认要删除字段吗？', (done) => {
-    tabPaneRef.value?.deleteField()
-    done()
-  })
+  tabPaneRef.value?.deleteField()
 }
 
 const appendField = () => {
   tabPaneRef.value?.appendField()
 }
+
+const moveTopField = () => {
+  tabPaneRef.value?.moveTopField()
+}
+
+const moveBottomField = () => {
+  tabPaneRef.value?.moveBottomField()
+}
+
+
 </script>
 
 <template>
@@ -79,7 +85,7 @@ const appendField = () => {
     <el-button
       text
       link
-      disabled
+      @click="moveTopField"
     >
       <template #icon>
         <IconTop/>
@@ -89,7 +95,7 @@ const appendField = () => {
     <el-button
       text
       link
-      disabled
+      @click="moveBottomField"
     >
       <template #icon>
         <IconBottom/>

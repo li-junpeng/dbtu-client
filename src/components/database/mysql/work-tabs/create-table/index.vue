@@ -7,6 +7,7 @@
 <script setup lang="ts">
 import type { CreateTableProp } from './index'
 import { TabNames } from './index'
+import SqlCodePreview from '@/components/ui/sql-code-preview/index.vue'
 
 // toolbox components
 import FieldToolbox from './toolbox/field.vue'
@@ -26,6 +27,8 @@ defineProps<CreateTableProp>()
 const tab = reactive({
   selected: TabNames.field
 })
+// SQL预览所使用的SQL语句
+const sqlCode = ref('')
 const fieldTabPaneRef = useComponentRef(FieldTabPane)
 </script>
 
@@ -62,7 +65,10 @@ const fieldTabPaneRef = useComponentRef(FieldTabPane)
       style="--el-tab-pane-width: 80px;width: 100%;height: 100%;"
     >
       <el-tab-pane label="字段" :name="TabNames.field">
-        <field-tab-pane ref="fieldTabPaneRef"/>
+        <field-tab-pane
+          ref="fieldTabPaneRef"
+          @change-sql="sql => sqlCode = sql"
+        />
       </el-tab-pane>
       <el-tab-pane label="索引" :name="TabNames.index">
 
@@ -80,7 +86,7 @@ const fieldTabPaneRef = useComponentRef(FieldTabPane)
 
       </el-tab-pane>
       <el-tab-pane label="SQL预览" :name="TabNames.sql_preview">
-
+        <sql-code-preview :code="sqlCode"/>
       </el-tab-pane>
     </el-tabs>
   </div>

@@ -10,10 +10,22 @@ import type { TableField } from '@/components/database/mysql/work-tabs/create-ta
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
 import { computed } from 'vue'
 import Contextmenu from '@/components/ui/contextmenu'
+import { MessageBox } from '@/components/element-plus/el-feedback-util'
+import { debounce } from 'lodash'
 
 defineOptions({
   name: 'MySQLCreateTableTabPaneComponent'
 })
+
+const emits = defineEmits<{
+  /**
+   * 当sql内容改变时
+   *
+   * @param e     event name
+   * @param sql   slq语句
+   */
+  (e: 'change-sql', sql: string): void
+}>()
 
 const selectedRow = ref<TableField | null>(null)
 const tableData = reactive<TableField[]>([])
@@ -53,6 +65,12 @@ const addField = (index?: number) => {
   } else {
     tableData.splice(index, 0, data)
   }
+
+  if (index) {
+    selectedRow.value = tableData[index]
+  } else {
+    selectedRow.value = tableData[tableData.length - 1]
+  }
 }
 
 // 删除字段
@@ -60,11 +78,15 @@ const deleteField = () => {
   if (!selectedRow.value) {
     return
   }
-  const b = ArrayUtils.remove(tableData, selectedRow.value.id, 'id')
-  if (b && tableData.length === 0) {
-    addField()
-  }
-  selectedRow.value = tableData[0]
+
+  MessageBox.deleteConfirm('您确认要删除字段吗？', (done) => {
+    const b = ArrayUtils.remove(tableData, selectedRow.value!.id, 'id')
+    if (b && tableData.length === 0) {
+      addField()
+    }
+    selectedRow.value = tableData[0]
+    done()
+  })
 }
 
 // 插入字段
@@ -77,6 +99,53 @@ const appendField = () => {
     return
   }
   addField(index)
+}
+
+/**
+ * 复制字段
+ *
+ * @param row  要复制的字段信息
+ */
+const copyField = (row: TableField) => {
+  tableData.push({
+    ...row,
+    id: Date.now()
+  })
+  selectedRow.value = tableData[tableData.length - 1]
+}
+
+/**
+ * 上移
+ *
+ * @param row   需要往上移动的字段
+ */
+const moveTopField = (row?: TableField) => {
+  if (!row) {
+    row = selectedRow.value!
+  }
+  const index = ArrayUtils.indexOf(tableData, row.id, 'id')
+  if (index >= 1) {
+    const beforeField = tableData[index - 1]
+    tableData[index - 1] = row
+    tableData[index] = beforeField
+  }
+}
+
+/**
+ * 下移
+ *
+ * @param row   需要往下移的字段
+ */
+const moveBottomField = (row?: TableField) => {
+  if (!row) {
+    row = selectedRow.value!
+  }
+  const index = ArrayUtils.indexOf(tableData, row.id, 'id')
+  if (index < tableData.length - 1) {
+    const afterField = tableData[index + 1]
+    tableData[index + 1] = row
+    tableData[index] = afterField
+  }
 }
 
 /**
@@ -121,38 +190,64 @@ const sql = computed(() => {
   return str + '\n);'
 })
 
+watch(() => sql.value, debounce(() => {
+  console.log(sql.value)
+  emits('change-sql', sql.value)
+}, 600))
+
 const rowContextmenu = (row: TableField, column: any, event: MouseEvent) => {
-  event.preventDefault()
-  // 编辑模式下禁用右键菜单
-  if (row.id === selectedRow.value?.id) {
-    return
+  if (column) {
+    // nothing, cancel unused warning
   }
+  event.preventDefault()
+  selectedRow.value = row
 
   Contextmenu({
     event,
     menus: [
       {
-        label: '添加字段'
+        label: '添加字段',
+        onClick: () => {
+          addField()
+        }
       },
       {
-        label: '插入字段'
+        label: '插入字段',
+        onClick: () => {
+          appendField()
+        }
       },
       {
-        label: '复制字段'
+        label: '复制字段',
+        onClick: () => {
+          copyField(row)
+        }
       },
       {
         label: '删除字段',
-        divided: true
+        divided: true,
+        onClick: () => {
+          deleteField()
+        }
       },
       {
         label: '主键',
-        divided: true
+        divided: true,
+        onClick: () => {
+          triggerPrimaryKey(row)
+        }
       },
       {
-        label: '上移'
+        label: '上移',
+        onClick: () => {
+          moveTopField(row)
+        }
       },
       {
-        label: '下移'
+        label: '下移',
+        onClick: () => {
+          moveBottomField(row)
+        }
       }
     ]
   })
@@ -162,7 +257,9 @@ defineExpose({
   addField,
   deleteField,
   appendField,
-  triggerPrimaryKey
+  triggerPrimaryKey,
+  moveTopField,
+  moveBottomField
 })
 
 onMounted(() => {
@@ -175,14 +272,15 @@ onMounted(() => {
   <div class="top-form">
     <el-table
       :data="tableData"
+      :current-row-key="selectedRow?.id"
       border
-      class="el-table-editable"
       height="390px"
       row-key="id"
       highlight-current-row
-      :current-row-key="selectedRow?.id"
+      scrollbar-always-on
       @row-click="onClickRow"
       @row-contextmenu="rowContextmenu"
+      class="el-table-editable"
     >
       <el-table-column type="index" width="50" align="center">
         <template #default="{ row, $index }">
@@ -201,6 +299,7 @@ onMounted(() => {
             v-if="selectedRow?.id === row.id"
             v-model="row.field"
             :maxlength="100"
+            autofocus
           />
           <span v-else class="row-readonly-text">{{ row['field'] }}</span>
         </template>
@@ -292,7 +391,7 @@ onMounted(() => {
     </el-table>
   </div>
   <div class="bottom-field-option">
-    <pre>{{ sql }}</pre>
+
   </div>
 </template>
 

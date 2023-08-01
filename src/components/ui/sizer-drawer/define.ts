@@ -17,7 +17,6 @@ export interface SizerDrawerProp {
    * @default false
    */
   appendToBody?: boolean
-
 }
 
 export const SizerDrawerPropDefault: Record<keyof SizerDrawerProp, any> = {
@@ -34,9 +33,9 @@ export const TreeV2Props = {
 export interface ConditionItem {
   id: number
   field: string
-  condition: keyof typeof JudgeConditions,
+  condition: keyof typeof JudgeConditions
   value: number | string | boolean
-  relation: 'AND' | 'OR',
+  relation: 'AND' | 'OR'
   children?: ConditionItem[]
   childrenRelation?: 'AND' | 'OR'
   // 1 = true, 0 = false

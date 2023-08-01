@@ -123,9 +123,9 @@ const sql = computed(() => {
       case 'not_is_null':
         return 'IS NOT NULL'
       case 'is_blank':
-        return '= \'\''
+        return "= ''"
       case 'not_is_blank':
-        return '!= \'\''
+        return "!= ''"
       case 'like':
         return `LIKE '%${item.value}%'`
       case 'not_link':
@@ -139,13 +139,13 @@ const sql = computed(() => {
       case 'noe_end_link':
         return `NOT LIKE '%${item.value}'`
       case 'between':
-        return `BETWEEN '${(item.value as string).split(',').join('\' AND \'')}'`
+        return `BETWEEN '${(item.value as string).split(',').join("' AND '")}'`
       case 'noe_between':
-        return `NOT BETWEEN '${(item.value as string).split(',').join('\' AND \'')}'`
+        return `NOT BETWEEN '${(item.value as string).split(',').join("' AND '")}'`
       case 'in':
-        return `IN ('${(item.value as string).split(',').join('\',\'')}')`
+        return `IN ('${(item.value as string).split(',').join("','")}')`
       case 'not_in':
-        return `NOT IN ('${(item.value as string).split(',').join('\',\'')}')`
+        return `NOT IN ('${(item.value as string).split(',').join("','")}')`
       default:
         return `${JudgeConditions[item.condition]} '${item.value}'`
     }
@@ -208,7 +208,6 @@ const treeNodeContextmenu = (event: MouseEvent, node: TreeNode, data: ConditionI
 defineExpose({
   open
 })
-
 </script>
 
 <template>
@@ -221,14 +220,18 @@ defineExpose({
     :size="500"
   >
     <div class="toolbox">
-      <el-button text link @click="onAddCondition()">
+      <el-button
+        text
+        link
+        @click="onAddCondition()"
+      >
         <template #icon>
-          <DIconAddCondition/>
+          <DIconAddCondition />
         </template>
         <span>添加条件</span>
       </el-button>
     </div>
-    <div style="width: 100%;height: calc(100% - 270px)">
+    <div style="width: 100%; height: calc(100% - 270px)">
       <el-scrollbar>
         <el-tree
           ref="treeRef"
@@ -244,21 +247,32 @@ defineExpose({
               class="i-tree-node"
               @contextmenu.prevent.stop="treeNodeContextmenu($event, node, data)"
             >
-              <div style="display: flex;gap: 10px;flex: 1;align-items: center;line-height: 40px">
-                <el-checkbox v-model="data.use" :true-label="1" :false-label="0"/>
+              <div
+                style="display: flex; gap: 10px; flex: 1; align-items: center; line-height: 40px"
+              >
+                <el-checkbox
+                  v-model="data.use"
+                  :true-label="1"
+                  :false-label="0"
+                />
                 <div
                   :style="{
                     display: 'flex',
                     gap: '10px',
-                    color: data.use ? 'var(--dbtu-font-color)' : 'var(--dbtu-border-disabled-color)',
-                    '--sizer-key-color': data.use ? 'var(--dbtu-theme-color)' : 'var(--dbtu-border-disabled-color)'
+                    color: data.use
+                      ? 'var(--dbtu-font-color)'
+                      : 'var(--dbtu-border-disabled-color)',
+                    '--sizer-key-color': data.use
+                      ? 'var(--dbtu-theme-color)'
+                      : 'var(--dbtu-border-disabled-color)'
                   }"
                 >
                   <!-- 与相邻节点的关系 -->
                   <span
                     v-if="!isFirstNode(node) && data.use"
                     @click="onChangeRelation(data, 'relation')"
-                  >{{ data['relation'] }}</span>
+                    >{{ data['relation'] }}</span
+                  >
                   <!-- 字段 -->
                   <el-popover
                     :width="200"
@@ -267,12 +281,15 @@ defineExpose({
                     :persistent="false"
                   >
                     <template #reference>
-                      <span :style="{
-                        color: 'var(--sizer-key-color)'}"
-                      >{{ data['field'] }}</span>
+                      <span
+                        :style="{
+                          color: 'var(--sizer-key-color)'
+                        }"
+                        >{{ data['field'] }}</span
+                      >
                     </template>
                     <template #default>
-                      <div style="width: 100%;height: 300px;">
+                      <div style="width: 100%; height: 300px">
                         <el-scrollbar>
                           <div
                             v-for="item in props.fields"
@@ -283,7 +300,6 @@ defineExpose({
                               'is-selected': data.field === item
                             }"
                           >
-
                             <span class="dbtu-text-ellipsis">{{ item }}</span>
                           </div>
                         </el-scrollbar>
@@ -301,7 +317,7 @@ defineExpose({
                       <span>{{ JudgeConditions[data['condition']] }}</span>
                     </template>
                     <template #default>
-                      <div style="width: 100%;height: 300px;">
+                      <div style="width: 100%; height: 300px">
                         <el-scrollbar>
                           <div
                             v-for="(label, key) in JudgeConditions"
@@ -311,7 +327,8 @@ defineExpose({
                             :class="{
                               'is-selected': data.condition === key
                             }"
-                          >{{ label }}
+                          >
+                            {{ label }}
                           </div>
                         </el-scrollbar>
                       </div>
@@ -326,17 +343,20 @@ defineExpose({
                     :persistent="false"
                   >
                     <template #reference>
-                      <span :style="{color: 'var(--sizer-key-color)'}">{{ data.value || '?' }}</span>
+                      <span :style="{ color: 'var(--sizer-key-color)' }">{{
+                        data.value || '?'
+                      }}</span>
                     </template>
                     <template #default>
-                      <el-input v-model="data.value"/>
+                      <el-input v-model="data.value" />
                     </template>
                   </el-popover>
                   <!-- 与子条件的关系 -->
                   <span
                     v-if="data.children && data.children.length >= 1"
                     @click="onChangeRelation(data, 'childrenRelation')"
-                  >{{ data['childrenRelation'] }}</span>
+                    >{{ data['childrenRelation'] }}</span
+                  >
                 </div>
               </div>
               <div class="i-tree-node__btns">
@@ -348,9 +368,10 @@ defineExpose({
                   <el-button
                     text
                     link
-                    @click="onAddCondition(data)">
+                    @click="onAddCondition(data)"
+                  >
                     <template #icon>
-                      <DIconAddCondition/>
+                      <DIconAddCondition />
                     </template>
                   </el-button>
                 </el-tooltip>
@@ -362,9 +383,10 @@ defineExpose({
                   <el-button
                     text
                     link
-                    @click="onDeleteCondition(node, data)">
+                    @click="onDeleteCondition(node, data)"
+                  >
                     <template #icon>
-                      <IconDelete/>
+                      <IconDelete />
                     </template>
                   </el-button>
                 </el-tooltip>
@@ -374,13 +396,21 @@ defineExpose({
         </el-tree>
       </el-scrollbar>
     </div>
-    <div style="width: 100%;height: 200px;">
+    <div style="width: 100%; height: 200px">
       <p class="dbtu-un-user-select code-preview-title">SQL 预览</p>
-      <sql-code-preview :code="sql"/>
+      <sql-code-preview :code="sql" />
     </div>
     <template #footer>
-      <el-button type="info" @click="drawer.visible = false">关闭</el-button>
-      <el-button type="primary" @click="onApply">应用</el-button>
+      <el-button
+        type="info"
+        @click="drawer.visible = false"
+        >关闭</el-button
+      >
+      <el-button
+        type="primary"
+        @click="onApply"
+        >应用</el-button
+      >
     </template>
   </el-drawer>
 </template>
@@ -399,7 +429,6 @@ defineExpose({
 }
 
 :deep(.el-tree) {
-
   .el-tree-node:focus > .el-tree-node__content,
   .el-tree-node__content:hover {
     .i-tree-node__btns {

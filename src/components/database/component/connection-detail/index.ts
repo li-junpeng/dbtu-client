@@ -3,7 +3,7 @@ const ConnectionDetailComponents: Record<DatabaseIdent, () => any> = {
   sql_server_2012: () => import('@/components/database/sql_server_2012/connection-detail.vue')
 }
 
-export const getConnectionDetailCom = (ident: DatabaseIdent): () => Promise<any> => {
+export const getConnectionDetailCom = (ident: DatabaseIdent): (() => Promise<any>) => {
   const component = ConnectionDetailComponents[ident]
   return !component ? () => Promise.reject() : component
 }

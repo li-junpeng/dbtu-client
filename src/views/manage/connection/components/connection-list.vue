@@ -29,7 +29,7 @@ const openCreateGroup = inject<(data?: ConnectionGroup) => void>(InjectionKey.op
 const treeProps = {
   value: 'id',
   label: 'name',
-  children: 'children',
+  children: 'children'
 }
 
 const treeRef = useComponentRef(ElTreeV2)
@@ -43,13 +43,20 @@ const loadConnections = () => {
   connectionSessionStore.refresh()
 }
 
-watch(() => connectionStore.refreshConnectionFlag, () => {
-  loadConnections()
-})
+watch(
+  () => connectionStore.refreshConnectionFlag,
+  () => {
+    loadConnections()
+  }
+)
 
-watch(() => connectionStore.defaultExpandedKeys, () => {
-  treeRef.value?.setExpandedKeys(connectionStore.defaultExpandedKeys)
-}, { deep: true })
+watch(
+  () => connectionStore.defaultExpandedKeys,
+  () => {
+    treeRef.value?.setExpandedKeys(connectionStore.defaultExpandedKeys)
+  },
+  { deep: true }
+)
 
 defineExpose({
   loadConnections
@@ -94,8 +101,10 @@ const groupContextmenu = (event: MouseEvent, data: ConnectionGroup) => {
   })
 }
 
-const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<BaseConnectionDetail>) => {
-
+const connectionContextmenu = (
+  event: MouseEvent,
+  connection: ConnectionInfo<BaseConnectionDetail>
+) => {
   const connectionId = connection.id as number
 
   // 打开连接
@@ -139,9 +148,10 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
     event,
     menus: [
       {
-        label: connection.status === 'connected'
-          ? '关闭连接'
-          : connection.status === 'connecting'
+        label:
+          connection.status === 'connected'
+            ? '关闭连接'
+            : connection.status === 'connecting'
             ? '正在连接'
             : '打开连接',
         divided: true,
@@ -163,19 +173,22 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
         disabled: connection.status === 'connecting',
         onClick: () => {
           if (connection.status === 'connected') {
-            MessageBox.confirm({
-              msg: '此操作必须要关闭连接，确定要关闭连接吗？',
-              useLoading: true,
-              loadingText: '正在关闭'
-            }, async (done) => {
-              try {
-                await closeConnection()
-                done()
-                openCreateConnection?.(connection)
-              } catch (e) {
-                await MessageBox.error((e as Error).message)
+            MessageBox.confirm(
+              {
+                msg: '此操作必须要关闭连接，确定要关闭连接吗？',
+                useLoading: true,
+                loadingText: '正在关闭'
+              },
+              async done => {
+                try {
+                  await closeConnection()
+                  done()
+                  openCreateConnection?.(connection)
+                } catch (e) {
+                  await MessageBox.error((e as Error).message)
+                }
               }
-            })
+            )
           } else {
             openCreateConnection?.(connection)
           }
@@ -190,7 +203,7 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
       {
         label: '删除连接',
         onClick: () => {
-          MessageBox.deleteConfirm(TextConstant.deleteConfirm(connection.name), async (done) => {
+          MessageBox.deleteConfirm(TextConstant.deleteConfirm(connection.name), async done => {
             const { status, message } = await connectionStore.removeById(connectionId)
             if (status === 'success') {
               Message.success(message)
@@ -313,7 +326,7 @@ const onClickTreeItem = (data: ConnectionTreeNode) => {
         >
           <template #icon>
             <el-icon :size="16">
-              <IconFolderAdd/>
+              <IconFolderAdd />
             </el-icon>
           </template>
         </el-button>
@@ -329,7 +342,7 @@ const onClickTreeItem = (data: ConnectionTreeNode) => {
           @click="() => openCreateConnection?.()"
         >
           <template #icon>
-            <IconPlus/>
+            <IconPlus />
           </template>
         </el-button>
       </el-tooltip>
@@ -338,9 +351,12 @@ const onClickTreeItem = (data: ConnectionTreeNode) => {
         :enterable="false"
         :show-after="tooltipShowAfter"
       >
-        <el-button text link>
+        <el-button
+          text
+          link
+        >
           <template #icon>
-            <IconMinus/>
+            <IconMinus />
           </template>
         </el-button>
       </el-tooltip>
@@ -369,14 +385,14 @@ const onClickTreeItem = (data: ConnectionTreeNode) => {
               @contextmenu.prevent="treeItemContextmenu($event, data)"
             >
               <div class="tree-node__main">
-                <tree-node-icon :node-data="data"/>
+                <tree-node-icon :node-data="data" />
                 <span>{{ node.label }}</span>
               </div>
               <el-icon
                 class="tree-node__more"
                 @click.stop="treeItemContextmenu($event, data)"
               >
-                <IconMoreFilled/>
+                <IconMoreFilled />
               </el-icon>
             </div>
           </template>

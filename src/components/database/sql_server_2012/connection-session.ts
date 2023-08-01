@@ -1,7 +1,8 @@
 import type { ConnectionSession } from '@/components/database/connection-session'
 
-export class SqlServer2012ConnectionSession implements ConnectionSession<SQLServer2012ConnectionInfo> {
-
+export class SqlServer2012ConnectionSession
+  implements ConnectionSession<SQLServer2012ConnectionInfo>
+{
   connection: ConnectionInfo<SQLServer2012ConnectionInfo>
 
   constructor(data: ConnectionInfo<SQLServer2012ConnectionInfo>) {
@@ -24,13 +25,9 @@ export class SqlServer2012ConnectionSession implements ConnectionSession<SQLServ
     })
   }
 
-  nodeContextmenu(event: MouseEvent, data: ConnectionTreeNode) {
-  }
+  nodeContextmenu(event: MouseEvent, data: ConnectionTreeNode) {}
 
-  onClickNode(data: ConnectionTreeNode) {
-  }
+  onClickNode(data: ConnectionTreeNode) {}
 
-  openCreateDatabase() {
-  }
-
+  openCreateDatabase() {}
 }

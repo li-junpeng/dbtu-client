@@ -14,6 +14,4 @@ defineOptions({
   <h1>我是代理服务器设置</h1>
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

@@ -3,7 +3,7 @@
   font-family: Inter;
   font-style: normal;
   font-weight: 100 900;
-  src: url("../fonts/Inter.woff2") format("woff2");
+  src: url('../fonts/Inter.woff2') format('woff2');
 }
 
 * {
@@ -30,14 +30,27 @@ span,
 div,
 input {
   font-size: var(--dbtu-font-size);
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI,
-    Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji,
-  Segoe UI Symbol, Noto Color Emoji;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    Segoe UI,
+    Roboto,
+    Helvetica Neue,
+    Arial,
+    Noto Sans,
+    sans-serif,
+    Apple Color Emoji,
+    Segoe UI Emoji,
+    Segoe UI Symbol,
+    Noto Color Emoji;
   font-weight: 400;
 }
 
 .monaco-editor span {
-  font-family: Consolas, "Courier New", monospace;
+  font-family: Consolas, 'Courier New', monospace;
 }
 
 a {
@@ -80,7 +93,7 @@ a {
  * Which is modified according to the theme Settings in the 'SystemSettingStore.ts' file
  */
 :root {
-  --dbtu-transition-duration: .3s;
+  --dbtu-transition-duration: 0.3s;
 
   --dbtu-font-size: 14px;
   --dbtu-font-size-large: calc(var(--dbtu-font-size) + 2px);
@@ -114,7 +127,6 @@ a {
 
   --el-fill-color-blank: var(--dbtu-background-color);
   --el-fill-color-light: var(--dbtu-theme-color);
-
 }
 
 /* region browser scrollbar style start */
@@ -123,9 +135,9 @@ a {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: rgba(144, 147, 153, .3);
+  background-color: rgba(144, 147, 153, 0.3);
   border-radius: 10px;
-  transition: all .2s ease-in-out;
+  transition: all 0.2s ease-in-out;
   opacity: 0.3;
 }
 

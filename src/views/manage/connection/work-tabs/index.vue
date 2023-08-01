@@ -19,15 +19,18 @@ const workTabStore = useWorkTabStore()
 
 const onRemoveTab = (name: TabPaneName) => {
   if (workTabStore.tabs[name].saveFlag) {
-    MessageBox.confirm({
-      msg: '有未保存的数据，你确定要关闭选项卡吗？',
-      title: '确认关闭',
-      useLoading: true,
-      loadingText: '正在关闭',
-    }, (done) => {
-      workTabStore.closeById(name as string)
-      done()
-    })
+    MessageBox.confirm(
+      {
+        msg: '有未保存的数据，你确定要关闭选项卡吗？',
+        title: '确认关闭',
+        useLoading: true,
+        loadingText: '正在关闭'
+      },
+      done => {
+        workTabStore.closeById(name as string)
+        done()
+      }
+    )
   } else {
     workTabStore.closeById(name as string)
   }
@@ -39,11 +42,14 @@ const onRemoveTab = (name: TabPaneName) => {
     <el-tabs
       v-model="workTabStore.activeTabId"
       type="border-card"
-      style="width: 100%;height: 100%;"
+      style="width: 100%; height: 100%"
       @tab-remove="onRemoveTab"
     >
-      <el-tab-pane label="&emsp;对象&emsp;" name="object-pane">
-        <object-pane/>
+      <el-tab-pane
+        label="&emsp;对象&emsp;"
+        name="object-pane"
+      >
+        <object-pane />
       </el-tab-pane>
       <el-tab-pane
         v-for="tab in workTabStore.tabs"
@@ -56,10 +62,15 @@ const onRemoveTab = (name: TabPaneName) => {
             :enterable="false"
             :show-after="TooltipShowAfter"
           >
-            <span class="dbtu-text-ellipsis tab-label">{{ tab.saveFlag ? '* &ensp;' + tab.label : tab.label }}</span>
+            <span class="dbtu-text-ellipsis tab-label">{{
+              tab.saveFlag ? '* &ensp;' + tab.label : tab.label
+            }}</span>
           </el-tooltip>
         </template>
-        <component :is="tab.component" :data="tab.props"/>
+        <component
+          :is="tab.component"
+          :data="tab.props"
+        />
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -97,7 +108,9 @@ const onRemoveTab = (name: TabPaneName) => {
       }
     }
 
-    &.el-tabs--top.el-tabs--border-card > .el-tabs__header .el-tabs__item:nth-child(2):not(.is-active).is-closable:hover {
+    &.el-tabs--top.el-tabs--border-card
+      > .el-tabs__header
+      .el-tabs__item:nth-child(2):not(.is-active).is-closable:hover {
       padding-left: 20px;
     }
 

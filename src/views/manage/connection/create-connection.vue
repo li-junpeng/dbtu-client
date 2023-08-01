@@ -36,9 +36,10 @@ const databases = computed(() => {
   let key: DatabaseIdent
   for (key in DatabaseTypes) {
     const db = DatabaseTypes[key] as DatabaseDefineItem
-    if (StringUtils.isEmpty(searchDb.value)
-      || db.key.toLowerCase().indexOf(searchDb.value) >= 0
-      || db.name.toLowerCase().indexOf(searchDb.value) >= 0
+    if (
+      StringUtils.isEmpty(searchDb.value) ||
+      db.key.toLowerCase().indexOf(searchDb.value) >= 0 ||
+      db.name.toLowerCase().indexOf(searchDb.value) >= 0
     ) {
       array.push(DatabaseTypes[key])
     }
@@ -53,7 +54,11 @@ const databases = computed(() => {
  * @param db        打开对话框后，默认选中的数据库
  * @param groupId   默认选中的分组
  */
-const open = (data?: ConnectionInfo<BaseConnectionDetail>, db: DatabaseIdent = 'mysql', groupId?: number) => {
+const open = (
+  data?: ConnectionInfo<BaseConnectionDetail>,
+  db: DatabaseIdent = 'mysql',
+  groupId?: number
+) => {
   if (!data) {
     dialog.title = '创建连接'
     dialog.isEdit = false
@@ -69,7 +74,7 @@ const open = (data?: ConnectionInfo<BaseConnectionDetail>, db: DatabaseIdent = '
   }
 
   if (!NumberUtils.isEmpty(groupId) && formData.value) {
-    (formData.value as ConnectionInfo<BaseConnectionDetail>).groupId = groupId
+    ;(formData.value as ConnectionInfo<BaseConnectionDetail>).groupId = groupId
   }
 
   onClickDbItem(data ? DatabaseTypes[data.dbType] : DatabaseTypes[db])
@@ -97,11 +102,13 @@ const onChangeFormComponent = () => {
   }
 
   const component = getCreateConnectionCom(activeDb.value!.key)
-  component().then(() => {
-    formComponent.value = defineAsyncComponent(component)
-  }).catch(() => {
-    MessageBox.error(`加载 [ ${activeDb.value?.name} ] 数据库表单组件失败，请刷新页面后再试！`)
-  })
+  component()
+    .then(() => {
+      formComponent.value = defineAsyncComponent(component)
+    })
+    .catch(() => {
+      MessageBox.error(`加载 [ ${activeDb.value?.name} ] 数据库表单组件失败，请刷新页面后再试！`)
+    })
 }
 
 const onCloseDialog = () => {
@@ -110,10 +117,7 @@ const onCloseDialog = () => {
 
 // 提交按钮文本
 const confirmBtnText = computed(() => {
-  return isCreateLoading.value
-    ? '正在保存'
-    : dialog.isEdit
-      ? '保存' : '创建'
+  return isCreateLoading.value ? '正在保存' : dialog.isEdit ? '保存' : '创建'
 })
 
 // region 提交表单 start //
@@ -123,8 +127,12 @@ const isCreateLoading = ref(false)
 const onConfirm = async () => {
   isCreateLoading.value = true
 
-  const submitRequestFn = dialog.isEdit ? connectionStore.updateById : connectionStore.createConnection
-  const {status, message, data} = await submitRequestFn(formData.value as ConnectionInfo<BaseConnectionDetail>)
+  const submitRequestFn = dialog.isEdit
+    ? connectionStore.updateById
+    : connectionStore.createConnection
+  const { status, message, data } = await submitRequestFn(
+    formData.value as ConnectionInfo<BaseConnectionDetail>
+  )
   isCreateLoading.value = false
   if (status === 'success') {
     Message.success(message)
@@ -140,7 +148,6 @@ const onConfirm = async () => {
 defineExpose({
   open
 })
-
 </script>
 
 <template>
@@ -152,9 +159,12 @@ defineExpose({
     destroy-on-close
     width="50%"
   >
-    <div style="height: 500px;">
-      <el-container style="height: 100%;">
-        <el-aside width="200px" style="height: 100%;overflow: hidden">
+    <div style="height: 500px">
+      <el-container style="height: 100%">
+        <el-aside
+          width="200px"
+          style="height: 100%; overflow: hidden"
+        >
           <el-input
             v-model="searchDb"
             clearable
@@ -162,7 +172,7 @@ defineExpose({
           >
             <template #prefix>
               <el-icon>
-                <IconSearch/>
+                <IconSearch />
               </el-icon>
             </template>
           </el-input>
@@ -180,7 +190,7 @@ defineExpose({
               >
                 <span>{{ db.name }}</span>
                 <el-icon v-if="!db.used">
-                  <IconLock/>
+                  <IconLock />
                 </el-icon>
               </li>
             </ul>

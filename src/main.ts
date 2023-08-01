@@ -6,7 +6,7 @@ import '@/assets/theme/dark.scss'
 import '@/assets/theme/light.scss'
 
 import { createApp } from 'vue'
-import pinia  from '@/stores/pinia-config'
+import pinia from '@/stores/pinia-config'
 
 import App from './App.vue'
 import router from './router'

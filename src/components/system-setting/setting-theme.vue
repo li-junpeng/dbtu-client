@@ -44,19 +44,28 @@ const systemSettingStore = useSystemSettingStore()
 const themeData = ref(systemSettingStore.getSetting().theme)
 
 // 修改主题模式
-watch(() => themeData.value.mode, (mode) => {
-  systemSettingStore.updateThemeMode(mode)
-})
+watch(
+  () => themeData.value.mode,
+  mode => {
+    systemSettingStore.updateThemeMode(mode)
+  }
+)
 
 // 修改主题颜色
-watch(() => themeData.value.color, (color) => {
-  systemSettingStore.updateThemeColor(color)
-})
+watch(
+  () => themeData.value.color,
+  color => {
+    systemSettingStore.updateThemeColor(color)
+  }
+)
 
 // 修改字体大小
-watch(() => themeData.value.fontSize, (size) => {
-  systemSettingStore.updateThemeFontSize(size)
-})
+watch(
+  () => themeData.value.fontSize,
+  size => {
+    systemSettingStore.updateThemeFontSize(size)
+  }
+)
 </script>
 
 <template>
@@ -73,7 +82,10 @@ watch(() => themeData.value.fontSize, (size) => {
             class="theme-list__item"
             @click="themeData.mode = theme.key"
           >
-            <img :src="theme.image" :alt="theme.title"/>
+            <img
+              :src="theme.image"
+              :alt="theme.title"
+            />
             <el-radio :label="theme.key">
               <span>{{ theme.title }}</span>
             </el-radio>
@@ -97,7 +109,7 @@ watch(() => themeData.value.fontSize, (size) => {
             :size="16"
             color="var(--el-color-white)"
           >
-            <IconSelect/>
+            <IconSelect />
           </el-icon>
         </div>
       </div>

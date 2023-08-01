@@ -3,12 +3,11 @@ import { defineAsyncComponent, markRaw, shallowRef } from 'vue'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 
 type ObjectPaneOption = {
-  props: ConnectionTreeNode,
+  props: ConnectionTreeNode
   component: () => Promise<{}>
 }
 
 export const useWorkTabStore = defineStore('useWorkTabStore', {
-
   state: () => {
     return {
       objectPaneComponent: shallowRef(),
@@ -19,7 +18,6 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
   },
 
   actions: {
-
     /**
      * 设置对象面板内容
      *
@@ -83,7 +81,7 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
 
       try {
         // 动态加载组件
-        (option.component as () => Promise<{}>)().then(() => {
+        ;(option.component as () => Promise<{}>)().then(() => {
           // @ts-ignore
           option.component = markRaw(defineAsyncComponent(option.component as () => Promise<{}>))
           this.tabs[option.id] = option

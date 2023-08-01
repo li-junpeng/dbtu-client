@@ -75,16 +75,20 @@ const setLoading = (b: boolean) => {
   }
 }
 
-watch(() => props.nodeData, data => {
-  switch (data?.nodeType) {
-    case 'connection':
-      setLoading((data as ConnectionInfo<BaseConnectionDetail>).status === 'connecting')
-      break
-    case 'database':
-      setLoading((data as DatabaseNode).status === 'loading')
-      break
-  }
-}, {deep: true})
+watch(
+  () => props.nodeData,
+  data => {
+    switch (data?.nodeType) {
+      case 'connection':
+        setLoading((data as ConnectionInfo<BaseConnectionDetail>).status === 'connecting')
+        break
+      case 'database':
+        setLoading((data as DatabaseNode).status === 'loading')
+        break
+    }
+  },
+  { deep: true }
+)
 
 onMounted(() => {
   iconCom.value = IconLoading
@@ -100,6 +104,6 @@ onMounted(() => {
       'is-loading': isLoading
     }"
   >
-    <component :is="iconCom"/>
+    <component :is="iconCom" />
   </el-icon>
 </template>

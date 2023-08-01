@@ -1,9 +1,7 @@
 /**
  * 数据库标识
  */
-type DatabaseIdent =
-  | 'mysql'
-  | 'sql_server_2012'
+type DatabaseIdent = 'mysql' | 'sql_server_2012'
 /* | 'oracle'
  | 'postgre_sql'
  | 'dm'
@@ -11,33 +9,27 @@ type DatabaseIdent =
  | 'hive'*/
 
 type ConnectionNodeType =
-  | 'connection'        // 连接
-  | 'group'             // 分组
-  | 'database'          // 数据库
-  | 'table'             // 表
-  | 'table_instance'    // 表实例
-  | 'view'              // 视图
-  | 'view_instance'     // 视图实例
-  | 'function'          // 函数
+  | 'connection' // 连接
+  | 'group' // 分组
+  | 'database' // 数据库
+  | 'table' // 表
+  | 'table_instance' // 表实例
+  | 'view' // 视图
+  | 'view_instance' // 视图实例
+  | 'function' // 函数
   | 'function_instance' // 函数实例
-  | 'trigger'           // 触发器
-  | 'backup'            // 备份
-  | 'backup_instance'   // 备份实例
-  | 'search'            // 查询
-  | 'search_instance'   // 查询实例
+  | 'trigger' // 触发器
+  | 'backup' // 备份
+  | 'backup_instance' // 备份实例
+  | 'search' // 查询
+  | 'search_instance' // 查询实例
 
 /**
  * 数据库连接状态, | 正在连接 | 已连接 | 未连接
  */
-type ConnectionStatusType =
-  | 'connecting'
-  | 'connected'
-  | 'no_connection'
+type ConnectionStatusType = 'connecting' | 'connected' | 'no_connection'
 
-type CommonStatusType =
-  | 'disable'
-  | 'loading'
-  | 'enable'
+type CommonStatusType = 'disable' | 'loading' | 'enable'
 
 /**
  * 认证方式的key
@@ -97,7 +89,7 @@ interface ConnectionTreeNode {
  */
 interface ConnectionInfo<T extends BaseConnectionDetail> extends ConnectionTreeNode {
   // 分组ID
-  groupId?: number,
+  groupId?: number
   // 数据库类型
   dbType: DatabaseIdent
   // 状态
@@ -196,8 +188,7 @@ interface BackupInstanceNode extends ConnectionTreeNode {
   nodeType: 'backup_instance'
 }
 
-interface BaseConnectionDetail {
-}
+interface BaseConnectionDetail {}
 
 /**
  * MySQL数据库连接详情信息
@@ -220,7 +211,7 @@ interface MySQLConnectionInfo extends BaseConnectionDetail {
   // 保存密码的方式
   savePwdType: SavePasswordTypeKey
   // url
-  url?: string,
+  url?: string
   // 时区
   timeZone?: string
   // 字符集编码

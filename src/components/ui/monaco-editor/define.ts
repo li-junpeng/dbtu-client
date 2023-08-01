@@ -33,7 +33,6 @@ export interface MonacoEditorProp {
    * @default 'off'
    */
   wordWrap?: 'on' | 'off' | 'wordWrapColumn' | 'bounded'
-
 }
 
 export const MonacoEditorPropDefault: Record<keyof MonacoEditorProp, any> = {
@@ -45,7 +44,6 @@ export const MonacoEditorPropDefault: Record<keyof MonacoEditorProp, any> = {
 }
 
 export interface MonacoEditorEmits {
-
   /**
    * 当编辑器的内容改变时
    *
@@ -60,5 +58,4 @@ export interface MonacoEditorEmits {
    * @param e event name
    */
   (e: 'editor-blur'): void
-
 }

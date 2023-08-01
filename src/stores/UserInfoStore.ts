@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import { ObjectUtils } from '@/common/utils/ObjectUtils'
 
 export const useUserInfoStore = defineStore('useUserInfoStore', {
-
   state: () => {
     return {
       user: {} as UserInfo
@@ -10,11 +9,9 @@ export const useUserInfoStore = defineStore('useUserInfoStore', {
   },
 
   actions: {
-
     getCurrent(): UserInfo | null {
       return ObjectUtils.isEmpty(this.user) ? null : this.user
     }
-
   },
 
   persist: {
@@ -22,5 +19,4 @@ export const useUserInfoStore = defineStore('useUserInfoStore', {
     storage: localStorage,
     paths: ['user']
   }
-
 })

@@ -1,5 +1,4 @@
 export const TextConstant = {
-
   /**
    * 确认删除描述信息
    *
@@ -8,5 +7,4 @@ export const TextConstant = {
   deleteConfirm: (text: string): string => {
     return `你确定要删除 "${text}" 吗?`
   }
-
 }

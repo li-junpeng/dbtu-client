@@ -11,7 +11,6 @@ export type ConnectionType = ConnectionInfoType | ConnectionGroup
 export type ConnectionsType = ConnectionType[]
 
 export const useConnectionStore = defineStore('useConnectionStore', {
-
   state: () => {
     return {
       // 通过改变这个值来刷新连接列表（有watch行为)
@@ -22,7 +21,6 @@ export const useConnectionStore = defineStore('useConnectionStore', {
   },
 
   actions: {
-
     /**
      * 刷新数据库连接tree列表
      */
@@ -135,7 +133,9 @@ export const useConnectionStore = defineStore('useConnectionStore', {
      *
      * @param data
      */
-    createConnection(data: ConnectionInfo<BaseConnectionDetail>): Promise<IResponse<ConnectionInfoType>> {
+    createConnection(
+      data: ConnectionInfo<BaseConnectionDetail>
+    ): Promise<IResponse<ConnectionInfoType>> {
       data.id = Date.now()
       data.nodeType = 'connection'
       data.status = 'no_connection'
@@ -182,7 +182,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
      */
     removeGroupById(data: ConnectionGroup): Promise<IResponse<void>> {
       return new Promise((resolve, reject) => {
-        MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), (done) => {
+        MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), done => {
           if (data.children) {
             for (let i = 0; i < data.children.length; i++) {
               data.children[i].groupId = void 0
@@ -203,10 +203,11 @@ export const useConnectionStore = defineStore('useConnectionStore', {
             data: null,
             message: '删除成功'
           })
-        }).then(() => {
-        }).catch(() => {
-          reject()
         })
+          .then(() => {})
+          .catch(() => {
+            reject()
+          })
       })
     },
 
@@ -285,5 +286,4 @@ export const useConnectionStore = defineStore('useConnectionStore', {
     storage: localStorage,
     paths: ['connections', 'defaultExpandedKeys']
   }
-
 })

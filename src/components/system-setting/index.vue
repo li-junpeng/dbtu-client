@@ -35,9 +35,13 @@ const loadComponent = () => {
     contentComponent.value = defineAsyncComponent(component)
   })
 }
-watch(() => systemSettingStore.activeTab, () => {
-  loadComponent()
-}, {deep: true})
+watch(
+  () => systemSettingStore.activeTab,
+  () => {
+    loadComponent()
+  },
+  { deep: true }
+)
 // endregion 动态加载组件
 </script>
 
@@ -66,7 +70,7 @@ watch(() => systemSettingStore.activeTab, () => {
             @click="onChangeTab(tab)"
           >
             <el-icon :size="tab.iconSize || 'inherit'">
-              <component :is="tab.icon"/>
+              <component :is="tab.icon" />
             </el-icon>
             <span>{{ tab.title }}</span>
           </li>
@@ -74,7 +78,7 @@ watch(() => systemSettingStore.activeTab, () => {
 
         <div class="reset-setting">
           <el-icon>
-            <DIconReset/>
+            <DIconReset />
           </el-icon>
           <span>恢复默认值</span>
         </div>
@@ -82,12 +86,12 @@ watch(() => systemSettingStore.activeTab, () => {
 
       <!-- 右侧内容 -->
       <div class="setting-page">
-        <component :is="contentComponent"/>
+        <component :is="contentComponent" />
       </div>
     </div>
   </el-dialog>
 </template>
 
 <style scoped lang="scss">
-@use "./index.scss";
+@use './index.scss';
 </style>

@@ -53,34 +53,49 @@ const openSizerDrawer = () => {
 const openDataFilter = () => {
   dataSortDrawerRef.value?.open()
 }
-
 </script>
 
 <template>
   <div class="table-data-container">
     <!-- 头部工具栏 -->
     <div class="header-toolbox">
-      <el-button text link @click="openSizerDrawer()">
+      <el-button
+        text
+        link
+        @click="openSizerDrawer()"
+      >
         <template #icon>
-          <DIconSizer/>
+          <DIconSizer />
         </template>
         <span>筛选</span>
       </el-button>
-      <el-button text link @click="openDataFilter()">
+      <el-button
+        text
+        link
+        @click="openDataFilter()"
+      >
         <template #icon>
-          <DIconSort/>
+          <DIconSort />
         </template>
         <span>排序</span>
       </el-button>
-      <el-button text link disabled>
+      <el-button
+        text
+        link
+        disabled
+      >
         <template #icon>
-          <DIconDbImport/>
+          <DIconDbImport />
         </template>
         <span>导入数据</span>
       </el-button>
-      <el-button text link disabled>
+      <el-button
+        text
+        link
+        disabled
+      >
         <template #icon>
-          <DIconDbExport/>
+          <DIconDbExport />
         </template>
         <span>导出数据</span>
       </el-button>
@@ -110,9 +125,13 @@ const openDataFilter = () => {
           :enterable="false"
           :show-after="TooltipShowAfter"
         >
-          <el-button text link disabled>
+          <el-button
+            text
+            link
+            disabled
+          >
             <template #icon>
-              <IconPlus/>
+              <IconPlus />
             </template>
           </el-button>
         </el-tooltip>
@@ -121,9 +140,13 @@ const openDataFilter = () => {
           :enterable="false"
           :show-after="TooltipShowAfter"
         >
-          <el-button text link disabled>
+          <el-button
+            text
+            link
+            disabled
+          >
             <template #icon>
-              <IconSemiSelect/>
+              <IconSemiSelect />
             </template>
           </el-button>
         </el-tooltip>
@@ -132,9 +155,13 @@ const openDataFilter = () => {
           :enterable="false"
           :show-after="TooltipShowAfter"
         >
-          <el-button text link disabled>
+          <el-button
+            text
+            link
+            disabled
+          >
             <template #icon>
-              <IconSelect/>
+              <IconSelect />
             </template>
           </el-button>
         </el-tooltip>
@@ -143,9 +170,13 @@ const openDataFilter = () => {
           :enterable="false"
           :show-after="TooltipShowAfter"
         >
-          <el-button text link disabled>
+          <el-button
+            text
+            link
+            disabled
+          >
             <template #icon>
-              <IconCloseBold/>
+              <IconCloseBold />
             </template>
           </el-button>
         </el-tooltip>
@@ -154,9 +185,12 @@ const openDataFilter = () => {
           :enterable="false"
           :show-after="TooltipShowAfter"
         >
-          <el-button text link>
+          <el-button
+            text
+            link
+          >
             <template #icon>
-              <IconRefreshRight/>
+              <IconRefreshRight />
             </template>
           </el-button>
         </el-tooltip>
@@ -168,13 +202,13 @@ const openDataFilter = () => {
     ref="sizerDrawerRef"
     title="数据筛选"
     :fields="fields"
-    @apply-sizer="sql => whereSql = sql"
+    @apply-sizer="sql => (whereSql = sql)"
   />
 
   <data-sort-drawer
     ref="dataSortDrawerRef"
     :fields="fields"
-    @apply-sort="sql => sortSql = sql"
+    @apply-sort="sql => (sortSql = sql)"
   />
 </template>
 

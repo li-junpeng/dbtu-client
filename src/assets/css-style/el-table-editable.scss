@@ -41,14 +41,13 @@
           }
         }
         .el-input {
-
           .el-select__caret.is-reverse {
             color: var(--el-color-white);
           }
 
           &.is-focus {
             --el-select-input-color: var(--el-color-white);
-            --el-text-color-placeholder: rgba(255, 255, 255, .6);
+            --el-text-color-placeholder: rgba(255, 255, 255, 0.6);
             .el-input__inner {
               color: var(--el-color-white);
             }
@@ -63,7 +62,6 @@
           }
         }
       }
-
     }
   }
 }

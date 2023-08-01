@@ -14,22 +14,22 @@ defineOptions({
 })
 
 defineProps({
-
   connectionInfo: {
     type: Object as PropType<ConnectionInfo<MySQLConnectionInfo>>,
     required: true
   }
-
 })
-
 </script>
 
 <template>
   <el-scrollbar ref="scrollbarRef">
     <common-header :connection-info="connectionInfo">
       <template #icon>
-        <el-icon color="#ebebeb" size="30">
-          <IconSvg/>
+        <el-icon
+          color="#ebebeb"
+          size="30"
+        >
+          <IconSvg />
         </el-icon>
       </template>
     </common-header>
@@ -60,5 +60,5 @@ defineProps({
 </template>
 
 <style scoped lang="scss">
-@use "@/components/database/component/connection-detail/index.scss";
+@use '@/components/database/component/connection-detail/index.scss';
 </style>

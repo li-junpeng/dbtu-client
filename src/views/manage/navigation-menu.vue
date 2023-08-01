@@ -26,9 +26,13 @@ const menus = router.getRoutes().find(route => route.path === '/manage')?.childr
 // 监听路由变化, 动态修改菜单激活项
 const currentRoutePath = ref<string>('')
 const route = useRoute()
-watch(() => route, (newRoute) => {
-  currentRoutePath.value = newRoute.path
-}, {deep: true})
+watch(
+  () => route,
+  newRoute => {
+    currentRoutePath.value = newRoute.path
+  },
+  { deep: true }
+)
 onMounted(() => {
   currentRoutePath.value = route.path
 })
@@ -61,7 +65,7 @@ onMounted(() => {
           }"
         >
           <el-icon :size="showLabel ? 16 : 18">
-            <component :is="menu.meta?.['icon']"/>
+            <component :is="menu.meta?.['icon']" />
           </el-icon>
           <span v-if="showLabel">{{ menu.meta?.['title'] }}</span>
         </router-link>

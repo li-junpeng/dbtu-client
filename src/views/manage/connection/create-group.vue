@@ -79,7 +79,7 @@ const onConfirm = () => {
 
     isSaving.value = true
     const fn = dialog.isEdit ? connectionStore.updateGroupById : connectionStore.createGroup
-    const {status, message} = await fn(formData.value)
+    const { status, message } = await fn(formData.value)
     if (status === 'success') {
       dialog.visible = false
       Message.success(message)
@@ -112,18 +112,31 @@ defineExpose({
       label-width="90px"
       label-position="left"
     >
-      <el-form-item label="分组名称" prop="name">
-        <el-input v-model="formData.name" maxlength="40"/>
+      <el-form-item
+        label="分组名称"
+        prop="name"
+      >
+        <el-input
+          v-model="formData.name"
+          maxlength="40"
+        />
       </el-form-item>
     </el-form>
 
     <template #footer>
-      <el-button type="info" @click="onCancel">取消</el-button>
-      <el-button type="primary" @click="onConfirm" :loading="isSaving">{{ submitBtnText }}</el-button>
+      <el-button
+        type="info"
+        @click="onCancel"
+        >取消</el-button
+      >
+      <el-button
+        type="primary"
+        @click="onConfirm"
+        :loading="isSaving"
+        >{{ submitBtnText }}</el-button
+      >
     </template>
   </el-dialog>
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

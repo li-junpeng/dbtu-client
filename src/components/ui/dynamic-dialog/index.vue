@@ -39,9 +39,15 @@ onMounted(() => {
     draggable
     destroy-on-close
   >
-    <component ref="comRef" :is="dynamicDialogStore.component"/>
+    <component
+      ref="comRef"
+      :is="dynamicDialogStore.component"
+    />
 
-    <template v-if="dynamicDialogStore.footerButtons.length >= 1" #footer>
+    <template
+      v-if="dynamicDialogStore.footerButtons.length >= 1"
+      #footer
+    >
       <el-button
         v-for="button in dynamicDialogStore.footerButtons"
         :key="button.text"
@@ -50,12 +56,10 @@ onMounted(() => {
         :disabled="button.disabled"
         @click="onClickButton(button)"
       >
-        <span>{{ button.loading ? (button.loadingText || '正在处理') : button.text }}</span>
+        <span>{{ button.loading ? button.loadingText || '正在处理' : button.text }}</span>
       </el-button>
     </template>
   </el-dialog>
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

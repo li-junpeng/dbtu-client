@@ -18,7 +18,7 @@ defineOptions({
       disabled
     >
       <template #icon>
-        <IconCirclePlus/>
+        <IconCirclePlus />
       </template>
       <span>添加外键</span>
     </el-button>
@@ -28,13 +28,11 @@ defineOptions({
       disabled
     >
       <template #icon>
-        <IconDelete/>
+        <IconDelete />
       </template>
       <span>删除外键</span>
     </el-button>
   </div>
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

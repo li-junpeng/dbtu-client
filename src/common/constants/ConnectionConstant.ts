@@ -72,7 +72,10 @@ export const DatabaseDrivers: Partial<Record<DatabaseIdent, DatabaseDriverElOpti
  * @param db      数据库标识
  * @param driver  驱动标识
  */
-export const getDatabaseDriverInfo = <T>(db: DatabaseIdent, driver: T): DatabaseDriverElOption<T> | null => {
+export const getDatabaseDriverInfo = <T>(
+  db: DatabaseIdent,
+  driver: T
+): DatabaseDriverElOption<T> | null => {
   const drivers = DatabaseDrivers[db] as DatabaseDriverElOption<T>[]
   for (let i = 0; i < drivers.length; i++) {
     if (drivers[i].value === driver) {

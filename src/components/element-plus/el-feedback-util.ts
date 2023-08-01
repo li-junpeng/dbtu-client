@@ -1,19 +1,18 @@
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { MessageBoxData } from 'element-plus'
-import type { Action, MessageBoxState } from 'element-plus/es/components/message-box/src/message-box.type'
+import type {
+  Action,
+  MessageBoxState
+} from 'element-plus/es/components/message-box/src/message-box.type'
 
 export const MessageBox = {
-
   /**
    * 用来展示错误消息
    *
    * @param msg     消息内容
    * @param title   弹框标题
    */
-  error: (
-    msg: string,
-    title: string = '错误'
-  ): Promise<MessageBoxData> => {
+  error: (msg: string, title: string = '错误'): Promise<MessageBoxData> => {
     return ElMessageBox.alert(msg, title, {
       confirmButtonText: '确定',
       type: 'error',
@@ -35,24 +34,27 @@ export const MessageBox = {
     fn: (done: () => void) => void,
     title: string = '确认删除'
   ): Promise<MessageBoxData> => {
-    return MessageBox.confirm({
-      msg,
-      title,
-      confirmText: '删除',
-      useLoading: true,
-      loadingText: '正在删除'
-    }, fn)
+    return MessageBox.confirm(
+      {
+        msg,
+        title,
+        confirmText: '删除',
+        useLoading: true,
+        loadingText: '正在删除'
+      },
+      fn
+    )
   },
 
   confirm: (
     option: {
-      msg: string,
-      title?: string,
-      confirmText?: string,
-      useLoading?: boolean,
+      msg: string
+      title?: string
+      confirmText?: string
+      useLoading?: boolean
       loadingText?: string
     },
-    fn: (done: () => void) => void,
+    fn: (done: () => void) => void
   ): Promise<MessageBoxData> => {
     return ElMessageBox.confirm(option.msg, option.title || '警告', {
       type: 'warning',
@@ -84,12 +86,10 @@ export const MessageBox = {
 }
 
 export const Message = {
-
   success: (msg: string) => {
     ElMessage({
       message: msg,
       type: 'success'
     })
   }
-
 }

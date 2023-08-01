@@ -14,7 +14,11 @@ const createConnectionRef = useComponentRef(CreateConnection)
 const createGroupRef = useComponentRef(CreateGroup)
 const connectionListRef = useComponentRef(ConnectionList)
 
-const openCreateConnection = (data?: ConnectionInfo<BaseConnectionDetail>, db: DatabaseIdent = 'mysql', groupId?: number) => {
+const openCreateConnection = (
+  data?: ConnectionInfo<BaseConnectionDetail>,
+  db: DatabaseIdent = 'mysql',
+  groupId?: number
+) => {
   createConnectionRef.value?.open(data, db, groupId)
 }
 
@@ -33,14 +37,10 @@ provide(InjectionKey.openCreateGroup, openCreateGroup)
 <template>
   <div class="connection-container">
     <div class="connection-list">
-      <connection-list
-        ref="connectionListRef"
-      />
+      <connection-list ref="connectionListRef" />
     </div>
 
-    <work-tabs
-      class="connection-content"
-    />
+    <work-tabs class="connection-content" />
   </div>
 
   <create-connection

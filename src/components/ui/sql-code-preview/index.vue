@@ -45,19 +45,30 @@ const codeHtml = computed(() => {
 
     code {
       color: var(--dbtu-font-color);
-      font-family: Consolas, "Courier New", monospace;
+      font-family: Consolas, 'Courier New', monospace;
 
-      .hljs-built_in, .hljs-keyword, .hljs-name, .hljs-selector-tag, .hljs-tag {
+      .hljs-built_in,
+      .hljs-keyword,
+      .hljs-name,
+      .hljs-selector-tag,
+      .hljs-tag {
         color: #0064ff;
       }
 
-      .hljs-addition, .hljs-attribute, .hljs-literal, .hljs-section, .hljs-string,
-      .hljs-template-tag, .hljs-template-variable, .hljs-title, .hljs-type {
+      .hljs-addition,
+      .hljs-attribute,
+      .hljs-literal,
+      .hljs-section,
+      .hljs-string,
+      .hljs-template-tag,
+      .hljs-template-variable,
+      .hljs-title,
+      .hljs-type {
         color: #af670a;
       }
 
       span {
-        font-family: Consolas, "Courier New", monospace;
+        font-family: Consolas, 'Courier New', monospace;
       }
     }
   }

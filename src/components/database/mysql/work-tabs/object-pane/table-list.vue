@@ -6,7 +6,10 @@
 -->
 <script setup lang="ts">
 import type { ObjectPaneProps } from '@/views/manage/connection/work-tabs/object-pane'
-import type { RowEventHandlerParams, RowEventHandlers } from 'element-plus/es/components/table-v2/src/row'
+import type {
+  RowEventHandlerParams,
+  RowEventHandlers
+} from 'element-plus/es/components/table-v2/src/row'
 import type { Column, RowClassNameGetter } from 'element-plus'
 import type { MySQLConnectionSession } from '@/components/database/mysql/connection-session'
 import { useConnectionSessionStore } from '@/stores/ConnectionSessionStroe'
@@ -72,7 +75,9 @@ const selectedRow = ref<MySqlTableNode | null>(null)
 const searchName = ref('')
 // 连接会话
 const connectionSessionStore = useConnectionSessionStore()
-const connectionSession = connectionSessionStore.get(props.data.sessionId!) as MySQLConnectionSession
+const connectionSession = connectionSessionStore.get(
+  props.data.sessionId!
+) as MySQLConnectionSession
 
 // 表格数据
 const tableData = computed<MySqlTableNode[]>(() => {
@@ -85,11 +90,11 @@ const tableData = computed<MySqlTableNode[]>(() => {
 
 // 表格的事件
 const tableRowEvents: RowEventHandlers = {
-  'onClick'(params: RowEventHandlerParams) {
+  onClick(params: RowEventHandlerParams) {
     selectedRow.value = params.rowData
     params.event.stopPropagation()
   },
-  'onContextmenu'(params: RowEventHandlerParams) {
+  onContextmenu(params: RowEventHandlerParams) {
     selectedRow.value = params.rowData
     connectionSession.nodeContextmenu(params.event as MouseEvent, params.rowData)
     params.event.preventDefault()
@@ -99,9 +104,7 @@ const tableRowEvents: RowEventHandlers = {
 
 // 表格行的样式
 const tableRowClass = ({ rowData }: Parameters<RowClassNameGetter<any>>[0]) => {
-  return (rowData as MySqlTableNode).id === selectedRow.value?.id
-    ? 'is-selected'
-    : ''
+  return (rowData as MySqlTableNode).id === selectedRow.value?.id ? 'is-selected' : ''
 }
 
 const paneContextmenu = (event: MouseEvent) => {
@@ -158,7 +161,7 @@ const openTable = () => {
         @click="openTable"
       >
         <template #icon>
-          <IconFolderOpened/>
+          <IconFolderOpened />
         </template>
         <span>打开表</span>
       </el-button>
@@ -168,13 +171,16 @@ const openTable = () => {
         :disabled="!selectedRow"
       >
         <template #icon>
-          <IconEditPen/>
+          <IconEditPen />
         </template>
         <span>设计表</span>
       </el-button>
-      <el-button text link>
+      <el-button
+        text
+        link
+      >
         <template #icon>
-          <IconCirclePlus/>
+          <IconCirclePlus />
         </template>
         <span>新建表</span>
       </el-button>
@@ -185,19 +191,25 @@ const openTable = () => {
         @click="connectionSession.deleteTable(selectedRow!)"
       >
         <template #icon>
-          <IconDelete/>
+          <IconDelete />
         </template>
         <span>删除表</span>
       </el-button>
-      <el-button text link>
+      <el-button
+        text
+        link
+      >
         <template #icon>
-          <DIconDbImport/>
+          <DIconDbImport />
         </template>
         <span>导入向导</span>
       </el-button>
-      <el-button text link>
+      <el-button
+        text
+        link
+      >
         <template #icon>
-            <DIconDbExport/>
+          <DIconDbExport />
         </template>
         <span>导出向导</span>
       </el-button>
@@ -210,7 +222,7 @@ const openTable = () => {
     >
       <template #prefix>
         <el-icon>
-          <IconSearch/>
+          <IconSearch />
         </el-icon>
       </template>
     </el-input>
@@ -239,7 +251,7 @@ const openTable = () => {
               class="table-name-cell"
             >
               <el-icon>
-                <DIconTable/>
+                <DIconTable />
               </el-icon>
               <span>{{ rowData[column.key] }}</span>
             </div>
@@ -247,7 +259,16 @@ const openTable = () => {
           </template>
           <template #empty>
             <span
-              style="color: var(--dbtu-font-color-disabled);width: 100%;height: 500px;display: flex;justify-content: center;align-items: center;">暂无数据</span>
+              style="
+                color: var(--dbtu-font-color-disabled);
+                width: 100%;
+                height: 500px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              "
+              >暂无数据</span
+            >
           </template>
         </el-table-v2>
       </template>

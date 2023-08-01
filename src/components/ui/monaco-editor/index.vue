@@ -49,10 +49,14 @@ const registerTheme = () => {
   })
 }
 // 监听主题变化
-watch(() => isDark, () => {
-  registerTheme()
-  monaco.editor.setTheme('dbtu-theme')
-}, { deep: true })
+watch(
+  () => isDark,
+  () => {
+    registerTheme()
+    monaco.editor.setTheme('dbtu-theme')
+  },
+  { deep: true }
+)
 // endregion editor theme end //
 
 const initEditor = () => {
@@ -131,13 +135,17 @@ const initEditor = () => {
   })
 }
 
-watch(() => modelValue, debounce(() => {
-  // 因为设置了新的值后，焦点会回到最前面，所以要记录一下设置值之前的焦点位置
-  const position = editor.getPosition()
-  editor.setValue(modelValue.value)
-  // 恢复设置值之前的焦点位置
-  position && editor.setPosition(position)
-}, 300), { deep: true })
+watch(
+  () => modelValue,
+  debounce(() => {
+    // 因为设置了新的值后，焦点会回到最前面，所以要记录一下设置值之前的焦点位置
+    const position = editor.getPosition()
+    editor.setValue(modelValue.value)
+    // 恢复设置值之前的焦点位置
+    position && editor.setPosition(position)
+  }, 300),
+  { deep: true }
+)
 
 onMounted(() => {
   registerTheme()
@@ -148,10 +156,8 @@ onMounted(() => {
 <template>
   <div
     ref="containerRef"
-    style="width: 100%;height: 100%;"
+    style="width: 100%; height: 100%"
   ></div>
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

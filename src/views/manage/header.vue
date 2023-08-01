@@ -64,7 +64,7 @@ const openSystemSettingDialog = () => {
         class="right-box__item"
       >
         <el-icon :size="18">
-          <DIconNotify/>
+          <DIconNotify />
         </el-icon>
         <span>消息</span>
       </div>
@@ -74,29 +74,32 @@ const openSystemSettingDialog = () => {
         @click="openSystemSettingDialog"
       >
         <el-icon :size="18">
-          <DIconSetting/>
+          <DIconSetting />
         </el-icon>
         <span>设置</span>
       </div>
 
       <div class="right-box__item">
         <el-icon :size="16">
-          <DIconApplication/>
+          <DIconApplication />
         </el-icon>
         <span>应用商店</span>
       </div>
 
       <div class="right-box__item">
         <el-icon :size="17">
-          <DIconAppGithub/>
+          <DIconAppGithub />
         </el-icon>
-        <a href="https://github.com/li-junpeng/dbtu-client" target="_blank">GitHub，点个Star</a>
+        <a
+          href="https://github.com/li-junpeng/dbtu-client"
+          target="_blank"
+          >GitHub，点个Star</a
+        >
       </div>
-
     </div>
   </div>
 
-  <system-setting-dialog ref="systemSettingDialogRef"/>
+  <system-setting-dialog ref="systemSettingDialogRef" />
 </template>
 
 <style lang="scss" scoped>

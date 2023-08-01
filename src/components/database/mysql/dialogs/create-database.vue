@@ -35,12 +35,8 @@ const formRules: FormRules = {
       trigger: 'blur'
     }
   ],
-  character: [
-    { required: true, message: '请选择字符集' }
-  ],
-  collate: [
-    { required: true, message: '请选择排序规则' }
-  ],
+  character: [{ required: true, message: '请选择字符集' }],
+  collate: [{ required: true, message: '请选择排序规则' }]
 }
 const formRef = useComponentRef(ElForm)
 const sql = ref('')
@@ -50,34 +46,41 @@ const collates = computed(() => {
 })
 const isNoWatch = ref(false)
 
-watch(() => formData.value.character, () => {
-  if (isNoWatch.value) {
-    return
+watch(
+  () => formData.value.character,
+  () => {
+    if (isNoWatch.value) {
+      return
+    }
+    formData.value.collate = ''
   }
-  formData.value.collate = ''
-})
+)
 
 // 根据表单内容生成sql预览
-watch(() => formData.value, () => {
-  if (isNoWatch.value) {
-    return
-  }
-
-  const { name, character, collate } = formData.value
-  let str = ''
-  if (isEdit.value) {
-    str += character ? ` CHARACTER SET '${character}'` : ''
-    str += collate ? ` COLLATE '${collate}'` : ''
-    if (str) {
-      str = `ALERT DATABASE \`${name}\`` + str
+watch(
+  () => formData.value,
+  () => {
+    if (isNoWatch.value) {
+      return
     }
-  } else {
-    str = `CREATE DATABASE \`${name}\``
-    str += character ? ` CHARACTER SET '${character}'` : ''
-    str += collate ? ` COLLATE '${collate}'` : ''
-  }
-  sql.value = str ? str + ';' : ''
-}, { deep: true })
+
+    const { name, character, collate } = formData.value
+    let str = ''
+    if (isEdit.value) {
+      str += character ? ` CHARACTER SET '${character}'` : ''
+      str += collate ? ` COLLATE '${collate}'` : ''
+      if (str) {
+        str = `ALERT DATABASE \`${name}\`` + str
+      }
+    } else {
+      str = `CREATE DATABASE \`${name}\``
+      str += character ? ` CHARACTER SET '${character}'` : ''
+      str += collate ? ` COLLATE '${collate}'` : ''
+    }
+    sql.value = str ? str + ';' : ''
+  },
+  { deep: true }
+)
 
 const onSubmit = (): Promise<MySqlDatabaseNode> => {
   return new Promise((resolve, reject) => {
@@ -103,23 +106,25 @@ const setFormData = (data: MySqlDatabaseNode) => {
   isEdit.value = true
   isNoWatch.value = true
   formData.value = JSON.parse(JSON.stringify(data))
-  nextTick(() => isNoWatch.value = false)
+  nextTick(() => (isNoWatch.value = false))
 }
 
 defineExpose({
   onSubmit,
   setFormData
 })
-
 </script>
 
 <template>
-  <div style="width: 100%;height: 300px;">
+  <div style="width: 100%; height: 300px">
     <el-tabs
       v-model="activeTab"
       style="--el-tab-pane-width: 90px"
     >
-      <el-tab-pane label="常规" name="default">
+      <el-tab-pane
+        label="常规"
+        name="default"
+      >
         <el-form
           ref="formRef"
           :model="formData"
@@ -128,10 +133,20 @@ defineExpose({
           label-position="left"
           class="hide-required-label"
         >
-          <el-form-item label="数据库名" prop="name">
-            <el-input v-model="formData.name" :maxlength="40" :disabled="isEdit"/>
+          <el-form-item
+            label="数据库名"
+            prop="name"
+          >
+            <el-input
+              v-model="formData.name"
+              :maxlength="40"
+              :disabled="isEdit"
+            />
           </el-form-item>
-          <el-form-item label="字符集" prop="character">
+          <el-form-item
+            label="字符集"
+            prop="character"
+          >
             <el-select
               v-model="formData.character"
               style="width: 100%"
@@ -146,7 +161,10 @@ defineExpose({
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="排序规则" prop="collate">
+          <el-form-item
+            label="排序规则"
+            prop="collate"
+          >
             <el-select
               v-model="formData.collate"
               style="width: 100%"
@@ -163,15 +181,16 @@ defineExpose({
           </el-form-item>
         </el-form>
       </el-tab-pane>
-      <el-tab-pane label="SQL 预览" name="sql_preview">
-        <div style="width: 560px;height: 250px;">
-          <sql-code-preview :code="sql"/>
+      <el-tab-pane
+        label="SQL 预览"
+        name="sql_preview"
+      >
+        <div style="width: 560px; height: 250px">
+          <sql-code-preview :code="sql" />
         </div>
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

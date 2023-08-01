@@ -62,10 +62,10 @@ interface SystemSettingTabItem {
  * 系统设置tab页内容
  */
 type SystemSettingTabKey =
-  | 'theme'         // 主题
-  | 'proxy'         // 代理
-  | 'keymap'        // 快捷键
-  | 'security'      // 隐私与安全
+  | 'theme' // 主题
+  | 'proxy' // 代理
+  | 'keymap' // 快捷键
+  | 'security' // 隐私与安全
 
 /**
  * el-select option

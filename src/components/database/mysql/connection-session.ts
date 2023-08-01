@@ -11,7 +11,6 @@ const workTabStore = useWorkTabStore()
 const dynamicDialogStore = useDynamicDialogStore()
 
 export class MySQLConnectionSession implements ConnectionSession<MySQLConnectionInfo> {
-
   connection: ConnectionInfo<MySQLConnectionInfo>
 
   constructor(data: ConnectionInfo<MySQLConnectionInfo>) {
@@ -211,86 +210,93 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
   // region 数据库相关操作 start //
 
   openCreateDatabase() {
-    dynamicDialogStore.open({
-      title: '新建数据库',
-      width: '600px',
-      footerButtons: [
-        {
-          type: 'info',
-          text: '取消',
-          onClick: (): Promise<void> => {
-            dynamicDialogStore.close()
-            return Promise.resolve()
-          }
-        },
-        {
-          type: 'primary',
-          text: '创建',
-          enableLoading: true,
-          loadingText: '正在创建',
-          onClick: async (): Promise<void> => {
-            try {
-              const data = await dynamicDialogStore.ref.onSubmit() as MySqlDatabaseNode
-              data.sessionId = this.connection.id as number
-              this.connection.children?.push(data)
-              connectionStore.refreshConnectionTree()
+    dynamicDialogStore.open(
+      {
+        title: '新建数据库',
+        width: '600px',
+        footerButtons: [
+          {
+            type: 'info',
+            text: '取消',
+            onClick: (): Promise<void> => {
               dynamicDialogStore.close()
               return Promise.resolve()
-            } catch (e) {
-              return Promise.reject((e as Error).message)
+            }
+          },
+          {
+            type: 'primary',
+            text: '创建',
+            enableLoading: true,
+            loadingText: '正在创建',
+            onClick: async (): Promise<void> => {
+              try {
+                const data = (await dynamicDialogStore.ref.onSubmit()) as MySqlDatabaseNode
+                data.sessionId = this.connection.id as number
+                this.connection.children?.push(data)
+                connectionStore.refreshConnectionTree()
+                dynamicDialogStore.close()
+                return Promise.resolve()
+              } catch (e) {
+                return Promise.reject((e as Error).message)
+              }
             }
           }
-        }
-      ]
-    }, () => import('@/components/database/mysql/dialogs/create-database.vue'))
+        ]
+      },
+      () => import('@/components/database/mysql/dialogs/create-database.vue')
+    )
   }
 
   openEditDatabase(data: MySqlDatabaseNode) {
-    dynamicDialogStore.open({
-      title: '编辑数据库',
-      width: '600px',
-      footerButtons: [
-        {
-          text: '取消',
-          type: 'info',
-          onClick: (): Promise<void> => {
-            dynamicDialogStore.close()
-            return Promise.resolve()
-          }
-        },
-        {
-          text: '保存',
-          type: 'primary',
-          enableLoading: true,
-          loadingText: '正在保存',
-          onClick: (): Promise<void> => {
-            return new Promise(async (resolve, reject) => {
-              try {
-                const databaseInfo = await dynamicDialogStore.ref.onSubmit() as MySqlDatabaseNode
-                for (let i = 0; i < (this.connection.children?.length || 0); i++) {
-                  if (this.connection.children![i].id === databaseInfo.id) {
-                    this.connection.children![i] = databaseInfo
-                    break
+    dynamicDialogStore.open(
+      {
+        title: '编辑数据库',
+        width: '600px',
+        footerButtons: [
+          {
+            text: '取消',
+            type: 'info',
+            onClick: (): Promise<void> => {
+              dynamicDialogStore.close()
+              return Promise.resolve()
+            }
+          },
+          {
+            text: '保存',
+            type: 'primary',
+            enableLoading: true,
+            loadingText: '正在保存',
+            onClick: (): Promise<void> => {
+              return new Promise(async (resolve, reject) => {
+                try {
+                  const databaseInfo =
+                    (await dynamicDialogStore.ref.onSubmit()) as MySqlDatabaseNode
+                  for (let i = 0; i < (this.connection.children?.length || 0); i++) {
+                    if (this.connection.children![i].id === databaseInfo.id) {
+                      this.connection.children![i] = databaseInfo
+                      break
+                    }
                   }
+                  connectionStore.refreshConnectionTree()
+                  dynamicDialogStore.close()
+                  resolve()
+                } catch {
+                  reject()
                 }
-                connectionStore.refreshConnectionTree()
-                dynamicDialogStore.close()
-                resolve()
-              } catch {
-                reject()
-              }
-            })
+              })
+            }
           }
+        ],
+        afterOpen: (ref: any) => {
+          ref.setFormData(data)
         }
-      ],
-      afterOpen: (ref: any) => {
-        ref.setFormData(data)
-      }
-    }, () => import('@/components/database/mysql/dialogs/create-database.vue'))
+      },
+      () => import('@/components/database/mysql/dialogs/create-database.vue')
+    )
   }
 
   deleteDatabase(data: MySqlDatabaseNode) {
-    MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), (done) => {
+    MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), done => {
       for (let i = 0; i < this.connection.children!.length; i++) {
         if (this.connection.children![i].id === data.id) {
           this.connection.children!.splice(i, 1)
@@ -313,7 +319,8 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
    * @param data  表实例信息
    */
   openTableInstance(data: MySqlTableNode) {
-    const databaseName = this.connection.children!.find(item => item.id === data.databaseId)?.name || '未知的数据库'
+    const databaseName =
+      this.connection.children!.find(item => item.id === data.databaseId)?.name || '未知的数据库'
     const tabId = `${data.sessionId!}_${data.databaseId}_${data.id}`
     workTabStore.addTab({
       id: tabId,
@@ -353,21 +360,19 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
    * @param data  表信息
    */
   deleteTable(data: MySqlTableNode) {
-    MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), (done) => {
+    MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), done => {
       // TODO 掉接口删除表，然后重新刷新列表
       data.name = 'administrative_cont_' + Date.now().toString().substring(9, 13)
 
       done()
       connectionStore.refreshConnectionTree()
-    }).then(() => {
-    })
+    }).then(() => {})
   }
 
   // endregion 数据表相关操作 end //
 }
 
 const TreeNodeContextmenu = {
-
   database: (event: MouseEvent, data: MySqlDatabaseNode, session: MySQLConnectionSession) => {
     const id = data.id as number
 
@@ -381,7 +386,14 @@ const TreeNodeContextmenu = {
           sessionId: data.sessionId,
           name: '表',
           nodeType: 'table',
-          children: ['administrative_cont', 'administrative_cont_pdf', 'sys_user', 'sys_role', 'sys_user_role', 'sys_log'].map((item, index) => {
+          children: [
+            'administrative_cont',
+            'administrative_cont_pdf',
+            'sys_user',
+            'sys_role',
+            'sys_user_role',
+            'sys_log'
+          ].map((item, index) => {
             return {
               id: index + 1,
               name: item,
@@ -402,21 +414,29 @@ const TreeNodeContextmenu = {
           sessionId: data.sessionId,
           name: '视图',
           nodeType: 'view',
-          children: ['getAfterMissData', 'getMissData', 'getMorMissData', 'getNormalData'].map((item, index) => {
-            return {
-              id: index + 1,
-              name: item,
-              sessionId: data.sessionId,
-              nodeType: 'view_instance'
+          children: ['getAfterMissData', 'getMissData', 'getMorMissData', 'getNormalData'].map(
+            (item, index) => {
+              return {
+                id: index + 1,
+                name: item,
+                sessionId: data.sessionId,
+                nodeType: 'view_instance'
+              }
             }
-          }) as ViewInstanceNode[]
+          ) as ViewInstanceNode[]
         } as ViewNode)
         data.children.push({
           id: Date.now() + 3,
           sessionId: data.sessionId,
           name: '函数',
           nodeType: 'function',
-          children: ['fun_diff_day_dur', 'fun_name_day_dur', 'proc_init_normal', 'proc_init_unusual', 'proc_leave_everyday'].map((item, index) => {
+          children: [
+            'fun_diff_day_dur',
+            'fun_name_day_dur',
+            'proc_init_normal',
+            'proc_init_unusual',
+            'proc_leave_everyday'
+          ].map((item, index) => {
             return {
               id: index + 1,
               name: item,
@@ -444,7 +464,12 @@ const TreeNodeContextmenu = {
           sessionId: data.sessionId,
           name: '备份',
           nodeType: 'backup',
-          children: ['20230705095432', '2023-03-07_1456', '清空个人地图数据前', '清空模板组件数据前'].map((item, index) => {
+          children: [
+            '20230705095432',
+            '2023-03-07_1456',
+            '清空个人地图数据前',
+            '清空模板组件数据前'
+          ].map((item, index) => {
             return {
               id: index + 1,
               name: item,
@@ -482,7 +507,12 @@ const TreeNodeContextmenu = {
       event,
       menus: [
         {
-          label: data.status === 'disable' ? '打开数据库' : data.status === 'enable' ? '关闭数据库' : '正在打开数据库',
+          label:
+            data.status === 'disable'
+              ? '打开数据库'
+              : data.status === 'enable'
+              ? '关闭数据库'
+              : '正在打开数据库',
           divided: true,
           disabled: data.status === 'loading',
           onClick: () => {
@@ -870,16 +900,13 @@ const TreeNodeContextmenu = {
       ]
     })
   }
-
 }
 
 const ClickNode = {
-
   table: (data: TableNode) => {
     workTabStore.setObjectPane({
       props: data,
       component: () => import('@/components/database/mysql/work-tabs/object-pane/table-list.vue')
     })
   }
-
 }

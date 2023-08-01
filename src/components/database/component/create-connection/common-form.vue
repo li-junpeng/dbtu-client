@@ -29,10 +29,7 @@ const emits = defineEmits(['update:modelValue'])
 
 const connectionStore = useConnectionStore()
 const formData = usePropValue<ConnectionInfo<BaseConnectionDetail>>(props.modelValue, emits)
-const {
-  isTestConnecting,
-  onTestConnection
-} = useCommonForm(props, formData, {
+const { isTestConnecting, onTestConnection } = useCommonForm(props, formData, {
   beforeTestConnection: () => {
     onChangeFormDisabled(true)
   },
@@ -68,14 +65,21 @@ defineExpose({
       >
         <el-row>
           <el-col :span="13">
-            <el-form-item label="连接名" prop="name">
-              <el-input
-                v-model="formData.name"
-              />
+            <el-form-item
+              label="连接名"
+              prop="name"
+            >
+              <el-input v-model="formData.name" />
             </el-form-item>
           </el-col>
-          <el-col :span=" 9" :offset="2">
-            <el-form-item label="分组" prop="groupId">
+          <el-col
+            :span="9"
+            :offset="2"
+          >
+            <el-form-item
+              label="分组"
+              prop="groupId"
+            >
               <el-select
                 v-model="formData.groupId"
                 placeholder="请选择"
@@ -91,7 +95,10 @@ defineExpose({
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="说明" prop="comment">
+        <el-form-item
+          label="说明"
+          prop="comment"
+        >
           <el-input
             v-model="formData.comment"
             type="textarea"

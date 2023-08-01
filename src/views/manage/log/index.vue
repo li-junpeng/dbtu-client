@@ -14,6 +14,4 @@ defineOptions({
   <h1>我是日志</h1>
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

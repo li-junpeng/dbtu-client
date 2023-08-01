@@ -4,7 +4,6 @@ import { ConnectionSessionFactory } from '@/components/database/connection-sessi
 import { useConnectionStore } from '@/stores/ConnectionStore'
 
 export const useConnectionSessionStore = defineStore('useConnectionSessionStore', {
-
   state: () => {
     return {
       sessions: {} as Record<number, ConnectionSession<BaseConnectionDetail>>
@@ -12,7 +11,6 @@ export const useConnectionSessionStore = defineStore('useConnectionSessionStore'
   },
 
   actions: {
-
     get(sessionId: number): ConnectionSession<BaseConnectionDetail> {
       return this.sessions[sessionId]
     },
@@ -22,7 +20,9 @@ export const useConnectionSessionStore = defineStore('useConnectionSessionStore'
      *
      * @param connection  数据库连接信息
      */
-    create(connection: ConnectionInfo<BaseConnectionDetail>): ConnectionSession<BaseConnectionDetail> {
+    create(
+      connection: ConnectionInfo<BaseConnectionDetail>
+    ): ConnectionSession<BaseConnectionDetail> {
       const session = ConnectionSessionFactory.createSession(connection.dbType, connection)
       this.sessions[connection.id as number] = session
       return session
@@ -53,7 +53,6 @@ export const useConnectionSessionStore = defineStore('useConnectionSessionStore'
     destroy(connectionId: number): void {
       delete this.sessions[connectionId]
     }
-
   },
 
   persist: {

@@ -92,7 +92,7 @@ const deleteField = () => {
     return
   }
 
-  MessageBox.deleteConfirm('您确认要删除字段吗？', (done) => {
+  MessageBox.deleteConfirm('您确认要删除字段吗？', done => {
     const b = ArrayUtils.remove(tableData, selectedRow.value!.id, 'id')
     if (b && tableData.length === 0) {
       addField()
@@ -182,12 +182,16 @@ const triggerPrimaryKey = (row?: TableField) => {
 const sql = computed(() => {
   const pks: string[] = []
   const dataType = (item: TableField): string => {
-    return item.maxLength ? `(${item.maxLength}${item.decimalPoint >= 1 ? `, ` + item.decimalPoint : ''})` : ''
+    return item.maxLength
+      ? `(${item.maxLength}${item.decimalPoint >= 1 ? `, ` + item.decimalPoint : ''})`
+      : ''
   }
 
   let str = `CREATE TABLE \`dbtu\`.\`Untitled\` (\n`
   tableData.forEach((item, index) => {
-    str += `\t\`${item.field}\` ${item.dataType}${dataType(item)} ${item.notNull ? 'NOT NULL' : 'NULL'}`
+    str += `\t\`${item.field}\` ${item.dataType}${dataType(item)} ${
+      item.notNull ? 'NOT NULL' : 'NULL'
+    }`
     if (index < tableData.length - 1) {
       str += ',\n'
     }
@@ -203,30 +207,36 @@ const sql = computed(() => {
   return str + '\n);'
 })
 
-watch(() => sql.value, debounce(() => {
-  emits('change-sql', sql.value)
-}, 600))
+watch(
+  () => sql.value,
+  debounce(() => {
+    emits('change-sql', sql.value)
+  }, 600)
+)
 
 // 优化: 当行被选中时，立刻使其列中的输入框获取焦点
-watch(() => [selectedRow.value, selectedColumn.value], () => {
-  nextTick(() => {
-    const column = selectedColumn.value
-    switch (column?.property) {
-      case 'field':
-        fieldInputRef.value?.focus()
-        break
-      case 'maxLength':
-        maxLengthInputRef.value?.focus()
-        break
-      case 'decimalPoint':
-        decimalPointInputRef.value?.focus()
-        break
-      case 'comment':
-        commentInputRef.value?.focus()
-        break
-    }
-  })
-})
+watch(
+  () => [selectedRow.value, selectedColumn.value],
+  () => {
+    nextTick(() => {
+      const column = selectedColumn.value
+      switch (column?.property) {
+        case 'field':
+          fieldInputRef.value?.focus()
+          break
+        case 'maxLength':
+          maxLengthInputRef.value?.focus()
+          break
+        case 'decimalPoint':
+          decimalPointInputRef.value?.focus()
+          break
+        case 'comment':
+          commentInputRef.value?.focus()
+          break
+      }
+    })
+  }
+)
 
 const rowContextmenu = (row: TableField, column: TableColumn, event: MouseEvent) => {
   event.preventDefault()
@@ -334,18 +344,28 @@ onMounted(() => {
       @row-contextmenu="rowContextmenu"
       class="el-table-editable"
     >
-      <el-table-column type="index" width="50" align="center">
+      <el-table-column
+        type="index"
+        width="50"
+        align="center"
+      >
         <template #default="{ row, $index }">
           <span
             v-if="selectedRow?.id !== row.id"
             class="dbtu-un-user-select"
-            style="padding: 0 12px;">{{ $index + 1 }}</span>
+            style="padding: 0 12px"
+            >{{ $index + 1 }}</span
+          >
           <el-icon v-else>
-            <IconEditPen/>
+            <IconEditPen />
           </el-icon>
         </template>
       </el-table-column>
-      <el-table-column label="字段名" prop="field" width="300px">
+      <el-table-column
+        label="字段名"
+        prop="field"
+        width="300px"
+      >
         <template #default="{ row }">
           <el-input
             v-if="selectedRow?.id === row.id"
@@ -354,10 +374,18 @@ onMounted(() => {
             :maxlength="100"
             autofocus
           />
-          <span v-else class="row-readonly-text">{{ row['field'] }}</span>
+          <span
+            v-else
+            class="row-readonly-text"
+            >{{ row['field'] }}</span
+          >
         </template>
       </el-table-column>
-      <el-table-column label="类型" prop="dataType" width="180px">
+      <el-table-column
+        label="类型"
+        prop="dataType"
+        width="180px"
+      >
         <template #default="{ row }">
           <el-select
             v-if="selectedRow?.id === row.id"
@@ -374,10 +402,18 @@ onMounted(() => {
               :label="key"
             />
           </el-select>
-          <span v-else class="row-readonly-text">{{ row['dataType'] }}</span>
+          <span
+            v-else
+            class="row-readonly-text"
+            >{{ row['dataType'] }}</span
+          >
         </template>
       </el-table-column>
-      <el-table-column label="长度" prop="maxLength" width="140px">
+      <el-table-column
+        label="长度"
+        prop="maxLength"
+        width="140px"
+      >
         <template #default="{ row }">
           <el-input-number
             v-if="selectedRow?.id === row.id"
@@ -386,12 +422,20 @@ onMounted(() => {
             :controls="false"
             :min="0"
             class="el-input-number__text-left"
-            style="width: 100%;"
+            style="width: 100%"
           />
-          <span v-else class="row-readonly-text">{{ row['maxLength'] }}</span>
+          <span
+            v-else
+            class="row-readonly-text"
+            >{{ row['maxLength'] }}</span
+          >
         </template>
       </el-table-column>
-      <el-table-column label="小数点" prop="decimalPoint" width="140px">
+      <el-table-column
+        label="小数点"
+        prop="decimalPoint"
+        width="140px"
+      >
         <template #default="{ row }">
           <el-input-number
             v-if="selectedRow?.id === row.id"
@@ -400,12 +444,21 @@ onMounted(() => {
             :controls="false"
             :min="0"
             class="el-input-number__text-left"
-            style="width: 100%;"
+            style="width: 100%"
           />
-          <span v-else class="row-readonly-text">{{ row['decimalPoint'] }}</span>
+          <span
+            v-else
+            class="row-readonly-text"
+            >{{ row['decimalPoint'] }}</span
+          >
         </template>
       </el-table-column>
-      <el-table-column label="不是null" prop="notNull" width="80px" align="center">
+      <el-table-column
+        label="不是null"
+        prop="notNull"
+        width="80px"
+        align="center"
+      >
         <template #default="{ row }">
           <el-checkbox
             v-model="row.notNull"
@@ -414,7 +467,12 @@ onMounted(() => {
           />
         </template>
       </el-table-column>
-      <el-table-column label="虚拟" prop="virtual" width="80px" align="center">
+      <el-table-column
+        label="虚拟"
+        prop="virtual"
+        width="80px"
+        align="center"
+      >
         <template #default="{ row }">
           <el-checkbox
             v-model="row.virtual"
@@ -423,37 +481,56 @@ onMounted(() => {
           />
         </template>
       </el-table-column>
-      <el-table-column label="主键" prop="pk" width="80px" align="center">
+      <el-table-column
+        label="主键"
+        prop="pk"
+        width="80px"
+        align="center"
+      >
         <template #default="{ row }">
           <div
             @click="triggerPrimaryKey(row)"
-            style="width: 80px;height: 33px;cursor: pointer;color: var(--dbtu-theme-color);display: flex;align-items: center;justify-content: center;gap: var(--dbtu-icon-text-gap);"
+            style="
+              width: 80px;
+              height: 33px;
+              cursor: pointer;
+              color: var(--dbtu-theme-color);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: var(--dbtu-icon-text-gap);
+            "
           >
             <el-icon v-if="row.pk">
-              <IconKey/>
+              <IconKey />
             </el-icon>
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="注释" prop="comment">
+      <el-table-column
+        label="注释"
+        prop="comment"
+      >
         <template #default="{ row }">
           <el-input
             v-if="selectedRow?.id === row.id"
             ref="commentInputRef"
             v-model="row.comment"
           />
-          <span v-else class="row-readonly-text">{{ row['comment'] }}</span>
+          <span
+            v-else
+            class="row-readonly-text"
+            >{{ row['comment'] }}</span
+          >
         </template>
       </el-table-column>
     </el-table>
   </div>
-  <div class="bottom-field-option">
-
-  </div>
+  <div class="bottom-field-option"></div>
 </template>
 
 <style scoped lang="scss">
-@use "@/assets/css-style/el-table-editable";
+@use '@/assets/css-style/el-table-editable';
 
 .top-form {
   width: 100%;

@@ -41,7 +41,7 @@ const fieldTabPaneRef = useComponentRef(FieldTabPane)
       disabled
     >
       <template #icon>
-        <IconCollection/>
+        <IconCollection />
       </template>
       <span>保存</span>
     </el-button>
@@ -53,40 +53,56 @@ const fieldTabPaneRef = useComponentRef(FieldTabPane)
       v-show="tab.selected === TabNames.field"
       :tab-pane-ref="fieldTabPaneRef"
     />
-    <index-toolbox v-show="tab.selected === TabNames.index"/>
-    <fk-toolbox v-show="tab.selected === TabNames.fk"/>
-    <trigger-toolbox v-show="tab.selected === TabNames.trigger"/>
+    <index-toolbox v-show="tab.selected === TabNames.index" />
+    <fk-toolbox v-show="tab.selected === TabNames.fk" />
+    <trigger-toolbox v-show="tab.selected === TabNames.trigger" />
   </div>
 
   <!-- tabs -->
   <div class="tabs-box">
     <el-tabs
       v-model="tab.selected"
-      style="--el-tab-pane-width: 80px;width: 100%;height: 100%;"
+      style="--el-tab-pane-width: 80px; width: 100%; height: 100%"
     >
-      <el-tab-pane label="字段" :name="TabNames.field">
+      <el-tab-pane
+        label="字段"
+        :name="TabNames.field"
+      >
         <field-tab-pane
           ref="fieldTabPaneRef"
-          @change-sql="sql => sqlCode = sql"
+          @change-sql="sql => (sqlCode = sql)"
         />
       </el-tab-pane>
-      <el-tab-pane label="索引" :name="TabNames.index">
-
+      <el-tab-pane
+        label="索引"
+        :name="TabNames.index"
+      >
       </el-tab-pane>
-      <el-tab-pane label="外键" :name="TabNames.fk">
-
+      <el-tab-pane
+        label="外键"
+        :name="TabNames.fk"
+      >
       </el-tab-pane>
-      <el-tab-pane label="触发器" :name="TabNames.trigger">
-
+      <el-tab-pane
+        label="触发器"
+        :name="TabNames.trigger"
+      >
       </el-tab-pane>
-      <el-tab-pane label="选项" :name="TabNames.option">
-
+      <el-tab-pane
+        label="选项"
+        :name="TabNames.option"
+      >
       </el-tab-pane>
-      <el-tab-pane label="注释" :name="TabNames.comment">
-
+      <el-tab-pane
+        label="注释"
+        :name="TabNames.comment"
+      >
       </el-tab-pane>
-      <el-tab-pane label="SQL预览" :name="TabNames.sql_preview">
-        <sql-code-preview :code="sqlCode"/>
+      <el-tab-pane
+        label="SQL预览"
+        :name="TabNames.sql_preview"
+      >
+        <sql-code-preview :code="sqlCode" />
       </el-tab-pane>
     </el-tabs>
   </div>

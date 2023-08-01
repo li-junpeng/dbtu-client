@@ -6,7 +6,7 @@ interface FormatFileSizeOption {
    *
    * @default 2
    */
-  fractionDigits?: number,
+  fractionDigits?: number
   /**
    * 数值与单位之间是否有空格
    *
@@ -28,7 +28,6 @@ interface FormatFileSizeOption {
 }
 
 export const StringUtils = {
-
   NULL: 'null',
 
   // 没有值时显示的内容
@@ -62,8 +61,12 @@ export const StringUtils = {
       return _option.nullValue
     }
 
-    const digitGroups = Math.floor(Math.min(FileSizeUnit.length - 1, (Math.log10(size) / Math.log10(1024))))
-    const value = (size / Math.pow(1024, digitGroups)).toFixed(_option.fractionDigits).replace('.00', '')
+    const digitGroups = Math.floor(
+      Math.min(FileSizeUnit.length - 1, Math.log10(size) / Math.log10(1024))
+    )
+    const value = (size / Math.pow(1024, digitGroups))
+      .toFixed(_option.fractionDigits)
+      .replace('.00', '')
     return value + (_option.isSpace ? ' ' : '') + FileSizeUnit[Math.floor(digitGroups)]
   },
 
@@ -88,5 +91,4 @@ export const StringUtils = {
     }
     return s
   }
-
 }

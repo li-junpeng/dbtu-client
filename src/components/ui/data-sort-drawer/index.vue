@@ -95,15 +95,19 @@ defineExpose({
     :size="500"
   >
     <div class="toolbox">
-      <el-button text link @click="onAddSort()">
+      <el-button
+        text
+        link
+        @click="onAddSort()"
+      >
         <template #icon>
-          <DIconSort/>
+          <DIconSort />
         </template>
         <span>添加排序</span>
       </el-button>
     </div>
 
-    <div style="width: 100%;height: calc(100% - 270px);">
+    <div style="width: 100%; height: calc(100% - 270px)">
       <el-scrollbar v-if="sorts.length >= 1">
         <div
           v-for="(item, index) in sorts"
@@ -124,12 +128,15 @@ defineExpose({
               :persistent="false"
             >
               <template #reference>
-                <span class="keyword-text dbtu-text-ellipsis" style="cursor: pointer;max-width: 300px;">
+                <span
+                  class="keyword-text dbtu-text-ellipsis"
+                  style="cursor: pointer; max-width: 300px"
+                >
                   {{ item.field }}
                 </span>
               </template>
               <template #default>
-                <div style="width: 100%; height: 300px;">
+                <div style="width: 100%; height: 300px">
                   <el-scrollbar>
                     <div
                       v-for="field in fields"
@@ -166,29 +173,41 @@ defineExpose({
                 @click="onDeleteSort(index)"
               >
                 <template #icon>
-                  <IconDelete/>
+                  <IconDelete />
                 </template>
               </el-button>
             </el-tooltip>
           </div>
         </div>
       </el-scrollbar>
-      <div v-else style="position: relative;width: 100%;height: 40%;">
+      <div
+        v-else
+        style="position: relative; width: 100%; height: 40%"
+      >
         <span
           class="dbtu-vertical-center dbtu-un-user-select"
-          style="color: var(--dbtu-font-color-disabled);"
-        >暂无排序规则</span>
+          style="color: var(--dbtu-font-color-disabled)"
+          >暂无排序规则</span
+        >
       </div>
     </div>
 
-    <div style="width: 100%;height: 200px;">
+    <div style="width: 100%; height: 200px">
       <p class="dbtu-un-user-select code-preview-title">SQL预览</p>
-      <sql-code-preview :code="sql"/>
+      <sql-code-preview :code="sql" />
     </div>
 
     <template #footer>
-      <el-button type="info" @click="drawer.visible = false">关闭</el-button>
-      <el-button type="primary" @click="onApply">应用</el-button>
+      <el-button
+        type="info"
+        @click="drawer.visible = false"
+        >关闭</el-button
+      >
+      <el-button
+        type="primary"
+        @click="onApply"
+        >应用</el-button
+      >
     </template>
   </el-drawer>
 </template>

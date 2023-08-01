@@ -18,7 +18,7 @@ defineOptions({
       disabled
     >
       <template #icon>
-        <IconCirclePlus/>
+        <IconCirclePlus />
       </template>
       <span>添加触发器</span>
     </el-button>
@@ -28,7 +28,7 @@ defineOptions({
       disabled
     >
       <template #icon>
-        <IconBottomLeft/>
+        <IconBottomLeft />
       </template>
       <span>插入触发器</span>
     </el-button>
@@ -38,7 +38,7 @@ defineOptions({
       disabled
     >
       <template #icon>
-        <IconDelete/>
+        <IconDelete />
       </template>
       <span>删除触发器</span>
     </el-button>
@@ -49,7 +49,7 @@ defineOptions({
       disabled
     >
       <template #icon>
-        <IconTop/>
+        <IconTop />
       </template>
       <span>上移</span>
     </el-button>
@@ -59,13 +59,11 @@ defineOptions({
       disabled
     >
       <template #icon>
-        <IconBottom/>
+        <IconBottom />
       </template>
       <span>下移</span>
     </el-button>
   </div>
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

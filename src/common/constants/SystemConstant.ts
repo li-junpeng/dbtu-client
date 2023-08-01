@@ -26,14 +26,4 @@ export const FONT_SIZE_MIN = 10
 // 字体支持的最大值
 export const FONT_SIZE_MAX = 18
 // 文件大小单位
-export const FileSizeUnit = [
-  'B',
-  'KB',
-  'MB',
-  'GB',
-  'TB',
-  'PB',
-  'EB',
-  'ZB',
-  'YB'
-]
+export const FileSizeUnit = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']

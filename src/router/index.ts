@@ -36,7 +36,7 @@ const router = createRouter({
           component: () => import('@/views/manage/team/index.vue')
         },
         {
-          path:'/manage/log',
+          path: '/manage/log',
           name: 'LogManage',
           meta: {
             title: '操作日志',

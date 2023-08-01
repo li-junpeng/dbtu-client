@@ -14,7 +14,8 @@ import {
   ConnectionTypes,
   DatabaseDrivers,
   SavePasswordTypes,
-  getDatabaseDriverInfo, CharsetTypes
+  getDatabaseDriverInfo,
+  CharsetTypes
 } from '@/common/constants/ConnectionConstant'
 import { ObjectUtils } from '@/common/utils/ObjectUtils'
 import type { BasePropDefine } from '@/components/database/component/create-connection/common-form'
@@ -31,9 +32,7 @@ const emits = defineEmits(['update:modelValue'])
 
 const commonFormRef = ref<InstanceType<typeof CommonForm> | null>(null)
 const formData = usePropValue<ConnectionInfo<MySQLConnectionInfo>>(props.modelValue, emits)
-const {
-  dataInitCompleted
-} = useCommonForm(props, formData, {
+const { dataInitCompleted } = useCommonForm(props, formData, {
   initFormData: () => {
     if (NumberUtils.isEmpty(formData.value.port)) {
       formData.value.port = 3306
@@ -91,7 +90,7 @@ const onChangeUrlByDriver = () => {
   }
 }
 
-const timeZonesOptions: { value: string, label: string }[] = TimeZones.map(_ => ({
+const timeZonesOptions: { value: string; label: string }[] = TimeZones.map(_ => ({
   value: _,
   label: _
 }))
@@ -104,11 +103,20 @@ const timeZonesOptions: { value: string, label: string }[] = TimeZones.map(_ => 
     v-model="formData"
     :rules="formRules"
   >
-    <el-tabs v-model="activeTab" style="--el-tab-pane-width: 100px;">
-      <el-tab-pane name="general" label="常规">
+    <el-tabs
+      v-model="activeTab"
+      style="--el-tab-pane-width: 100px"
+    >
+      <el-tab-pane
+        name="general"
+        label="常规"
+      >
         <el-row>
           <el-col :span="13">
-            <el-form-item label="连接方式" prop="detail.connectionType">
+            <el-form-item
+              label="连接方式"
+              prop="detail.connectionType"
+            >
               <el-select
                 v-model="formData.detail.connectionType"
                 style="width: 100%"
@@ -122,8 +130,14 @@ const timeZonesOptions: { value: string, label: string }[] = TimeZones.map(_ => 
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="9" :offset="2">
-            <el-form-item label="驱动" prop="detail.driver">
+          <el-col
+            :span="9"
+            :offset="2"
+          >
+            <el-form-item
+              label="驱动"
+              prop="detail.driver"
+            >
               <el-select
                 v-model="formData.detail.driver"
                 @change="onChangeUrlByDriver"
@@ -141,12 +155,21 @@ const timeZonesOptions: { value: string, label: string }[] = TimeZones.map(_ => 
 
         <el-row v-if="formData.detail.connectionType === 'default'">
           <el-col :span="13">
-            <el-form-item label="主机" prop="host">
-              <el-input v-model="formData.host"/>
+            <el-form-item
+              label="主机"
+              prop="host"
+            >
+              <el-input v-model="formData.host" />
             </el-form-item>
           </el-col>
-          <el-col :span="9" :offset="2">
-            <el-form-item label="端口" prop="port">
+          <el-col
+            :span="9"
+            :offset="2"
+          >
+            <el-form-item
+              label="端口"
+              prop="port"
+            >
               <el-input-number
                 v-model="formData.port"
                 :controls="false"
@@ -159,7 +182,10 @@ const timeZonesOptions: { value: string, label: string }[] = TimeZones.map(_ => 
 
         <el-row>
           <el-col :span="13">
-            <el-form-item label="认证方式" prop="detail.authType">
+            <el-form-item
+              label="认证方式"
+              prop="detail.authType"
+            >
               <el-select
                 v-model="formData.detail.authType"
                 style="width: 100%"
@@ -177,20 +203,36 @@ const timeZonesOptions: { value: string, label: string }[] = TimeZones.map(_ => 
 
         <el-row v-if="formData.detail.authType === 'user_password'">
           <el-col :span="13">
-            <el-form-item label="用户" prop="detail.username">
-              <el-input v-model="formData.detail.username"/>
+            <el-form-item
+              label="用户"
+              prop="detail.username"
+            >
+              <el-input v-model="formData.detail.username" />
             </el-form-item>
           </el-col>
         </el-row>
 
         <el-row v-if="formData.detail.authType === 'user_password'">
           <el-col :span="13">
-            <el-form-item label="密码" prop="detail.password">
-              <el-input v-model="formData.detail.password" type="password" show-password/>
+            <el-form-item
+              label="密码"
+              prop="detail.password"
+            >
+              <el-input
+                v-model="formData.detail.password"
+                type="password"
+                show-password
+              />
             </el-form-item>
           </el-col>
-          <el-col :span="9" :offset="2">
-            <el-form-item label="保存密码" prop="detail.savePwdType">
+          <el-col
+            :span="9"
+            :offset="2"
+          >
+            <el-form-item
+              label="保存密码"
+              prop="detail.savePwdType"
+            >
               <el-select v-model="formData.detail.savePwdType">
                 <el-option
                   v-for="item in SavePasswordTypes"
@@ -220,14 +262,22 @@ const timeZonesOptions: { value: string, label: string }[] = TimeZones.map(_ => 
         </el-form-item>
       </el-tab-pane>
 
-      <el-tab-pane name="database" label="数据库">
-
+      <el-tab-pane
+        name="database"
+        label="数据库"
+      >
       </el-tab-pane>
 
-      <el-tab-pane name="advanced" label="高级">
+      <el-tab-pane
+        name="advanced"
+        label="高级"
+      >
         <el-row>
           <el-col :span="11">
-            <el-form-item label="时区" prop="detail.timeZone">
+            <el-form-item
+              label="时区"
+              prop="detail.timeZone"
+            >
               <el-select-v2
                 v-model="formData.detail.timeZone"
                 :options="timeZonesOptions"
@@ -239,8 +289,14 @@ const timeZonesOptions: { value: string, label: string }[] = TimeZones.map(_ => 
               />
             </el-form-item>
           </el-col>
-          <el-col :span="11" :offset="2">
-            <el-form-item label="编码" prop="detail.charset">
+          <el-col
+            :span="11"
+            :offset="2"
+          >
+            <el-form-item
+              label="编码"
+              prop="detail.charset"
+            >
               <el-select
                 v-model="formData.detail.charset"
                 filterable
@@ -257,29 +313,35 @@ const timeZonesOptions: { value: string, label: string }[] = TimeZones.map(_ => 
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="13" style="display: flex;align-items: center;margin-bottom: 18px">
-            <el-switch v-model="formData.detail.connectionInterval"/>
-            <span style="margin-left: 20px;width: 133px;">保持连接间隔</span>
+          <el-col
+            :span="13"
+            style="display: flex; align-items: center; margin-bottom: 18px"
+          >
+            <el-switch v-model="formData.detail.connectionInterval" />
+            <span style="margin-left: 20px; width: 133px">保持连接间隔</span>
             <el-input-number
               v-model="formData.detail.connectionIntervalTime"
               :disabled="!formData.detail.connectionInterval"
               :controls="false"
               class="el-input-number__text-left"
-              style="margin-left: 10px;width: 80px"
+              style="margin-left: 10px; width: 80px"
             />
             <span style="margin-left: 10px">秒</span>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="13" style="display: flex;align-items: center">
-            <el-switch v-model="formData.detail.autoBreak"/>
-            <span style="margin-left: 20px;width: 133px">此时间后自动断开</span>
+          <el-col
+            :span="13"
+            style="display: flex; align-items: center"
+          >
+            <el-switch v-model="formData.detail.autoBreak" />
+            <span style="margin-left: 20px; width: 133px">此时间后自动断开</span>
             <el-input-number
               v-model="formData.detail.autoBreakTime"
               :disabled="!formData.detail.autoBreak"
               :controls="false"
               class="el-input-number__text-left"
-              style="margin-left: 10px;width: 80px"
+              style="margin-left: 10px; width: 80px"
             />
             <span style="margin-left: 10px">秒</span>
           </el-col>

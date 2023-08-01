@@ -17,18 +17,15 @@ defineSlots<{
 }>()
 
 const props = defineProps({
-
   connectionInfo: {
     type: Object as PropType<ConnectionInfo<BaseConnectionDetail>>,
     required: true
   }
-
 })
 
 const statusText = computed(() => {
   return ConnectionStatus[props.connectionInfo?.status] || ConnectionStatus.no_connection
 })
-
 </script>
 
 <template>
@@ -37,7 +34,7 @@ const statusText = computed(() => {
       <slot name="icon"></slot>
     </div>
     <div class="info-box">
-      <p class="dbtu-text-ellipsis  connection-name">{{ connectionInfo.name }}</p>
+      <p class="dbtu-text-ellipsis connection-name">{{ connectionInfo.name }}</p>
       <p class="dbtu-un-user-select connection-status-text">{{ statusText }}</p>
     </div>
   </div>

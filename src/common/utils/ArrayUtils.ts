@@ -1,5 +1,4 @@
 export const ArrayUtils = {
-
   unshift<T extends []>(source: T[], obj: T): T[] {
     const array = JSON.parse(JSON.stringify(source))
     array.unshift(obj)
@@ -87,5 +86,4 @@ export const ArrayUtils = {
     }
     return -1
   }
-
 }

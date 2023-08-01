@@ -7,7 +7,6 @@ export interface BasePropDefine<T extends BaseConnectionDetail> {
 }
 
 interface Options {
-
   /**
    * 初始化表单数据所使用的执行函数, 需要实现该函数来初始化表单数据
    */
@@ -25,7 +24,6 @@ interface Options {
    * @param msg      消息内容
    */
   afterTestConnection?: (success: boolean, msg?: string) => void
-
 }
 
 export const useCommonForm = <T extends BaseConnectionDetail>(

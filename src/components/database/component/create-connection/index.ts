@@ -3,7 +3,7 @@ const CreateConnectionComs: Record<DatabaseIdent, () => any> = {
   sql_server_2012: () => import('@/components/database/sql_server_2012/create-connection.vue')
 }
 
-export const getCreateConnectionCom = (ident: DatabaseIdent): () => Promise<any> => {
+export const getCreateConnectionCom = (ident: DatabaseIdent): (() => Promise<any>) => {
   const component = CreateConnectionComs[ident]
   return !component ? () => Promise.reject() : component
 }

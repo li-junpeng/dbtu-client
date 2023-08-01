@@ -34,8 +34,6 @@ const moveTopField = () => {
 const moveBottomField = () => {
   tabPaneRef.value?.moveBottomField()
 }
-
-
 </script>
 
 <template>
@@ -46,7 +44,7 @@ const moveBottomField = () => {
       @click="addField"
     >
       <template #icon>
-        <IconCirclePlus/>
+        <IconCirclePlus />
       </template>
       <span>添加字段</span>
     </el-button>
@@ -56,7 +54,7 @@ const moveBottomField = () => {
       @click="appendField"
     >
       <template #icon>
-        <IconTopLeft/>
+        <IconTopLeft />
       </template>
       <span>插入字段</span>
     </el-button>
@@ -66,7 +64,7 @@ const moveBottomField = () => {
       @click="deleteField"
     >
       <template #icon>
-        <IconDelete/>
+        <IconDelete />
       </template>
       <span>删除字段</span>
     </el-button>
@@ -77,7 +75,7 @@ const moveBottomField = () => {
       @click="tabPaneRef?.triggerPrimaryKey()"
     >
       <template #icon>
-        <IconKey/>
+        <IconKey />
       </template>
       <span>主键</span>
     </el-button>
@@ -88,7 +86,7 @@ const moveBottomField = () => {
       @click="moveTopField"
     >
       <template #icon>
-        <IconTop/>
+        <IconTop />
       </template>
       <span>上移</span>
     </el-button>
@@ -98,13 +96,11 @@ const moveBottomField = () => {
       @click="moveBottomField"
     >
       <template #icon>
-        <IconBottom/>
+        <IconBottom />
       </template>
       <span>下移</span>
     </el-button>
   </div>
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

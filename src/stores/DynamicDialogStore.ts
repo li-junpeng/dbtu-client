@@ -2,10 +2,12 @@ import { defineAsyncComponent, type Ref, ref, shallowRef } from 'vue'
 import { defineStore } from 'pinia'
 import type { DialogProps } from 'element-plus'
 
-type DialogOption = Partial<{
-  footerButtons?: FooterButton[]
-  afterOpen?: (ref: Ref) => void
-} & DialogProps>
+type DialogOption = Partial<
+  {
+    footerButtons?: FooterButton[]
+    afterOpen?: (ref: Ref) => void
+  } & DialogProps
+>
 
 export interface FooterButton {
   type: 'info' | 'danger' | 'primary' | 'warning'
@@ -40,7 +42,6 @@ export const useDynamicDialogStore = defineStore('useDynamicDialogStore', {
   },
 
   actions: {
-
     open(option: DialogOption, component: () => Promise<{}>): void {
       this.ref = null
       this.title = option.title || '新建对话框'

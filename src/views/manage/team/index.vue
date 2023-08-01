@@ -8,6 +8,4 @@ defineOptions({
   <h1>我是团队管理</h1>
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

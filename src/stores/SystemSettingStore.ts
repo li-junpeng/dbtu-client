@@ -52,7 +52,6 @@ export const useSystemSettingStore = defineStore('useSystemSettingStore', {
   },
 
   actions: {
-
     /**
      * 打开对话框
      *
@@ -156,7 +155,6 @@ export const useSystemSettingStore = defineStore('useSystemSettingStore', {
 
       $root.style.setProperty('--dbtu-font-size', `${size}px`)
     }
-
   },
 
   persist: {
@@ -186,9 +184,11 @@ const getDefaultSetting = (): SystemSetting => {
  *
  * @param themeColor 需要生成的原始颜色
  */
-const generateThemeColors = (themeColor: string): {
+const generateThemeColors = (
+  themeColor: string
+): {
   // active color
-  active: string,
+  active: string
   // hover color
   hover: string
   // disabled color

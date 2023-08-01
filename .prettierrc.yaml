@@ -1,0 +1,18 @@
+# 指定添加尾后逗号的方式。
+trailingComma: none
+# 每行代码的长度限制
+printWidth: 100
+# 指定一个制表符等于的空格数。
+tabWidth: 2
+# 是否在行末尾添加分号
+semi: false
+# 使用单引号
+singleQuote: true
+# 会在html、jsx、Vue和Angular中格式化为每个属性独占一行
+singleAttributePerLine: true
+# 箭头函数仅有一个参数时，参数是否添加括号
+arrowParens: avoid
+# 在对象字面量的花括号内侧使用空格作为间隔
+bracketSpacing: true
+# 会把多行的HTML(包括HTML、JSX、Vue和Angular)元素的>放在最后一个属性的末尾, 而不是另起一行自闭和标签不受该选项控制)
+bracketSameLine: false

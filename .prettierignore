@@ -1,0 +1,15 @@
+**/*.html
+
+env.d.ts
+
+**/*.md
+
+src/assets/data/**
+
+package.json
+tsconfig.app.json
+tsconfig.json
+tsconfig.node.json
+tsconfig.vitest.json
+vite.config.ts
+vitest.config.ts

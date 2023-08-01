@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "test:unit": "vitest",
     "build-only": "vite build",
-    "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false"
+    "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
+    "formatter": "npx prettier . --write",
+    "formatter-check": "npx prettier . --check"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",

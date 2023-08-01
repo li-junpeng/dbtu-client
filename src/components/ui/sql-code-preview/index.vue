@@ -46,6 +46,7 @@ const codeHtml = computed(() => {
     code {
       color: var(--dbtu-font-color);
       font-family: Consolas, 'Courier New', monospace;
+      white-space: pre;
 
       .hljs-built_in,
       .hljs-keyword,

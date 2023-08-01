@@ -1,0 +1,127 @@
+{
+  "print console log": {
+    "prefix": "log",
+    "body": ["console.log($0)"],
+    "description": "print console log"
+  },
+  "v3CompositionApi": {
+    "prefix": "v3compositionapi",
+    "description": "自动生成vue3组合式API风格模板",
+    "body": [
+      "<!--",
+      " * $1",
+      " *",
+      " * @author HuaYu",
+      " * @date ${CURRENT_YEAR}-${CURRENT_MONTH}-${CURRENT_DATE} ${CURRENT_HOUR}:${CURRENT_MINUTE}",
+      "-->",
+      "<script setup lang=\"ts\">",
+      "defineOptions({",
+      "  name: '${2:name}'",
+      "})",
+      "</script>",
+      "",
+      "<template>",
+      "",
+      "</template>",
+      "",
+      "<style scoped lang=\"scss\">",
+      "",
+      "</style>"
+    ]
+  },
+  "v3Computed": {
+    "prefix": "v3computed",
+    "body": ["const ${1:name} = computed(() => {", " return ${2:null}", "})"],
+    "description": "Vue Composition api - computed"
+  },
+  "v3onBeforemount": {
+    "prefix": "v3onbeforemount",
+    "body": ["onBeforeMount(() => {", "  $0", "})"],
+    "description": "Vue onBeforeMount Lifecycle hook"
+  },
+  "v3onBeforeunmount": {
+    "prefix": "v3onbeforeunmount",
+    "body": ["onBeforeUnmount(() => {", "  $0", "})"],
+    "description": "(beforeDestroy) Vue onBeforeUnmount Lifecycle hook"
+  },
+  "v3onBeforeupdate": {
+    "prefix": "v3onbeforeupdate",
+    "body": ["onBeforeUpdate(() => {", "  $0", "})"],
+    "description": "Vue onBeforeUpdate Lifecycle hook"
+  },
+  "v3onErrorcaptured": {
+    "prefix": "v3onerrorcaptured",
+    "body": ["onErrorCaptured(() => {", "  $0", "})"],
+    "description": "Vue onErrorCaptured Lifecycle hook"
+  },
+  "v3onMounted": {
+    "prefix": "v3onmounted",
+    "body": ["onMounted(() => {", "  $0", "})"],
+    "description": "Vue Mounted Lifecycle hook"
+  },
+  "v3onUnmounted": {
+    "prefix": "v3onunmounted",
+    "body": ["onUnmounted(() => {", "  $0", "})"],
+    "description": "(destroyed) Vue onUnmounted Lifecycle hook"
+  },
+  "v3onUpdated": {
+    "prefix": "v3onupdated",
+    "body": ["onUpdated(() => {", "  $0", "})"],
+    "description": "Vue onUpdated Lifecycle hook"
+  },
+  "v3defineOptions": {
+    "prefix": "v3defineoptions",
+    "body": ["defineOptions({", "  name: '$0'", "})"],
+    "description": "Vue3 defineOptions"
+  },
+  "v3Reactive": {
+    "prefix": "v3reactive",
+    "body": ["const ${1:name} = reactive({", "  ${2:key}: ${3:value}", "})"],
+    "description": "Vue Composition api - reactive"
+  },
+  "v3Ref": {
+    "prefix": "v3ref",
+    "body": ["const ${1:name} = ref(${2:value})"],
+    "description": "Vue Ref"
+  },
+  "v3Watch": {
+    "prefix": "v3watch",
+    "body": ["watch(() => ${1:variable}, (newValue, oldValue) => {", "  $2", "})"],
+    "description": "Vue Composition api - watcher single source"
+  },
+  "v3WatchDeep": {
+    "prefix": "v3watchdeep",
+    "body": ["watch(() => ${1:variable}, (newValue, oldValue) => {", "  $2", "}, { deep: true })"],
+    "description": "Vue Composition api - deep watcher single source"
+  },
+  "v3WatchEffect": {
+    "prefix": "v3watcheffect",
+    "body": ["watchEffect(() => {", "  $0", "})"],
+    "description": "Vue Composition api - watchEffect"
+  },
+  "create pinia": {
+    "scope": "typescript, javascript",
+    "prefix": "defineStore",
+    "body": [
+      "import { defineStore } from 'pinia'",
+      "",
+      "export const use${1:name}Store = defineStore('use${2:name}Store', {",
+      "  state: () => {",
+      "    return {",
+      "",
+      "    }",
+      "  },",
+      "",
+      "  actions: {",
+      "",
+      "  }",
+      "})"
+    ],
+    "description": "创建pinia"
+  },
+  "array use fori": {
+    "prefix": "fori",
+    "body": ["for (let i = 0; i < $0.length; i++) {", "  ", "}"],
+    "description": "使用fori遍历数组"
+  }
+}

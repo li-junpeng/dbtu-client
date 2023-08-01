@@ -111,14 +111,14 @@ const fieldTabPaneRef = useComponentRef(FieldTabPane)
 <style scoped lang="scss">
 .toolbox {
   width: 100%;
-  height: 40px;
+  height: 34px;
   display: flex;
   align-items: center;
   padding: 0 10px;
 
   .toolbox-item {
     display: flex;
-    height: 40px;
+    height: 34px;
     align-items: center;
   }
 

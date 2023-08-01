@@ -161,6 +161,8 @@
 }
 
 .el-tabs {
+  --el-tabs-header-height: 34px;
+
   .el-tabs__nav-wrap::after {
     height: 1px;
     background-color: var(--el-tabs-nav-bg-color, var(--dbtu-divide-borer-color, #fff));

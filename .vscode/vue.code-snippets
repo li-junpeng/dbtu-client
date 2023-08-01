@@ -31,7 +31,7 @@
   },
   "v3Computed": {
     "prefix": "v3computed",
-    "body": ["const ${1:name} = computed(() => {", " return ${2:null}", "})"],
+    "body": ["const ${1:name} = computed(() => {", "  return ${2:null}", "})"],
     "description": "Vue Composition api - computed"
   },
   "v3onBeforemount": {

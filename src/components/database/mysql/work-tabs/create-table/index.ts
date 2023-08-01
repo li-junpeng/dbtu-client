@@ -24,4 +24,5 @@ export interface TableField {
   virtual: 1 | 0
   pk: boolean
   comment?: string
+  options: Record<string, any>
 }

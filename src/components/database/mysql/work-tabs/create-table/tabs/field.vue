@@ -12,8 +12,9 @@ import { MySQLDataType } from '@/common/constants/DataTypeConstant'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import { debounce } from 'lodash'
-import Contextmenu from '@/components/ui/contextmenu'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
+import Contextmenu from '@/components/ui/contextmenu'
+import FieldOption from './field-option.vue'
 
 type TableColumn = TableColumnCtx<unknown>
 
@@ -526,7 +527,14 @@ onMounted(() => {
       </el-table-column>
     </el-table>
   </div>
-  <div class="bottom-field-option"></div>
+  <div class="bottom-field-option">
+    <el-scrollbar>
+      <field-option
+        v-if="selectedRow"
+        :field="selectedRow"
+      />
+    </el-scrollbar>
+  </div>
 </template>
 
 <style scoped lang="scss">

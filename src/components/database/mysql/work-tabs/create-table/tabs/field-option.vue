@@ -8,7 +8,10 @@
 import { MySQLDataType } from '@/common/constants/DataTypeConstant'
 import type { MySQLDataTypeFieldOption } from '@/common/constants/DataTypeConstant'
 import type { TableField } from '..'
+import CharacterAndCollate from '@/assets/data/mysql-character-collate.json'
 import SetEnumValuesPopover from '@/components/ui/set-enum-values-popover/index.vue'
+
+type FormDataType = Partial<Record<MySQLDataTypeFieldOption | 'virtualType' | 'virtualExp', any>>
 
 defineOptions({
   name: 'MySQLCreateTableTabFieldOptionComponent'
@@ -17,15 +20,49 @@ defineOptions({
 const props = defineProps<{
   field: TableField
 }>()
-
-const formData = reactive<
-  Partial<Record<MySQLDataTypeFieldOption | 'virtualType' | 'virtualExp', any>>
->({
+const emits = defineEmits<{
+  (e: 'change-option', option: FormDataType): void
+}>()
+const formData = reactive<FormDataType>({
   default_value: ''
 })
+// 标识字段用到了哪些属性
 const optionsComFlags = computed(() => {
   return MySQLDataType[props.field.dataType]?.options || []
 })
+// 设置的枚举值
+const enumValues = ref<string[]>([])
+const onChangeEnums = (data: any, formData: FormDataType) => {
+  formData.enum_values = data.text
+  enumValues.value = data.text.split(',') || []
+}
+
+const collates = computed<string[]>(() => {
+  return CharacterAndCollate[formData.character as keyof typeof CharacterAndCollate] || []
+})
+
+// 变更字段数据类型后需要情况默认值
+watch(
+  () => props.field.dataType,
+  () => {
+    formData.default_value = ''
+  }
+)
+
+watch(
+  () => formData,
+  () => {
+    emits('change-option', formData)
+  },
+  { deep: true }
+)
+
+watch(
+  () => formData.character,
+  () => {
+    formData.collate = null
+  }
+)
 </script>
 
 <template>
@@ -77,7 +114,7 @@ const optionsComFlags = computed(() => {
             disabled
             style="flex: 1"
           />
-          <SetEnumValuesPopover @change-enums="data => (formData.enum_values = data.text)">
+          <SetEnumValuesPopover @change-enums="data => onChangeEnums(data, formData)">
             <el-button type="info">设置</el-button>
           </SetEnumValuesPopover>
         </div>
@@ -94,9 +131,16 @@ const optionsComFlags = computed(() => {
           clearable
           style="width: 100%"
           placeholder=" "
+          :disabled="props.field.virtual === 1"
         >
           <el-option
-            v-for="item in ['EMPTY_STRING', 'NULL']"
+            v-for="item in [
+              'EMPTY_STRING',
+              'NULL',
+              ...(props.field.dataType === 'enum' || props.field.dataType === 'set'
+                ? enumValues
+                : [])
+            ]"
             :key="item"
             :value="item"
             :label="item"
@@ -129,6 +173,47 @@ const optionsComFlags = computed(() => {
       </el-form-item>
 
       <el-form-item
+        v-if="optionsComFlags.includes('character')"
+        label="字符集"
+      >
+        <el-select
+          v-model="formData.character"
+          placeholder=" "
+          filterable
+          clearable
+          style="width: 100%"
+        >
+          <el-option
+            v-for="item in Object.keys(CharacterAndCollate)"
+            :key="item"
+            :value="item"
+            :label="item"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item
+        v-if="optionsComFlags.includes('collate')"
+        label="排序规则"
+      >
+        <el-select
+          v-model="formData.collate"
+          placeholder=" "
+          filterable
+          clearable
+          no-data-text="请先选择字符集"
+          style="width: 100%"
+        >
+          <el-option
+            v-for="item in collates"
+            :key="item"
+            :value="item"
+            :label="item"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item
         v-if="optionsComFlags.includes('key_length')"
         label="键长度"
         prop="key_length"
@@ -141,10 +226,6 @@ const optionsComFlags = computed(() => {
           style="width: 100%"
         />
       </el-form-item>
-
-      <!-- TODO 字符集、排序规则还没有写呢 -->
-      <!-- TODO 开启虚拟字段后, 默认值不可以修改, 根据当前时间戳更新也不可以修改, 其他的属于暂时未发现 -->
-      <!-- TODO 当修改了字段后, 清空字段属性配置 -->
 
       <el-form-item
         v-if="optionsComFlags.includes('binary')"
@@ -160,7 +241,10 @@ const optionsComFlags = computed(() => {
         prop="update_by_current_timestamp"
         :label-width="140"
       >
-        <el-switch v-model="formData.update_by_current_timestamp" />
+        <el-switch
+          v-model="formData.update_by_current_timestamp"
+          :disabled="props.field.virtual === 1"
+        />
       </el-form-item>
     </el-form>
   </div>

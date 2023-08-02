@@ -190,7 +190,7 @@ const sql = computed(() => {
 
   let str = `CREATE TABLE \`dbtu\`.\`Untitled\` (\n`
   tableData.forEach((item, index) => {
-    str += `\t\`${item.field}\` ${item.dataType}${dataType(item)} ${
+    str += `    \`${item.field}\` ${item.dataType}${dataType(item)} ${
       item.notNull ? 'NOT NULL' : 'NULL'
     }`
     if (index < tableData.length - 1) {
@@ -314,6 +314,11 @@ const onChangeDataType = (row: TableField) => {
   }
 
   row.maxLength = MySQLDataType[row.dataType].default
+}
+
+// 更新字段的属性值
+const onChangeOption = (option: Record<string, any>) => {
+  selectedRow.value && (selectedRow.value.options = option)
 }
 
 defineExpose({
@@ -532,6 +537,7 @@ onMounted(() => {
       <field-option
         v-if="selectedRow"
         :field="selectedRow"
+        @change-option="onChangeOption"
       />
     </el-scrollbar>
   </div>

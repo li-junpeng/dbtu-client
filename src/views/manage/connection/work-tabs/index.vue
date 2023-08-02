@@ -103,7 +103,6 @@ const onRemoveTab = (name: TabPaneName) => {
 
         .el-tab-pane {
           width: 100%;
-          height: calc(100% - 15px);
         }
       }
     }

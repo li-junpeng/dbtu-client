@@ -1,3 +1,5 @@
+import { MySQLDataType } from "@/common/constants/DataTypeConstant"
+
 export interface CreateTableProp {
   data: {
     database: MySqlDatabaseNode
@@ -17,7 +19,7 @@ export const TabNames = {
 export interface TableField {
   id: number
   field: string
-  dataType: string
+  dataType: keyof typeof MySQLDataType
   maxLength?: number
   decimalPoint: number
   notNull: 1 | 0

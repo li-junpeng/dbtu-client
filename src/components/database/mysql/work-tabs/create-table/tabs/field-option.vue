@@ -8,6 +8,7 @@
 import { MySQLDataType } from '@/common/constants/DataTypeConstant'
 import type { MySQLDataTypeFieldOption } from '@/common/constants/DataTypeConstant'
 import type { TableField } from '..'
+import SetEnumValuesPopover from '@/components/ui/set-enum-values-popover/index.vue'
 
 defineOptions({
   name: 'MySQLCreateTableTabFieldOptionComponent'
@@ -63,6 +64,23 @@ const optionsComFlags = computed(() => {
         prop="virtualExp"
       >
         <el-input v-model="formData.virtualExp" />
+      </el-form-item>
+
+      <!-- 设置枚举值 -->
+      <el-form-item
+        v-if="optionsComFlags.includes('enum_values')"
+        label="值"
+      >
+        <div style="width: 100%; display: flex; gap: 10px">
+          <el-input
+            v-model="formData.enum_values"
+            disabled
+            style="flex: 1"
+          />
+          <SetEnumValuesPopover @change-enums="data => (formData.enum_values = data.text)">
+            <el-button type="info">设置</el-button>
+          </SetEnumValuesPopover>
+        </div>
       </el-form-item>
 
       <!-- 每个字段的独有属性 -->
@@ -124,7 +142,7 @@ const optionsComFlags = computed(() => {
         />
       </el-form-item>
 
-      <!-- TODO 字符集、排序规则、枚举值组件还没有写呢 -->
+      <!-- TODO 字符集、排序规则还没有写呢 -->
       <!-- TODO 开启虚拟字段后, 默认值不可以修改, 根据当前时间戳更新也不可以修改, 其他的属于暂时未发现 -->
       <!-- TODO 当修改了字段后, 清空字段属性配置 -->
 

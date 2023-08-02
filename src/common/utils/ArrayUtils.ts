@@ -1,4 +1,15 @@
 export const ArrayUtils = {
+
+  /**
+   * 数组是否为空
+   * 
+   * @param data 要判断的数组
+   * @returns  true: 空, false: 不为空
+   */
+  isEmpty(data: any[] | undefined | null): boolean {
+    return !data || data.length === 0
+  },
+
   unshift<T extends []>(source: T[], obj: T): T[] {
     const array = JSON.parse(JSON.stringify(source))
     array.unshift(obj)
@@ -85,5 +96,63 @@ export const ArrayUtils = {
       }
     }
     return -1
+  },
+
+  /**
+   * 将指定项在数组内上移
+   * 
+   * @param source 源数组
+   * @param value  要移动的项的唯一标识
+   * @param field  判断项是否相同所需要的字段, 如果该参数为空, 那么value参数应该是普通类型
+   * @returns true: 移动成功, false: 移动失败
+   */
+  moveTop(source: any[], value: any, field?: string): boolean {
+    if (this.isEmpty(source)) {
+      return false
+    }
+
+    let index = -1
+    if (!field) {
+      index = source.indexOf(value)
+    } else {
+      index = this.indexOf(source, value[field], field)
+    }
+    if (index >= 1) {
+      const beforeItem = source[index - 1]
+      source[index] = beforeItem
+      source[index - 1] = value
+      return true
+    }
+    // index === 0, the value is first item or item is absent
+    return false
+  },
+
+  /**
+   * 将指定项在数组内下移
+   * 
+   * @param source 源数组
+   * @param value  要移动的项的唯一标识
+   * @param field  判断项是否相同所需要的字段, 如果该参数为空, 那么value参数应该是普通类型
+   * @returns true: 移动成功, false: 移动失败
+   */
+  moveBottom(source: any[], value: any, field?: string): boolean {
+    if (this.isEmpty(source)) {
+      return false
+    }
+
+    let index = -1
+    if (!field) {
+      index = source.indexOf(value)
+    } else {
+      index = this.indexOf(source, value[field], field)
+    }
+    if (index < source.length - 1) {
+      const afterItem = source[index + 1]
+      source[index] = afterItem
+      source[index + 1] = value
+      return true
+    }
+    // 项不存在
+    return false
   }
 }

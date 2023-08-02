@@ -190,7 +190,7 @@ const sql = computed(() => {
 
   let str = `CREATE TABLE \`dbtu\`.\`Untitled\` (\n`
   tableData.forEach((item, index) => {
-    str += `    \`${item.field}\` ${item.dataType}${dataType(item)} ${
+    str += `\t\`${item.field}\` ${item.dataType}${dataType(item)} ${
       item.notNull ? 'NOT NULL' : 'NULL'
     }`
     if (index < tableData.length - 1) {

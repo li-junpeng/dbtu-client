@@ -30,6 +30,8 @@ const tab = reactive({
 // SQL预览所使用的SQL语句
 const sqlCode = ref('')
 const fieldTabPaneRef = useComponentRef(FieldTabPane)
+// 表注释内容
+const commentText = ref('')
 </script>
 
 <template>
@@ -97,6 +99,16 @@ const fieldTabPaneRef = useComponentRef(FieldTabPane)
         label="注释"
         :name="TabNames.comment"
       >
+        <el-input
+          v-model="commentText"
+          :maxlength="1000"
+          show-word-limit
+          type="textarea"
+          resize="none"
+          :autosize="{
+            minRows: 10
+          }"
+        />
       </el-tab-pane>
       <el-tab-pane
         label="SQL预览"

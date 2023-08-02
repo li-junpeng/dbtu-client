@@ -1,6 +1,12 @@
 :deep(.el-table) {
   &.el-table--border {
     &.el-table-editable {
+      /* current row of cell, background-color is --dbtu-theme-active-color */
+      .el-table__body tr.current-row > td.el-table__cell.bg-is-theme-color {
+        background-color: var(--dbtu-theme-hover-color);
+        color: #fff;
+      }
+
       .el-table__cell {
         padding: 5px 0;
       }

@@ -7,6 +7,7 @@
 <script setup lang="ts">
 import type { CreateTableProp } from './index'
 import { TabNames } from './index'
+import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import SqlCodePreview from '@/components/ui/sql-code-preview/index.vue'
 
 // toolbox components
@@ -17,7 +18,7 @@ import TriggerToolbox from './toolbox/trigger.vue'
 
 // tab-pane components
 import FieldTabPane from './tabs/field.vue'
-import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
+import TableOption from './tabs/table-option.vue'
 
 defineOptions({
   name: 'MySQLCreateTableComponent'
@@ -94,6 +95,7 @@ const commentText = ref('')
         label="选项"
         :name="TabNames.option"
       >
+        <TableOption />
       </el-tab-pane>
       <el-tab-pane
         label="注释"

@@ -5,8 +5,8 @@
  * @date 2023-08-02 17:41
 -->
 <script setup lang="ts">
-import { FormDataDefault } from './table-option'
 import CharacterAndCollate from '@/assets/data/mysql-character-collate.json'
+import { FormDataDefault } from './table-option'
 import { Compressions } from '@/common/constants/MySqlConstant'
 import { RowFormats } from '@/common/constants/MySqlConstant'
 import {
@@ -125,7 +125,7 @@ const visibleFields = computed<(keyof MySqlTableOption)[]>(() => {
 
 <template>
   <el-scrollbar always>
-    <div style="width: 35%">
+    <div style="width: 560px">
       <el-form
         :model="formData"
         label-width="140px"

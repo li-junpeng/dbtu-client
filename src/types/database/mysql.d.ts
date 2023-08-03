@@ -261,7 +261,12 @@ interface MySqlTableIndex {
   /**
    * 字段, 多个字段使用逗号隔开
    */
-  fields: string
+  fields: {
+    // 字段名
+    name: string,
+    // 子部分
+    child?: number
+  }[]
 
   /**
    * 索引类型

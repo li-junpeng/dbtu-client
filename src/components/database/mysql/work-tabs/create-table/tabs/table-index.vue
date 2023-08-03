@@ -5,6 +5,7 @@
  * @date 2023-08-03 14:26
 -->
 <script setup lang="ts">
+import { type TableIndexProp, TableIndexPropDefault } from './table-index'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
 import { ElInput, type TableColumnCtx } from 'element-plus'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
@@ -18,22 +19,28 @@ defineOptions({
   name: 'MySQLTableIndexSettingComponent'
 })
 
-const tableData = reactive<MySqlTableIndex[]>([])
+const props = withDefaults(defineProps<TableIndexProp>(), TableIndexPropDefault)
+
+const tableData = defineModel<MySqlTableIndex[]>({
+  required: true
+})
+
 const selectedRow = ref<MySqlTableIndex | null>(null)
 const selectedColumn = ref<TableColumn | null>(null)
 
+// 表单组件的ref, 目的是用来做组件自动获取焦点使用的
 const nameInputRef = useComponentRef(ElInput)
 const fieldsInputRef = useComponentRef(ElInput)
 const commentInputRef = useComponentRef(ElInput)
 
 // 添加索引
 const addRow = () => {
-  tableData.push({
+  tableData.value.push({
     id: Date.now(),
     name: '',
-    fields: ''
+    fields: []
   })
-  selectedRow.value = tableData[tableData.length - 1]
+  selectedRow.value = tableData.value[tableData.value.length - 1]
 }
 
 // 删除索引
@@ -43,12 +50,12 @@ const deleteRow = () => {
   }
 
   MessageBox.deleteConfirm('您确定要删除索引吗？', done => {
-    const b = ArrayUtils.remove(tableData, selectedRow.value!.id, 'id')
+    const b = ArrayUtils.remove(tableData.value, selectedRow.value!.id, 'id')
     if (b) {
-      if (tableData.length === 0) {
+      if (tableData.value.length === 0) {
         addRow()
       } else {
-        selectedRow.value = tableData[0]
+        selectedRow.value = tableData.value[0]
       }
     }
     done()
@@ -82,6 +89,17 @@ const rowContextmenu = (row: MySqlTableIndex, column: TableColumn, event: MouseE
       }
     ]
   })
+}
+
+// 生成用来描述的表字段文本
+const getFieldText = (fields: { name: string; child?: number }[]) => {
+  if (ArrayUtils.isEmpty(fields)) {
+    return ''
+  }
+  return fields
+    .filter(item => item.name)
+    .map(item => `\`${item.name}\``)
+    .join(',')
 }
 
 // 优化: 当行被选中时，立刻使其列中的输入框获取焦点
@@ -175,29 +193,112 @@ defineExpose({
         width="300px"
       >
         <template #default="{ row }">
-          <el-input
-            v-if="selectedRow?.id === row.id"
-            ref="fieldsInputRef"
-            v-model="row.fields"
-            disabled
+          <div
+            style="
+              width: 100%;
+              height: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+            "
           >
-            <template #append>
-              <el-button
-                text
-                link
-              >
-                <template #icon>
-                  <IconMoreFilled />
-                </template>
-              </el-button>
-            </template>
-          </el-input>
-          <span
-            v-else
-            class="row-readonly-text"
-          >
-            {{ row.fields }}
-          </span>
+            <div
+              class="dbtu-text-ellipsis row-readonly-text"
+              style="flex: 1"
+            >
+              {{ getFieldText(row.fields) }}
+            </div>
+            <!-- TODO 仿照Navicat写这个布局吧。。。睡觉啦，晚安 -->
+            <!-- <el-popover
+              v-if="selectedRow?.id === row.id"
+              :width="600"
+              :persistent="false"
+              :hide-after="0"
+              trigger="click"
+            >
+              <template #reference>
+                <el-button
+                  text
+                  link
+                  style="width: 30px"
+                >
+                  <template #icon>
+                    <IconMoreFilled />
+                  </template>
+                </el-button>
+              </template>
+
+              <div class="set-field-popover">
+                <div class="popover-content">
+                  <el-table
+                    :data="props.tableFields"
+                    border
+                    height="366px"
+                    highlight-current-row
+                    scrollbar-always-on
+                    class="el-table-editable"
+                  >
+                  <el-table-column type="selection" width="55" align="center" />
+                    <el-table-column
+                      label="字段"
+                      prop="field"
+                      width="200px"
+                    >
+                      <template #default="{ row }">
+                        <span class="row-readonly-text">{{ row.field }}</span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="子部分">
+                      <template #default>
+                        <el-input-number :controls="false" class="el-input-number__text-left" style="width: 100%;"/>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </div>
+                <div class="popover-fotter">
+                  <el-button
+                    text
+                    link
+                  >
+                    <template #icon>
+                      <IconPlus />
+                    </template>
+                    <span>添加项</span>
+                  </el-button>
+
+                  <el-button
+                    text
+                    link
+                  >
+                    <template #icon>
+                      <IconDelete />
+                    </template>
+                    <span>删除项</span>
+                  </el-button>
+
+                  <el-button
+                    text
+                    link
+                  >
+                    <template #icon>
+                      <IconBottom />
+                    </template>
+                    <span>上移</span>
+                  </el-button>
+
+                  <el-button
+                    text
+                    link
+                  >
+                    <template #icon>
+                      <IconTop />
+                    </template>
+                    <span>下移</span>
+                  </el-button>
+                </div>
+              </div>
+            </el-popover> -->
+          </div>
         </template>
       </el-table-column>
 
@@ -297,5 +398,22 @@ defineExpose({
   height: calc(100% - 400px);
   border-top: 1px solid var(--dbtu-divide-borer-color);
   padding: 10px 0;
+}
+
+.set-field-popover {
+  width: 100%;
+  height: 400px;
+
+  .popover-content {
+    width: 100%;
+    height: calc(100% - 34px);
+  }
+
+  .popover-fotter {
+    width: 100%;
+    height: 34px;
+    display: flex;
+    align-items: center;
+  }
 }
 </style>

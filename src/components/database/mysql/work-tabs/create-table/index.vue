@@ -34,6 +34,8 @@ const tab = reactive({
 
 // 表字段
 const tableFields = reactive<MySqlTableField[]>([])
+// 索引
+const tableIndexes = reactive<MySqlTableIndex[]>([])
 // 表触发器
 const tableTriggers = reactive<MySqlTableTrigger[]>([])
 // 表属性信息
@@ -102,7 +104,11 @@ const tableIndexRef = useComponentRef(TableIndex)
         label="索引"
         :name="TabNames.index"
       >
-        <TableIndex ref="tableIndexRef" />
+        <TableIndex
+          v-model="tableIndexes"
+          :table-fields="tableFields"
+          ref="tableIndexRef"
+        />
       </el-tab-pane>
       <el-tab-pane
         label="外键"

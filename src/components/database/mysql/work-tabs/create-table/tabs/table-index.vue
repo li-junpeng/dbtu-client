@@ -182,9 +182,12 @@ defineExpose({
             disabled
           >
             <template #append>
-              <el-button text link>
+              <el-button
+                text
+                link
+              >
                 <template #icon>
-                  <IconMoreFilled/>
+                  <IconMoreFilled />
                 </template>
               </el-button>
             </template>

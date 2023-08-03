@@ -6,6 +6,7 @@
 -->
 <script setup lang="ts">
 import hljs from 'highlight.js'
+import type { CSSProperties } from 'vue'
 
 defineOptions({
   name: 'SqlCodePreviewComponent'
@@ -15,10 +16,23 @@ const props = defineProps({
   code: {
     type: String,
     required: true
+  },
+
+  // 是否自动换行
+  autoWrap: {
+    type: Boolean,
+    default: true
   }
 })
 const codeHtml = computed(() => {
   return hljs.highlight(props.code, { language: 'sql' }).value
+})
+
+// code element dom of style
+const codeDomStyle = computed(() => {
+  return {
+    'white-space': props.autoWrap ? 'pre-wrap' : 'pre'
+  } as CSSProperties
 })
 </script>
 
@@ -26,7 +40,12 @@ const codeHtml = computed(() => {
   <div class="dbtu-code-preview">
     <el-scrollbar always>
       <pre class="pre-box">
-        <code ref="codeRef" class="language-sql" v-html="codeHtml"></code>
+        <code 
+          ref="codeRef" 
+          class="language-sql" 
+          :style="codeDomStyle" 
+          v-html="codeHtml"
+        ></code>
       </pre>
     </el-scrollbar>
   </div>
@@ -46,7 +65,6 @@ const codeHtml = computed(() => {
     code {
       color: var(--dbtu-font-color);
       font-family: Consolas, 'Courier New', monospace;
-      white-space: pre;
 
       .hljs-built_in,
       .hljs-keyword,

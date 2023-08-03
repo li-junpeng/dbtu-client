@@ -19,17 +19,9 @@ defineOptions({
   name: 'MySQLTableTriggerSettingComponent'
 })
 
-const emits = defineEmits<{
-  (
-    e: 'change-trigger',
-    data: {
-      triggers: MySqlTableTrigger[]
-      sql: string
-    }
-  ): void
-}>()
-
-const tableData = reactive<MySqlTableTrigger[]>([])
+const tableData = defineModel<MySqlTableTrigger[]>({
+  required: true
+})
 const selectedRow = ref<MySqlTableTrigger | null>(null)
 const selectedColumn = ref<TableColumn | null>(null)
 const nameInputRef = useComponentRef(ElInput)
@@ -60,11 +52,11 @@ const addRow = (index?: number) => {
     index = void 0
   }
   if (index !== undefined) {
-    tableData.splice(index, 0, defualtData)
-    selectedRow.value = tableData[index]
+    tableData.value.splice(index, 0, defualtData)
+    selectedRow.value = tableData.value[index]
   } else {
-    tableData.push(defualtData)
-    selectedRow.value = tableData[tableData.length - 1]
+    tableData.value.push(defualtData)
+    selectedRow.value = tableData.value[tableData.value.length - 1]
   }
 }
 
@@ -72,7 +64,7 @@ const addRow = (index?: number) => {
  * 插入触发器
  */
 const appendRow = () => {
-  addRow(ArrayUtils.indexOf(tableData, selectedRow.value?.id, 'id'))
+  addRow(ArrayUtils.indexOf(tableData.value, selectedRow.value?.id, 'id'))
 }
 
 /**
@@ -83,11 +75,11 @@ const copyRow = () => {
     return
   }
 
-  tableData.push({
+  tableData.value.push({
     ...selectedRow.value,
     id: Date.now()
   })
-  selectedRow.value = tableData[tableData.length - 1]
+  selectedRow.value = tableData.value[tableData.value.length - 1]
 }
 
 /**
@@ -99,12 +91,12 @@ const deleteRow = () => {
   }
 
   MessageBox.deleteConfirm('您确认要删除触发器吗？', done => {
-    const b = ArrayUtils.remove(tableData, selectedRow.value!.id, 'id')
+    const b = ArrayUtils.remove(tableData.value, selectedRow.value!.id, 'id')
     if (b) {
-      if (tableData.length === 0) {
+      if (tableData.value.length === 0) {
         addRow()
       } else {
-        selectedRow.value = tableData[0]
+        selectedRow.value = tableData.value[0]
       }
     }
     done()
@@ -119,7 +111,7 @@ const moveTopRow = () => {
     return
   }
 
-  ArrayUtils.moveTop(tableData, selectedRow.value, 'id')
+  ArrayUtils.moveTop(tableData.value, selectedRow.value, 'id')
 }
 
 /**
@@ -130,7 +122,7 @@ const moveBottomRow = () => {
     return
   }
 
-  ArrayUtils.moveBottom(tableData, selectedRow.value, 'id')
+  ArrayUtils.moveBottom(tableData.value, selectedRow.value, 'id')
 }
 
 // el-table @click-row
@@ -199,36 +191,6 @@ watch(
           nameInputRef.value?.focus()
           break
       }
-    })
-  }
-)
-
-// 通过设置的触发器信息, 自动生成SQL代码
-const sqlCode = computed(() => {
-  let sql = ''
-
-  tableData.forEach(item => {
-    if (!item.name) {
-      return
-    }
-
-    sql += `CREATE TRIGGER \`${item.name}\``
-    sql += item.trigger ? ` ${item.trigger}` : ''
-    sql += item.timing ? ` ${item.timing}` : item.trigger ? ' INSERT' : ''
-    sql += ' ON `Untitled` FOR EACH ROW'
-    sql += item.sql ? ` ${item.sql}` : ''
-    sql += ';\n'
-  })
-
-  return sql
-})
-
-watch(
-  () => sqlCode.value,
-  () => {
-    emits('change-trigger', {
-      triggers: tableData.filter(item => item.name),
-      sql: sqlCode.value
     })
   }
 )

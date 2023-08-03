@@ -5,13 +5,11 @@
  * @date 2023-07-29 22:12
 -->
 <script setup lang="ts">
-import type { TableField } from '@/components/database/mysql/work-tabs/create-table/index'
 import type { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
 import { ElInput, ElInputNumber, ElSelect } from 'element-plus'
 import { MySQLDataType } from '@/common/constants/DataTypeConstant'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
-import { debounce } from 'lodash'
 import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import Contextmenu from '@/components/ui/contextmenu'
 import FieldOption from './field-option.vue'
@@ -22,19 +20,12 @@ defineOptions({
   name: 'MySQLCreateTableTabPaneComponent'
 })
 
-const emits = defineEmits<{
-  /**
-   * 当sql内容改变时
-   *
-   * @param e     event name
-   * @param sql   slq语句
-   */
-  (e: 'change-sql', sql: string): void
-}>()
+const modelValue = defineModel<MySqlTableField[]>({
+  default: []
+})
 
-const selectedRow = ref<TableField | null>(null)
+const selectedRow = ref<MySqlTableField | null>(null)
 const selectedColumn = ref<TableColumn | null>()
-const tableData = reactive<TableField[]>([])
 
 // 表单组件ref
 const fieldInputRef = useComponentRef(ElInput)
@@ -42,13 +33,13 @@ const maxLengthInputRef = useComponentRef(ElInputNumber)
 const decimalPointInputRef = useComponentRef(ElInputNumber)
 const commentInputRef = useComponentRef(ElInput)
 
-const onClickRow = (row: TableField, column: TableColumn) => {
+const onClickRow = (row: MySqlTableField, column: TableColumn) => {
   selectedRow.value = row
   selectedColumn.value = column
 }
 
 // 当字段信息改变时，处理字段信息
-const handleField = (row: TableField) => {
+const handleField = (row: MySqlTableField) => {
   if (row.pk) {
     row.notNull = 1
   }
@@ -68,22 +59,23 @@ const addField = (index?: number) => {
     virtual: 0,
     comment: '',
     pk: false,
-    decimalPoint: 0
-  } as TableField
+    decimalPoint: 0,
+    options: {}
+  } as MySqlTableField
   if (index === 0) {
     index = 1
   }
   if (index === undefined) {
-    tableData.push(data)
+    modelValue.value.push(data)
   } else {
-    tableData.splice(index, 0, data)
+    modelValue.value.splice(index, 0, data)
   }
 
   selectedColumn.value = null
   if (index) {
-    selectedRow.value = tableData[index]
+    selectedRow.value = modelValue.value[index]
   } else {
-    selectedRow.value = tableData[tableData.length - 1]
+    selectedRow.value = modelValue.value[modelValue.value.length - 1]
   }
 }
 
@@ -94,11 +86,11 @@ const deleteField = () => {
   }
 
   MessageBox.deleteConfirm('您确认要删除字段吗？', done => {
-    const b = ArrayUtils.remove(tableData, selectedRow.value!.id, 'id')
-    if (b && tableData.length === 0) {
+    const b = ArrayUtils.remove(modelValue.value, selectedRow.value!.id, 'id')
+    if (b && modelValue.value.length === 0) {
       addField()
     }
-    selectedRow.value = tableData[0]
+    selectedRow.value = modelValue.value[0]
     done()
   })
 }
@@ -108,7 +100,7 @@ const appendField = () => {
   if (!selectedRow.value) {
     return
   }
-  const index = ArrayUtils.indexOf(tableData, selectedRow.value.id, 'id')
+  const index = ArrayUtils.indexOf(modelValue.value, selectedRow.value.id, 'id')
   if (index < 0) {
     return
   }
@@ -120,12 +112,12 @@ const appendField = () => {
  *
  * @param row  要复制的字段信息
  */
-const copyField = (row: TableField) => {
-  tableData.push({
+const copyField = (row: MySqlTableField) => {
+  modelValue.value.push({
     ...row,
     id: Date.now()
   })
-  selectedRow.value = tableData[tableData.length - 1]
+  selectedRow.value = modelValue.value[modelValue.value.length - 1]
 }
 
 /**
@@ -133,15 +125,15 @@ const copyField = (row: TableField) => {
  *
  * @param row   需要往上移动的字段
  */
-const moveTopField = (row?: TableField) => {
+const moveTopField = (row?: MySqlTableField) => {
   if (!row) {
     row = selectedRow.value!
   }
-  const index = ArrayUtils.indexOf(tableData, row.id, 'id')
+  const index = ArrayUtils.indexOf(modelValue.value, row.id, 'id')
   if (index >= 1) {
-    const beforeField = tableData[index - 1]
-    tableData[index - 1] = row
-    tableData[index] = beforeField
+    const beforeField = modelValue.value[index - 1]
+    modelValue.value[index - 1] = row
+    modelValue.value[index] = beforeField
   }
 }
 
@@ -150,15 +142,15 @@ const moveTopField = (row?: TableField) => {
  *
  * @param row   需要往下移的字段
  */
-const moveBottomField = (row?: TableField) => {
+const moveBottomField = (row?: MySqlTableField) => {
   if (!row) {
     row = selectedRow.value!
   }
-  const index = ArrayUtils.indexOf(tableData, row.id, 'id')
-  if (index < tableData.length - 1) {
-    const afterField = tableData[index + 1]
-    tableData[index + 1] = row
-    tableData[index] = afterField
+  const index = ArrayUtils.indexOf(modelValue.value, row.id, 'id')
+  if (index < modelValue.value.length - 1) {
+    const afterField = modelValue.value[index + 1]
+    modelValue.value[index + 1] = row
+    modelValue.value[index] = afterField
   }
 }
 
@@ -167,7 +159,7 @@ const moveBottomField = (row?: TableField) => {
  *
  * @param row  如果不指定字段，则默认以当前选择的字段为准
  */
-const triggerPrimaryKey = (row?: TableField) => {
+const triggerPrimaryKey = (row?: MySqlTableField) => {
   if (row) {
     row.pk = !row.pk
     handleField(row)
@@ -179,41 +171,6 @@ const triggerPrimaryKey = (row?: TableField) => {
     handleField(selectedRow.value)
   }
 }
-
-const sql = computed(() => {
-  const pks: string[] = []
-  const dataType = (item: TableField): string => {
-    return item.maxLength
-      ? `(${item.maxLength}${item.decimalPoint >= 1 ? `, ` + item.decimalPoint : ''})`
-      : ''
-  }
-
-  let str = `CREATE TABLE \`dbtu\`.\`Untitled\` (\n`
-  tableData.forEach((item, index) => {
-    str += `\t\`${item.field}\` ${item.dataType}${dataType(item)} ${
-      item.notNull ? 'NOT NULL' : 'NULL'
-    }`
-    if (index < tableData.length - 1) {
-      str += ',\n'
-    }
-    if (item.pk) {
-      pks.push(item.field)
-    }
-  })
-  if (pks.length >= 1) {
-    str += ',\n\tPRIMARY KEY (\`'
-    str += pks.join('`, `')
-    str += '\`)'
-  }
-  return str + '\n);'
-})
-
-watch(
-  () => sql.value,
-  debounce(() => {
-    emits('change-sql', sql.value)
-  }, 600)
-)
 
 // 优化: 当行被选中时，立刻使其列中的输入框获取焦点
 watch(
@@ -239,7 +196,7 @@ watch(
   }
 )
 
-const rowContextmenu = (row: TableField, column: TableColumn, event: MouseEvent) => {
+const rowContextmenu = (row: MySqlTableField, column: TableColumn, event: MouseEvent) => {
   event.preventDefault()
   selectedRow.value = row
   selectedColumn.value = column
@@ -305,7 +262,7 @@ const rowContextmenu = (row: TableField, column: TableColumn, event: MouseEvent)
  *
  * @param row   字段信息
  */
-const onChangeDataType = (row: TableField) => {
+const onChangeDataType = (row: MySqlTableField) => {
   row.maxLength = void 0
   row.decimalPoint = 0
 
@@ -332,14 +289,14 @@ defineExpose({
 
 onMounted(() => {
   addField()
-  selectedRow.value = tableData[0]
+  selectedRow.value = modelValue.value[0]
 })
 </script>
 
 <template>
   <div class="top-form">
     <el-table
-      :data="tableData"
+      :data="modelValue"
       :current-row-key="selectedRow?.id"
       border
       height="390px"

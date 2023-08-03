@@ -6,7 +6,6 @@
 -->
 <script setup lang="ts">
 import CharacterAndCollate from '@/assets/data/mysql-character-collate.json'
-import { FormDataDefault } from './table-option'
 import { Compressions } from '@/common/constants/MySqlConstant'
 import { RowFormats } from '@/common/constants/MySqlConstant'
 import {
@@ -20,17 +19,17 @@ defineOptions({
   name: 'MySQLTableOptionSettingComponent'
 })
 
-const formData = reactive<MySqlTableOption>({
-  ...FormDataDefault
+const formData = defineModel<MySqlTableOption>({
+  required: true
 })
 
 const Collates = computed(() => {
-  return CharacterAndCollate[formData.character as keyof typeof CharacterAndCollate] || []
+  return CharacterAndCollate[formData.value.character as keyof typeof CharacterAndCollate] || []
 })
 
 // 根据引擎来决定显示哪些字段
 const visibleFields = computed<(keyof MySqlTableOption)[]>(() => {
-  const engine = formData.engine as (typeof Engines)[number]
+  const engine = formData.value.engine as (typeof Engines)[number]
   switch (engine) {
     case 'ARCHIVE':
     case 'BLACKHOLE':

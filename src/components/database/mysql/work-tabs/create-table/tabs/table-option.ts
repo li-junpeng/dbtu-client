@@ -1,4 +1,4 @@
-export const FormDataDefault = {
+export const TableOptionDefault = {
   engine: 'InnoDB',
   autoIncrement: 0,
   avgRowLength: 0,

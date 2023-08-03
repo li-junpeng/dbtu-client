@@ -6,19 +6,17 @@
 -->
 <script setup lang="ts">
 import { MySQLDataType } from '@/common/constants/DataTypeConstant'
-import type { MySQLDataTypeFieldOption } from '@/common/constants/DataTypeConstant'
-import type { TableField } from '..'
 import CharacterAndCollate from '@/assets/data/mysql-character-collate.json'
 import SetEnumValuesPopover from '@/components/ui/set-enum-values-popover/index.vue'
 
-type FormDataType = Partial<Record<MySQLDataTypeFieldOption | 'virtualType' | 'virtualExp', any>>
+type FormDataType = Partial<Record<MySqlTableFieldOption | 'virtualType' | 'virtualExp', any>>
 
 defineOptions({
   name: 'MySQLCreateTableTabFieldOptionComponent'
 })
 
 const props = defineProps<{
-  field: TableField
+  field: MySqlTableField
 }>()
 const emits = defineEmits<{
   (e: 'change-option', option: FormDataType): void

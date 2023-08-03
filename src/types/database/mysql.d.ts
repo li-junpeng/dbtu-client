@@ -1,4 +1,74 @@
 /**
+ * MySql表字段信息
+ */
+interface MySqlTableField {
+  /**
+   * 展示时需要, 不影响MySQL
+   */
+  id: number
+
+  /**
+   * 字段名
+   */
+  field: string
+
+  /**
+   * 数据类型
+   */
+  dataType: string
+
+  /**
+   * 数据类型的最大长度
+   */
+  maxLength?: number
+
+  /**
+   * 小数点
+   */
+  decimalPoint: number
+
+  /**
+   * 不为空
+   */
+  notNull: 1 | 0
+
+  /**
+   * 虚拟
+   */
+  virtual: 1 | 0
+
+  /**
+   * 主键
+   */
+  pk: boolean
+
+  /**
+   * 注释
+   */
+  comment?: string
+
+  /**
+   * 字段属性
+   */
+  options: Record<string, any>
+}
+
+/**
+ * MySql表字段属性的key
+ */
+type MySqlTableFieldOption =
+  | 'default_value' // 默认值, 值有EMPTY_STRING、NULL
+  | 'auto_increment' // 自动递增
+  | 'un_signed' // 无符号
+  | 'zero_fill' // 零填充
+  | 'key_length' // 键长度
+  | 'character' // 字符集
+  | 'collate' // 排序规则
+  | 'binary' // 二进制
+  | 'update_by_current_timestamp' // 根据当前时间戳更新
+  | 'enum_values' // 设置枚举值
+
+/**
  * MySql表的属性
  */
 interface MySqlTableOption {

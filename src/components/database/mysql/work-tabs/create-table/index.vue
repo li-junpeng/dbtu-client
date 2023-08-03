@@ -19,6 +19,7 @@ import TriggerToolbox from './toolbox/trigger.vue'
 // tab-pane components
 import FieldTabPane from './tabs/field.vue'
 import TableOption from './tabs/table-option.vue'
+import { TableOptionDefault } from './tabs/table-option'
 import TableTrigger from './tabs/table-trigger.vue'
 import TableIndex from './tabs/table-index.vue'
 
@@ -30,15 +31,24 @@ defineProps<CreateTableProp>()
 const tab = reactive({
   selected: TabNames.field
 })
-// SQL预览所使用的SQL语句
+
+// 表字段
+const tableFields = reactive<MySqlTableField[]>([])
+// 表触发器
+const tableTriggers = reactive<MySqlTableTrigger[]>([])
+// 表属性信息
+const tableOption = reactive<MySqlTableOption>({
+  ...TableOptionDefault
+})
+// 表注释内容
+const tableCommentText = ref('')
+
+// SQL预览的内容
 const sqlCode = ref('')
-// 设置触发器生成的SQL语句
-const triggerSql = ref('')
+
 const fieldTabPaneRef = useComponentRef(FieldTabPane)
 const tableTriggerRef = useComponentRef(TableTrigger)
 const tableIndexRef = useComponentRef(TableIndex)
-// 表注释内容
-const commentText = ref('')
 </script>
 
 <template>
@@ -83,9 +93,9 @@ const commentText = ref('')
         label="字段"
         :name="TabNames.field"
       >
-        <field-tab-pane
+        <FieldTabPane
           ref="fieldTabPaneRef"
-          @change-sql="sql => (sqlCode = sql)"
+          v-model="tableFields"
         />
       </el-tab-pane>
       <el-tab-pane
@@ -105,21 +115,21 @@ const commentText = ref('')
       >
         <TableTrigger
           ref="tableTriggerRef"
-          @change-trigger="data => (triggerSql = data.sql)"
+          v-model="tableTriggers"
         />
       </el-tab-pane>
       <el-tab-pane
         label="选项"
         :name="TabNames.option"
       >
-        <TableOption />
+        <TableOption v-model="tableOption" />
       </el-tab-pane>
       <el-tab-pane
         label="注释"
         :name="TabNames.comment"
       >
         <el-input
-          v-model="commentText"
+          v-model="tableCommentText"
           :maxlength="1000"
           show-word-limit
           type="textarea"
@@ -133,7 +143,7 @@ const commentText = ref('')
         label="SQL预览"
         :name="TabNames.sql_preview"
       >
-        <sql-code-preview :code="sqlCode" />
+        <SqlCodePreview :code="sqlCode" />
       </el-tab-pane>
     </el-tabs>
   </div>

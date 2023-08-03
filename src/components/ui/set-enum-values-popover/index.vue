@@ -92,6 +92,8 @@ watch(
     trigger="click"
     placement="top"
     :width="props.width"
+    :persistent="false"
+    :hide-after="0"
   >
     <template #reference>
       <slot>

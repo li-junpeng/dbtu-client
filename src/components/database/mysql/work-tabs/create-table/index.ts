@@ -1,4 +1,4 @@
-import { MySQLDataType } from "@/common/constants/DataTypeConstant"
+import { MySQLDataType } from '@/common/constants/DataTypeConstant'
 
 export interface CreateTableProp {
   data: {

@@ -1,8 +1,7 @@
 export const ArrayUtils = {
-
   /**
    * 数组是否为空
-   * 
+   *
    * @param data 要判断的数组
    * @returns  true: 空, false: 不为空
    */
@@ -100,7 +99,7 @@ export const ArrayUtils = {
 
   /**
    * 将指定项在数组内上移
-   * 
+   *
    * @param source 源数组
    * @param value  要移动的项的唯一标识
    * @param field  判断项是否相同所需要的字段, 如果该参数为空, 那么value参数应该是普通类型
@@ -129,7 +128,7 @@ export const ArrayUtils = {
 
   /**
    * 将指定项在数组内下移
-   * 
+   *
    * @param source 源数组
    * @param value  要移动的项的唯一标识
    * @param field  判断项是否相同所需要的字段, 如果该参数为空, 那么value参数应该是普通类型

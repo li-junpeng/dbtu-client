@@ -13,3 +13,5 @@ tsconfig.node.json
 tsconfig.vitest.json
 vite.config.ts
 vitest.config.ts
+
+.vscode

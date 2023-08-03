@@ -1,5 +1,14 @@
 // 引擎
-export const Engines = ['ARCHIVE', 'BLACKHOLE', 'CSV', 'InnoDB', 'MEMORY', 'MRG_MYISAM', 'MyISAM', 'PERFORMANCE_SCHEMA'] as const
+export const Engines = [
+  'ARCHIVE',
+  'BLACKHOLE',
+  'CSV',
+  'InnoDB',
+  'MEMORY',
+  'MRG_MYISAM',
+  'MyISAM',
+  'PERFORMANCE_SCHEMA'
+] as const
 
 // 表空间
 export const TableSpaces = [
@@ -37,7 +46,14 @@ export const TableSpaces = [
 export const Storages = ['DEFAULT', 'DISK', 'MEMORY'] as const
 
 // 行格式
-export const RowFormats = ['COMPACT', 'COMPRESSED', 'DEFAULT', 'DYNAMIC', 'FIXED', 'REDUNDANT'] as const
+export const RowFormats = [
+  'COMPACT',
+  'COMPRESSED',
+  'DEFAULT',
+  'DYNAMIC',
+  'FIXED',
+  'REDUNDANT'
+] as const
 
 // 压缩
 export const Compressions = ['LZ4', 'NONE', 'ZLIB'] as const

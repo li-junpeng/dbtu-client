@@ -1,14 +1,14 @@
 export interface SetEnumValuesPopoverProp {
   /**
    * popover的宽度
-   * 
+   *
    * @default 600
    */
   width?: number
 
   /**
    * popover内容的高度
-   * 
+   *
    * @default 300
    */
   height?: number
@@ -25,8 +25,11 @@ export interface TableItem {
 }
 
 export interface ComponentEmits {
-  (e: 'change-enums', data: {
-    enums: TableItem[],
-    text: string
-  }): void
+  (
+    e: 'change-enums',
+    data: {
+      enums: TableItem[]
+      text: string
+    }
+  ): void
 }

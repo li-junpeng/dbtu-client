@@ -31,6 +31,8 @@ const tab = reactive({
 })
 // SQL预览所使用的SQL语句
 const sqlCode = ref('')
+// 设置触发器生成的SQL语句
+const triggerSql = ref('')
 const fieldTabPaneRef = useComponentRef(FieldTabPane)
 const tableTriggerRef = useComponentRef(TableTrigger)
 // 表注释内容
@@ -95,7 +97,10 @@ const commentText = ref('')
         label="触发器"
         :name="TabNames.trigger"
       >
-        <TableTrigger ref="tableTriggerRef" />
+        <TableTrigger
+          ref="tableTriggerRef"
+          @change-trigger="data => (triggerSql = data.sql)"
+        />
       </el-tab-pane>
       <el-tab-pane
         label="选项"

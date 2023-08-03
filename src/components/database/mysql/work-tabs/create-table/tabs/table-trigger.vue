@@ -19,6 +19,16 @@ defineOptions({
   name: 'MySQLTableTriggerSettingComponent'
 })
 
+const emits = defineEmits<{
+  (
+    e: 'change-trigger',
+    data: {
+      triggers: MySqlTableTrigger[]
+      sql: string
+    }
+  ): void
+}>()
+
 const tableData = reactive<MySqlTableTrigger[]>([])
 const selectedRow = ref<MySqlTableTrigger | null>(null)
 const selectedColumn = ref<TableColumn | null>(null)
@@ -212,6 +222,16 @@ const sqlCode = computed(() => {
 
   return sql
 })
+
+watch(
+  () => sqlCode.value,
+  () => {
+    emits('change-trigger', {
+      triggers: tableData.filter(item => item.name),
+      sql: sqlCode.value
+    })
+  }
+)
 
 onMounted(() => {
   addRow()

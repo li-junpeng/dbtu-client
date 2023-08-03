@@ -45,12 +45,13 @@ const registerTheme = () => {
       'editor.lineHighlightBackground': computedStyle.getPropertyValue('--dbtu-hover-color'),
       'editorLineNumber.foreground': computedStyle.getPropertyValue('--dbtu-font-color'),
       'editorCursor.foreground': computedStyle.getPropertyValue('--dbtu-font-color')
+      // 'editorGutter.background': computedStyle.getPropertyValue('--dbtu-hover-color')
     }
   })
 }
 // 监听主题变化
 watch(
-  () => isDark,
+  () => [isDark, systemSettingStore.getSetting().theme],
   () => {
     registerTheme()
     monaco.editor.setTheme('dbtu-theme')

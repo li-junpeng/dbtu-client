@@ -6,7 +6,7 @@ import { useUserInfoStore } from '@/stores/UserInfoStore'
 import { useSystemSettingStore } from '@/stores/SystemSettingStore'
 // 组件
 import SystemSettingDialog from '@/components/system-setting/index.vue'
-import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
+import { useComponentRef } from '@/components/element-plus/element-plus-util'
 
 defineOptions({
   name: 'PageHeader'
@@ -149,3 +149,4 @@ $avatar-image-size: 30px;
   }
 }
 </style>
+@/components/element-plus/element-plus-util

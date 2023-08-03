@@ -8,7 +8,7 @@
 import { usePropValue } from '@/common/utils/VueUtils'
 import type { BasePropDefine } from '@/components/database/component/create-connection/common-form'
 import { useCommonForm } from '@/components/database/component/create-connection/common-form'
-import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
+import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import { useConnectionStore } from '@/stores/ConnectionStore'
 
 defineOptions({
@@ -159,3 +159,4 @@ defineExpose({
   }
 }
 </style>
+@/components/element-plus/element-plus-util

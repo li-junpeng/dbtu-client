@@ -3,7 +3,7 @@ import ConnectionList from './components/connection-list.vue'
 import CreateConnection from './create-connection.vue'
 import CreateGroup from './create-group.vue'
 import WorkTabs from './work-tabs/index.vue'
-import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
+import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import { InjectionKey } from '@/common/constants/ConnectionConstant'
 
 defineOptions({
@@ -74,3 +74,4 @@ provide(InjectionKey.openCreateGroup, openCreateGroup)
   }
 }
 </style>
+@/components/element-plus/element-plus-util

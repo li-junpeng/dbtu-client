@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import type { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
 import { ElInput } from 'element-plus'
-import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
+import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import Contextmenu from '@/components/ui/contextmenu'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
@@ -358,3 +358,4 @@ defineExpose({
   padding: 10px 0;
 }
 </style>
+@/components/element-plus/element-plus-util

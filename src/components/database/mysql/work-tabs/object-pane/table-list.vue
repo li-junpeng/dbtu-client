@@ -12,7 +12,7 @@ import type {
 } from 'element-plus/es/components/table-v2/src/row'
 import type { Column, RowClassNameGetter } from 'element-plus'
 import type { MySQLConnectionSession } from '@/components/database/mysql/connection-session'
-import { useConnectionSessionStore } from '@/stores/ConnectionSessionStroe'
+import { useConnectionSessionStore } from '@/stores/ConnectionSessionStore'
 import { StringUtils } from '@/common/utils/StringUtils'
 import Contextmenu from '@/components/ui/contextmenu'
 
@@ -281,3 +281,4 @@ const openTable = () => {
   justify-content: space-between;
 }
 </style>
+@/stores/ConnectionSessionStore

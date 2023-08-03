@@ -6,7 +6,7 @@
 -->
 <script setup lang="ts">
 import { StringUtils } from '@/common/utils/StringUtils'
-import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
+import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import { useConnectionStore } from '@/stores/ConnectionStore'
 import { Message } from '@/components/element-plus/el-feedback-util'
 import { MessageBox } from '@element-plus/icons-vue'
@@ -140,3 +140,4 @@ defineExpose({
 </template>
 
 <style scoped lang="scss"></style>
+@/components/element-plus/element-plus-util

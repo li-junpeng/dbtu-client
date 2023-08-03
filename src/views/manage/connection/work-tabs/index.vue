@@ -9,7 +9,7 @@ import type { TabPaneName } from 'element-plus'
 import ObjectPane from './object-pane.vue'
 import { useWorkTabStore } from '@/stores/WorkTabStore'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
-import { TooltipShowAfter } from '@/components/element-plus/elemenet-plus-util'
+import { TooltipShowAfter } from '@/components/element-plus/element-plus-util'
 
 defineOptions({
   name: 'ConnectionWorkTabsComponent'
@@ -120,3 +120,4 @@ const onRemoveTab = (name: TabPaneName) => {
   }
 }
 </style>
+@/components/element-plus/element-plus-util

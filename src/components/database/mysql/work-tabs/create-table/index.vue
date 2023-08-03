@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import type { CreateTableProp } from './index'
 import { TabNames } from './index'
-import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
+import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import SqlCodePreview from '@/components/ui/sql-code-preview/index.vue'
 
 // toolbox components
@@ -183,3 +183,4 @@ const tableIndexRef = useComponentRef(TableIndex)
   padding: 0 10px;
 }
 </style>
+@/components/element-plus/element-plus-util

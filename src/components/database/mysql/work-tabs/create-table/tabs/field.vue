@@ -10,7 +10,7 @@ import { ElInput, ElInputNumber, ElSelect } from 'element-plus'
 import { MySQLDataType } from '@/common/constants/DataTypeConstant'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
-import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
+import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import Contextmenu from '@/components/ui/contextmenu'
 import FieldOption from './field-option.vue'
 
@@ -515,3 +515,4 @@ onMounted(() => {
   border-top: 1px solid var(--dbtu-divide-borer-color);
 }
 </style>
+@/components/element-plus/element-plus-util

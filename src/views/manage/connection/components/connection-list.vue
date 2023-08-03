@@ -8,9 +8,9 @@
 import { InjectionKey } from '@/common/constants/ConnectionConstant'
 import Contextmenu from '@/components/ui/contextmenu/src/contextmenu-install'
 import { useConnectionStore } from '@/stores/ConnectionStore'
-import { useConnectionSessionStore } from '@/stores/ConnectionSessionStroe'
+import { useConnectionSessionStore } from '@/stores/ConnectionSessionStore'
 import { useWorkTabStore } from '@/stores/WorkTabStore'
-import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
+import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import TreeNodeIcon from './tree-node-icon.vue'
 import { NumberUtils } from '@/common/utils/NumberUtils'
@@ -449,3 +449,4 @@ const onClickTreeItem = (data: ConnectionTreeNode) => {
   }
 }
 </style>
+@/components/element-plus/element-plus-util@/stores/ConnectionSessionStore

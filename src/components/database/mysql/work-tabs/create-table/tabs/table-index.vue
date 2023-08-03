@@ -8,7 +8,7 @@
 import { type TableIndexProp, TableIndexPropDefault } from './table-index'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
 import { ElInput, type TableColumnCtx } from 'element-plus'
-import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
+import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import { IndexTypes } from '@/common/constants/MySqlConstant'
 import Contextmenu from '@/components/ui/contextmenu'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
@@ -417,3 +417,4 @@ defineExpose({
   }
 }
 </style>
+@/components/element-plus/element-plus-util

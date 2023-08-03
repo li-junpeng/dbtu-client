@@ -12,7 +12,7 @@ import {
   SizerDrawerPropDefault,
   TreeV2Props
 } from '@/components/ui/sizer-drawer/define'
-import { TooltipShowAfter, useComponentRef } from '@/components/element-plus/elemenet-plus-util'
+import { TooltipShowAfter, useComponentRef } from '@/components/element-plus/element-plus-util'
 import { JudgeConditions } from '@/common/constants/ConnectionConstant'
 import SqlCodePreview from '@/components/ui/sql-code-preview/index.vue'
 import Contextmenu from '@/components/ui/contextmenu'
@@ -478,3 +478,4 @@ defineExpose({
   }
 }
 </style>
+@/components/element-plus/element-plus-util

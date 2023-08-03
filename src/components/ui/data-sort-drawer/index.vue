@@ -9,7 +9,7 @@ import type { DataSortDrawerProp, DataSortItem } from '@/components/ui/data-sort
 import { DataSortDrawerPropDefault } from '@/components/ui/data-sort-drawer/define'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import SqlCodePreview from '@/components/ui/sql-code-preview/index.vue'
-import { TooltipShowAfter } from '@/components/element-plus/elemenet-plus-util'
+import { TooltipShowAfter } from '@/components/element-plus/element-plus-util'
 import Contextmenu from '@/components/ui/contextmenu'
 
 defineOptions({
@@ -281,3 +281,4 @@ defineExpose({
   }
 }
 </style>
+@/components/element-plus/element-plus-util

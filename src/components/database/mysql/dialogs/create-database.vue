@@ -8,7 +8,7 @@
 import type { FormRules } from 'element-plus'
 import CharacterAndCollate from '@/assets/data/mysql-character-collate.json'
 import { StringUtils } from '@/common/utils/StringUtils'
-import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
+import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import SqlCodePreview from '@/components/ui/sql-code-preview/index.vue'
 
 defineOptions({
@@ -194,3 +194,4 @@ defineExpose({
 </template>
 
 <style scoped lang="scss"></style>
+@/components/element-plus/element-plus-util

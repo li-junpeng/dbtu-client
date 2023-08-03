@@ -6,7 +6,7 @@
 -->
 <script setup lang="ts">
 import type { Column } from 'element-plus'
-import { TooltipShowAfter, useComponentRef } from '@/components/element-plus/elemenet-plus-util'
+import { TooltipShowAfter, useComponentRef } from '@/components/element-plus/element-plus-util'
 import MockData from '@/assets/data/mock-table-data-test.json'
 import SizerDrawer from '@/components/ui/sizer-drawer/index.vue'
 import DataSortDrawer from '@/components/ui/data-sort-drawer/index.vue'
@@ -235,3 +235,4 @@ const openDataFilter = () => {
   }
 }
 </style>
+@/components/element-plus/element-plus-util

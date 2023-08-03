@@ -11,6 +11,7 @@ import { useComponentRef } from '@/components/element-plus/elemenet-plus-util'
 import Contextmenu from '@/components/ui/contextmenu'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
+import MonacoEditor from '@/components/ui/monaco-editor/index.vue'
 
 type TableColumn = TableColumnCtx<unknown>
 
@@ -22,6 +23,21 @@ const tableData = reactive<MySqlTableTrigger[]>([])
 const selectedRow = ref<MySqlTableTrigger | null>(null)
 const selectedColumn = ref<TableColumn | null>(null)
 const nameInputRef = useComponentRef(ElInput)
+const rowSql = ref('')
+
+watch(
+  () => rowSql.value,
+  () => {
+    selectedRow.value && (selectedRow.value.sql = rowSql.value)
+  }
+)
+
+watch(
+  () => selectedRow.value,
+  () => {
+    rowSql.value = selectedRow.value?.sql || ''
+  }
+)
 
 /**
  * 添加触发器
@@ -177,6 +193,26 @@ watch(
   }
 )
 
+// 通过设置的触发器信息, 自动生成SQL代码
+const sqlCode = computed(() => {
+  let sql = ''
+
+  tableData.forEach(item => {
+    if (!item.name) {
+      return
+    }
+
+    sql += `CREATE TRIGGER \`${item.name}\``
+    sql += item.trigger ? ` ${item.trigger}` : ''
+    sql += item.timing ? ` ${item.timing}` : item.trigger ? ' INSERT' : ''
+    sql += ' ON `Untitled` FOR EACH ROW'
+    sql += item.sql ? ` ${item.sql}` : ''
+    sql += ';\n'
+  })
+
+  return sql
+})
+
 onMounted(() => {
   addRow()
 })
@@ -317,7 +353,12 @@ defineExpose({
       </el-table-column>
     </el-table>
   </div>
-  <div class="bottom-sql"></div>
+  <div class="bottom-sql">
+    <MonacoEditor
+      v-if="selectedRow"
+      v-model="rowSql"
+    />
+  </div>
 </template>
 
 <style scoped lang="scss">
@@ -332,5 +373,6 @@ defineExpose({
   width: 100%;
   height: calc(100% - 400px);
   border-top: 1px solid var(--dbtu-divide-borer-color);
+  padding: 10px 0;
 }
 </style>

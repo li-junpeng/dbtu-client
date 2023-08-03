@@ -354,6 +354,7 @@ onMounted(() => {
         type="index"
         width="50"
         align="center"
+        class-name="bg-is-theme-color"
       >
         <template #default="{ row, $index }">
           <span
@@ -555,26 +556,5 @@ onMounted(() => {
   width: 100%;
   height: calc(100% - 400px);
   border-top: 1px solid var(--dbtu-divide-borer-color);
-}
-
-:deep(.el-table) {
-  .el-table__body tr.current-row > td.el-table__cell {
-    background-color: var(--dbtu-theme-hover-color);
-    color: var(--el-color-white);
-  }
-
-  .el-table__body tr.current-row > td.el-table__cell:not(:first-child) {
-    background-color: transparent;
-  }
-
-  &.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell:not(:first-child),
-  &.el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell:not(:first-child) {
-    background-color: transparent;
-  }
-
-  .row-readonly-text {
-    padding: 0 11px;
-    line-height: 33px;
-  }
 }
 </style>

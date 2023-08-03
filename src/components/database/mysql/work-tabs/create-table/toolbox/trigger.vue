@@ -5,9 +5,35 @@
  * @date 2023-07-29 22:
 -->
 <script setup lang="ts">
+import TableTrigger from '../tabs/table-trigger.vue'
+
 defineOptions({
   name: 'MySQLCreateTableTriggerToolboxComponent'
 })
+
+const props = defineProps<{
+  tabPaneRef?: InstanceType<typeof TableTrigger>
+}>()
+
+const addTrigger = () => {
+  props.tabPaneRef?.addRow()
+}
+
+const appendTrigger = () => {
+  props.tabPaneRef?.appendRow()
+}
+
+const deleteTrigger = () => {
+  props.tabPaneRef?.deleteRow()
+}
+
+const moveTop = () => {
+  props.tabPaneRef?.moveTopRow()
+}
+
+const moveBottom = () => {
+  props.tabPaneRef?.moveBottomRow()
+}
 </script>
 
 <template>
@@ -15,7 +41,7 @@ defineOptions({
     <el-button
       text
       link
-      disabled
+      @click="addTrigger"
     >
       <template #icon>
         <IconCirclePlus />
@@ -25,7 +51,7 @@ defineOptions({
     <el-button
       text
       link
-      disabled
+      @click="appendTrigger"
     >
       <template #icon>
         <IconBottomLeft />
@@ -35,7 +61,7 @@ defineOptions({
     <el-button
       text
       link
-      disabled
+      @click="deleteTrigger"
     >
       <template #icon>
         <IconDelete />
@@ -46,7 +72,7 @@ defineOptions({
     <el-button
       text
       link
-      disabled
+      @click="moveTop"
     >
       <template #icon>
         <IconTop />
@@ -56,7 +82,7 @@ defineOptions({
     <el-button
       text
       link
-      disabled
+      @click="moveBottom"
     >
       <template #icon>
         <IconBottom />

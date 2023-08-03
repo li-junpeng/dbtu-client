@@ -1,10 +1,22 @@
 :deep(.el-table) {
   &.el-table--border {
     &.el-table-editable {
-      /* current row of cell, background-color is --dbtu-theme-active-color */
-      .el-table__body tr.current-row > td.el-table__cell.bg-is-theme-color {
-        background-color: var(--dbtu-theme-hover-color);
-        color: #fff;
+      .el-table__body tr.current-row > td.el-table__cell {
+        background-color: transparent;
+
+        /* current row of cell, background-color is --dbtu-theme-active-color */
+        &.bg-is-theme-color {
+          background-color: var(--dbtu-theme-hover-color);
+          color: #fff;
+        }
+      }
+
+      &.el-table--enable-row-transition .el-table__body td.el-table__cell {
+        transition: background-color 0s ease;
+        -webkit-transition: background-color 0s ease;
+        -moz-transition: background-color 0s ease;
+        -ms-transition: background-color 0s ease;
+        -o-transition: background-color 0s ease;
       }
 
       .el-table__cell {
@@ -67,6 +79,11 @@
             }
           }
         }
+      }
+
+      .row-readonly-text {
+        padding: 0 11px;
+        line-height: 33px;
       }
     }
   }

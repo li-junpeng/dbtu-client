@@ -19,6 +19,7 @@ import TriggerToolbox from './toolbox/trigger.vue'
 // tab-pane components
 import FieldTabPane from './tabs/field.vue'
 import TableOption from './tabs/table-option.vue'
+import TableTrigger from './tabs/table-trigger.vue'
 
 defineOptions({
   name: 'MySQLCreateTableComponent'
@@ -31,6 +32,7 @@ const tab = reactive({
 // SQL预览所使用的SQL语句
 const sqlCode = ref('')
 const fieldTabPaneRef = useComponentRef(FieldTabPane)
+const tableTriggerRef = useComponentRef(TableTrigger)
 // 表注释内容
 const commentText = ref('')
 </script>
@@ -58,7 +60,10 @@ const commentText = ref('')
     />
     <index-toolbox v-show="tab.selected === TabNames.index" />
     <fk-toolbox v-show="tab.selected === TabNames.fk" />
-    <trigger-toolbox v-show="tab.selected === TabNames.trigger" />
+    <trigger-toolbox
+      v-show="tab.selected === TabNames.trigger"
+      :tab-pane-ref="tableTriggerRef"
+    />
   </div>
 
   <!-- tabs -->
@@ -90,6 +95,7 @@ const commentText = ref('')
         label="触发器"
         :name="TabNames.trigger"
       >
+        <TableTrigger ref="tableTriggerRef" />
       </el-tab-pane>
       <el-tab-pane
         label="选项"

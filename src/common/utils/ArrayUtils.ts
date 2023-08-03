@@ -101,7 +101,7 @@ export const ArrayUtils = {
    * 将指定项在数组内上移
    *
    * @param source 源数组
-   * @param value  要移动的项的唯一标识
+   * @param value  要移动的项
    * @param field  判断项是否相同所需要的字段, 如果该参数为空, 那么value参数应该是普通类型
    * @returns true: 移动成功, false: 移动失败
    */
@@ -130,7 +130,7 @@ export const ArrayUtils = {
    * 将指定项在数组内下移
    *
    * @param source 源数组
-   * @param value  要移动的项的唯一标识
+   * @param value  要移动的项
    * @param field  判断项是否相同所需要的字段, 如果该参数为空, 那么value参数应该是普通类型
    * @returns true: 移动成功, false: 移动失败
    */

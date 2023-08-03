@@ -145,3 +145,32 @@ interface MySqlTableOption {
    */
   delayKeyWrite?: boolean
 }
+
+/**
+ * MySql表的触发器
+ */
+interface MySqlTableTrigger {
+  /**
+   * ID, 在展示的时候有用, 对数据库没用任何作用
+   */
+  id: number
+  /**
+   * 触发器的名称
+   */
+  name: string
+
+  /**
+   * 触发方式
+   */
+  trigger?: 'AFTER' | 'BEFORE'
+
+  /**
+   * 触发时机, 在${trigger}时触发
+   */
+  timing?: 'INSERT' | 'UPDATE' | 'DELETE'
+
+  /**
+   * sql定义
+   */
+  sql?: string
+}

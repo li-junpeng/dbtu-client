@@ -174,3 +174,37 @@ interface MySqlTableTrigger {
    */
   sql?: string
 }
+
+/**
+ * 表索引
+ */
+interface MySqlTableIndex {
+  /**
+   * 做展示的时候需要，不影响mysql
+   */
+  id: number
+  /**
+   * 索引名
+   */
+  name: string
+
+  /**
+   * 字段, 多个字段使用逗号隔开
+   */
+  fields: string
+
+  /**
+   * 索引类型
+   */
+  indexType?: string
+
+  /**
+   * 索引方法
+   */
+  indexMethod?: 'BTREE' | 'HASH'
+
+  /**
+   * 注释
+   */
+  comment?: string
+}

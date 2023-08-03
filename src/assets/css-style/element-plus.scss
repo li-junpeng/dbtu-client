@@ -30,6 +30,14 @@
       -webkit-text-fill-color: var(--dbtu-font-color-disabled);
     }
   }
+
+  .el-input-group__append, 
+  .el-input-group__prepend {
+    background-color: var(--dbtu-background-color);
+  }
+  .el-input-group__append {
+    border-left: 1px solid var(--dbtu-divide-borer-color);
+  }
 }
 
 .el-input-number__text-left {

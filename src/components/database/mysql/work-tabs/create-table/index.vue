@@ -20,6 +20,7 @@ import TriggerToolbox from './toolbox/trigger.vue'
 import FieldTabPane from './tabs/field.vue'
 import TableOption from './tabs/table-option.vue'
 import TableTrigger from './tabs/table-trigger.vue'
+import TableIndex from './tabs/table-index.vue'
 
 defineOptions({
   name: 'MySQLCreateTableComponent'
@@ -35,6 +36,7 @@ const sqlCode = ref('')
 const triggerSql = ref('')
 const fieldTabPaneRef = useComponentRef(FieldTabPane)
 const tableTriggerRef = useComponentRef(TableTrigger)
+const tableIndexRef = useComponentRef(TableIndex)
 // 表注释内容
 const commentText = ref('')
 </script>
@@ -60,7 +62,10 @@ const commentText = ref('')
       v-show="tab.selected === TabNames.field"
       :tab-pane-ref="fieldTabPaneRef"
     />
-    <index-toolbox v-show="tab.selected === TabNames.index" />
+    <index-toolbox
+      v-show="tab.selected === TabNames.index"
+      :tab-pane-ref="tableIndexRef"
+    />
     <fk-toolbox v-show="tab.selected === TabNames.fk" />
     <trigger-toolbox
       v-show="tab.selected === TabNames.trigger"
@@ -87,6 +92,7 @@ const commentText = ref('')
         label="索引"
         :name="TabNames.index"
       >
+        <TableIndex ref="tableIndexRef" />
       </el-tab-pane>
       <el-tab-pane
         label="外键"

@@ -60,3 +60,6 @@ export const Compressions = ['LZ4', 'NONE', 'ZLIB'] as const
 
 // 通用下拉列表框值
 export const CommonSelectOptions = [0, 1, 'default'] as const
+
+// 索引类型
+export const IndexTypes = ['FULLTEXT', 'NORMAL', 'SPATIAL', 'UNIQUE'] as const

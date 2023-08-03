@@ -48,6 +48,10 @@
             }
           }
         }
+
+        .el-input-group__append {
+          box-shadow: none;
+        }
       }
 
       .el-select {

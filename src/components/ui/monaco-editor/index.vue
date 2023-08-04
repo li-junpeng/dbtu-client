@@ -6,6 +6,7 @@
 -->
 <script setup lang="ts">
 import * as monaco from 'monaco-editor'
+import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import { debounce } from 'lodash'
 import {
   type MonacoEditorEmits,
@@ -14,6 +15,11 @@ import {
 } from '@/components/ui/monaco-editor/define'
 import { useDark } from '@vueuse/core'
 import { useSystemSettingStore } from '@/stores/SystemSettingStore'
+;(self as any).MonacoEnvironment = {
+  getWorker(_: any, label: any) {
+    return new EditorWorker()
+  }
+}
 
 const props = withDefaults(defineProps<MonacoEditorProp>(), MonacoEditorPropDefault)
 const emits = defineEmits<MonacoEditorEmits>()
@@ -151,6 +157,10 @@ watch(
 onMounted(() => {
   registerTheme()
   initEditor()
+})
+
+onUnmounted(() => {
+  editor.dispose()
 })
 </script>
 

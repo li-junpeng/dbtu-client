@@ -255,7 +255,7 @@ defineExpose({
                     </el-table-column>
                   </el-table>
                 </div>
-                <div class="popover-fotter">
+                <div class="popover-footer">
                   <el-button
                     text
                     link
@@ -409,7 +409,7 @@ defineExpose({
     height: calc(100% - 34px);
   }
 
-  .popover-fotter {
+  .popover-footer {
     width: 100%;
     height: 34px;
     display: flex;

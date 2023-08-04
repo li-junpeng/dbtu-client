@@ -1,12 +1,19 @@
 {
   "editor.tabSize": 2,
   "cSpell.words": [
+    "btns",
+    "Coms",
     "dbtu",
     "endregion",
     "HuaYu",
+    "Inno",
+    "innodb",
+    "jdbc",
     "Junpeng",
+    "Keymap",
     "navicat",
     "pinia",
+    "postgre",
     "vueuse"
   ]
 }

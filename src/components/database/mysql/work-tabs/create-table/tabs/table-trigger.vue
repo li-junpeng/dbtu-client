@@ -47,15 +47,15 @@ watch(
  * @param index  指定在列表中的位置, 默认在末尾添加
  */
 const addRow = (index?: number) => {
-  const defualtData: MySqlTableTrigger = { id: Date.now(), name: '' }
+  const defaultData: MySqlTableTrigger = { id: Date.now(), name: '' }
   if (index === 0) {
     index = void 0
   }
   if (index !== undefined) {
-    tableData.value.splice(index, 0, defualtData)
+    tableData.value.splice(index, 0, defaultData)
     selectedRow.value = tableData.value[index]
   } else {
-    tableData.value.push(defualtData)
+    tableData.value.push(defaultData)
     selectedRow.value = tableData.value[tableData.value.length - 1]
   }
 }

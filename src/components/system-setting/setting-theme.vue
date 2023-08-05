@@ -123,6 +123,13 @@ watch(
         :max="FONT_SIZE_MAX"
       />
     </el-form-item>
+
+    <el-form-item label="布局">
+      <el-radio-group v-model="themeData.layout">
+        <el-radio-button label="normal">标准布局</el-radio-button>
+        <el-radio-button label="no-header">隐藏头部</el-radio-button>
+      </el-radio-group>
+    </el-form-item>
   </el-form>
 </template>
 

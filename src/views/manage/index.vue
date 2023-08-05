@@ -1,19 +1,30 @@
 <script setup lang="ts">
 import PageHeader from './header.vue'
 import NavigationMenu from './navigation-menu.vue'
+import { useSystemSettingStore } from '@/stores/SystemSettingStore'
 
 defineOptions({
   name: 'ManagePage'
+})
+
+const themeData = useSystemSettingStore().getSetting().theme
+const containerStyle = computed(() => {
+  return {
+    height: themeData.layout === 'normal' ? 'calc(100% - 40px)' : '100%'
+  }
 })
 </script>
 
 <template>
   <el-container style="height: 100%">
     <!-- 页面头部 -->
-    <el-header style="--el-header-padding: 0; --el-header-height: auto">
+    <el-header
+      v-if="themeData.layout === 'normal'"
+      style="--el-header-padding: 0; --el-header-height: auto"
+    >
       <page-header />
     </el-header>
-    <el-container style="height: calc(100% - 40px)">
+    <el-container :style="containerStyle">
       <!-- 导航菜单 -->
       <el-aside width="40">
         <navigation-menu class="nav-menu" />

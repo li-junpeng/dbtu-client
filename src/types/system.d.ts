@@ -43,6 +43,8 @@ interface SystemSetting {
     color: string
     // 字体大小
     fontSize: number
+    // 布局
+    layout: 'normal' | 'no-header'
   }
 }
 

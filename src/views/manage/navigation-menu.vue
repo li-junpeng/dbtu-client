@@ -45,6 +45,7 @@ onMounted(() => {
       width: `${showLabel ? '200px' : '40px'}`
     }"
   >
+    <!-- 导航菜单 -->
     <div class="menu-box">
       <el-tooltip
         v-for="menu in menus"
@@ -71,6 +72,66 @@ onMounted(() => {
         </router-link>
       </el-tooltip>
     </div>
+
+    <!-- 功能按钮 -->
+    <div class="menu-btn-box">
+      <el-tooltip
+        content="GitHub，点个Star"
+        placement="right"
+        effect="dark"
+      >
+        <a
+          href="https://github.com/li-junpeng/dbtu-client"
+          target="_blank"
+        >
+          <el-icon
+            :size="16"
+            class="menu-btn__item"
+          >
+            <DIconAppGithub />
+          </el-icon>
+        </a>
+      </el-tooltip>
+
+      <el-tooltip
+        content="消息"
+        placement="right"
+        effect="dark"
+      >
+        <el-icon
+          :size="18"
+          class="menu-btn__item"
+        >
+          <DIconNotify />
+        </el-icon>
+      </el-tooltip>
+
+      <el-tooltip
+        content="用户"
+        placement="right"
+        effect="dark"
+      >
+        <el-icon
+          :size="18"
+          class="menu-btn__item"
+        >
+          <IconUser />
+        </el-icon>
+      </el-tooltip>
+
+      <el-tooltip
+        content="设置"
+        placement="right"
+        effect="dark"
+      >
+        <el-icon
+          :size="18"
+          class="menu-btn__item"
+        >
+          <DIconSetting />
+        </el-icon>
+      </el-tooltip>
+    </div>
   </div>
 </template>
 
@@ -79,6 +140,9 @@ onMounted(() => {
   width: 200px;
   height: 100%;
   border-right: 1px solid var(--dbtu-divide-borer-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   .menu-box {
     color: var(--dbtu-font-color);
@@ -112,6 +176,20 @@ onMounted(() => {
         color: var(--dbtu-font-color-light);
         background-color: var(--dbtu-hover-color);
       }
+    }
+  }
+
+  .menu-btn-box {
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    .menu-btn__item {
+      padding: 15px 0;
+      cursor: pointer;
     }
   }
 }

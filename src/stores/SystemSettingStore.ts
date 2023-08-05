@@ -174,7 +174,8 @@ const getDefaultSetting = (): SystemSetting => {
     theme: {
       mode: 'dark',
       color: '#3574f0',
-      fontSize: FONT_SIZE_DEFAULT
+      fontSize: FONT_SIZE_DEFAULT,
+      layout: 'normal'
     }
   }
 }

@@ -6,6 +6,7 @@
 -->
 <script setup lang="ts">
 import { RouterLink, useRoute, useRouter } from 'vue-router'
+import { useSystemSettingStore } from '@/stores/SystemSettingStore'
 
 defineOptions({
   name: 'NavigationMenu'
@@ -33,6 +34,14 @@ watch(
   },
   { deep: true }
 )
+
+// 系统设置对话框实例
+const systemSettingStore = useSystemSettingStore()
+const themeData = systemSettingStore.getSetting().theme
+const openSystemSettingDialog = () => {
+  systemSettingStore.open()
+}
+
 onMounted(() => {
   currentRoutePath.value = route.path
 })
@@ -74,7 +83,10 @@ onMounted(() => {
     </div>
 
     <!-- 功能按钮 -->
-    <div class="menu-btn-box">
+    <div
+      v-if="themeData.layout === 'no-header'"
+      class="menu-btn-box"
+    >
       <el-tooltip
         content="GitHub，点个Star"
         placement="right"
@@ -127,6 +139,7 @@ onMounted(() => {
         <el-icon
           :size="18"
           class="menu-btn__item"
+          @click="openSystemSettingDialog"
         >
           <DIconSetting />
         </el-icon>

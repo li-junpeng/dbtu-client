@@ -2,6 +2,8 @@
 import PageHeader from './header.vue'
 import NavigationMenu from './navigation-menu.vue'
 import { useSystemSettingStore } from '@/stores/SystemSettingStore'
+// 组件
+import SystemSettingDialog from '@/components/system-setting/index.vue'
 
 defineOptions({
   name: 'ManagePage'
@@ -35,6 +37,8 @@ const containerStyle = computed(() => {
       </el-container>
     </el-container>
   </el-container>
+
+  <system-setting-dialog ref="systemSettingDialogRef" />
 </template>
 
 <style lang="scss"></style>

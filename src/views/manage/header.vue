@@ -4,9 +4,6 @@ import DefaultAvatarImg from '@/assets/images/avatars/avatar-30.png'
 // store
 import { useUserInfoStore } from '@/stores/UserInfoStore'
 import { useSystemSettingStore } from '@/stores/SystemSettingStore'
-// 组件
-import SystemSettingDialog from '@/components/system-setting/index.vue'
-import { useComponentRef } from '@/components/element-plus/element-plus-util'
 
 defineOptions({
   name: 'PageHeader'
@@ -31,7 +28,6 @@ const toLogin = () => {
 
 // 系统设置对话框实例
 const systemSettingStore = useSystemSettingStore()
-const systemSettingDialogRef = useComponentRef(SystemSettingDialog)
 const openSystemSettingDialog = () => {
   systemSettingStore.open()
 }
@@ -98,8 +94,6 @@ const openSystemSettingDialog = () => {
       </div>
     </div>
   </div>
-
-  <system-setting-dialog ref="systemSettingDialogRef" />
 </template>
 
 <style lang="scss" scoped>

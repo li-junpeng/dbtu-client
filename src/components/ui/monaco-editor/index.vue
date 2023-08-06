@@ -43,13 +43,6 @@ const registerTheme = () => {
     return mode === 'dark' ? 'vs-dark' : 'vs'
   }
 
-  console.log(baseTheme())
-
-  console.log({
-    bacolor: computedStyle.getPropertyValue('--dbtu-background-color'),
-    fontcolor: computedStyle.getPropertyValue('--dbtu-font-color')
-  })
-
   monaco.editor.defineTheme('dbtu-theme', {
     rules: [],
     base: baseTheme(),

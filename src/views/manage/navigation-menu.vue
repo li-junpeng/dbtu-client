@@ -203,6 +203,7 @@ onMounted(() => {
     .menu-btn__item {
       padding: 15px 0;
       cursor: pointer;
+      color: var(--dbtu-font-color);
     }
   }
 }

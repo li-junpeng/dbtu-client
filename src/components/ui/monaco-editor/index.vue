@@ -42,6 +42,14 @@ const registerTheme = () => {
     }
     return mode === 'dark' ? 'vs-dark' : 'vs'
   }
+
+  console.log(baseTheme())
+
+  console.log({
+    bacolor: computedStyle.getPropertyValue('--dbtu-background-color'),
+    fontcolor: computedStyle.getPropertyValue('--dbtu-font-color')
+  })
+
   monaco.editor.defineTheme('dbtu-theme', {
     rules: [],
     base: baseTheme(),
@@ -59,8 +67,11 @@ const registerTheme = () => {
 watch(
   () => [isDark, systemSettingStore.getSetting().theme],
   () => {
-    registerTheme()
-    monaco.editor.setTheme('dbtu-theme')
+    // fix: 当系统主题默认为'跟随系统'时, 此时选择浅色、然后选择深色, 部分css变量错误的问题
+    nextTick(() => {
+      registerTheme()
+      monaco.editor.setTheme('dbtu-theme')
+    })
   },
   { deep: true }
 )

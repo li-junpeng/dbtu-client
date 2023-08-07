@@ -261,12 +261,7 @@ interface MySqlTableIndex {
   /**
    * 字段, 多个字段使用逗号隔开
    */
-  fields: {
-    // 字段名
-    name: string,
-    // 子部分
-    child?: number
-  }[]
+  fields: MySqlTableIndexField[]
 
   /**
    * 索引类型
@@ -282,4 +277,24 @@ interface MySqlTableIndex {
    * 注释
    */
   comment?: string
+}
+
+/**
+ * 表索引字段信息
+ */
+interface MySqlTableIndexField {
+  /**
+   * id, 仅在展示时使用, 不影响MySQL
+   */
+  id: number,
+
+  /**
+   * 字段名
+   */
+  field: string,
+
+  /**
+   * 子部分
+   */
+  subPart?: number
 }

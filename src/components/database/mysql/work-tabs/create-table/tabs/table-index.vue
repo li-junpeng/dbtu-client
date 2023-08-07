@@ -12,6 +12,7 @@ import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import { IndexTypes } from '@/common/constants/MySqlConstant'
 import Contextmenu from '@/components/ui/contextmenu'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
+import SelectFields from './table-index-fields.vue'
 
 type TableColumn = TableColumnCtx<any>
 
@@ -92,13 +93,13 @@ const rowContextmenu = (row: MySqlTableIndex, column: TableColumn, event: MouseE
 }
 
 // 生成用来描述的表字段文本
-const getFieldText = (fields: { name: string; child?: number }[]) => {
+const getFieldText = (fields: MySqlTableIndexField[]) => {
   if (ArrayUtils.isEmpty(fields)) {
     return ''
   }
   return fields
-    .filter(item => item.name)
-    .map(item => `\`${item.name}\``)
+    .filter(item => item.field)
+    .map(item => `\`${item.field}\``)
     .join(',')
 }
 
@@ -208,6 +209,11 @@ defineExpose({
             >
               {{ getFieldText(row.fields) }}
             </div>
+            <SelectFields
+              v-show="selectedRow?.id === row.id"
+              v-model="row.fields"
+              :fields="props.tableFields"
+            />
             <!-- TODO 仿照Navicat写这个布局吧。。。睡觉啦，晚安 -->
             <!-- <el-popover
               v-if="selectedRow?.id === row.id"

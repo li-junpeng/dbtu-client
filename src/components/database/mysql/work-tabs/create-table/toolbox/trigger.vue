@@ -27,12 +27,12 @@ const deleteTrigger = () => {
   props.tabPaneRef?.deleteRow()
 }
 
-const moveTop = () => {
-  props.tabPaneRef?.moveTopRow()
+const moveUp = () => {
+  props.tabPaneRef?.moveUpRow()
 }
 
-const moveBottom = () => {
-  props.tabPaneRef?.moveBottomRow()
+const moveDown = () => {
+  props.tabPaneRef?.moveDownRow()
 }
 </script>
 
@@ -72,7 +72,7 @@ const moveBottom = () => {
     <el-button
       text
       link
-      @click="moveTop"
+      @click="moveUp"
     >
       <template #icon>
         <IconTop />
@@ -82,7 +82,7 @@ const moveBottom = () => {
     <el-button
       text
       link
-      @click="moveBottom"
+      @click="moveDown"
     >
       <template #icon>
         <IconBottom />

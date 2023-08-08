@@ -105,7 +105,7 @@ export const ArrayUtils = {
    * @param field  判断项是否相同所需要的字段, 如果该参数为空, 那么value参数应该是普通类型
    * @returns true: 移动成功, false: 移动失败
    */
-  moveTop(source: any[], value: any, field?: string): boolean {
+  moveUp(source: any[], value: any, field?: string): boolean {
     if (this.isEmpty(source)) {
       return false
     }
@@ -134,7 +134,7 @@ export const ArrayUtils = {
    * @param field  判断项是否相同所需要的字段, 如果该参数为空, 那么value参数应该是普通类型
    * @returns true: 移动成功, false: 移动失败
    */
-  moveBottom(source: any[], value: any, field?: string): boolean {
+  moveDown(source: any[], value: any, field?: string): boolean {
     if (this.isEmpty(source)) {
       return false
     }

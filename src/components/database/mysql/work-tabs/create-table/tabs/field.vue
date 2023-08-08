@@ -125,7 +125,7 @@ const copyField = (row: MySqlTableField) => {
  *
  * @param row   需要往上移动的字段
  */
-const moveTopField = (row?: MySqlTableField) => {
+const moveUpField = (row?: MySqlTableField) => {
   if (!row) {
     row = selectedRow.value!
   }
@@ -142,7 +142,7 @@ const moveTopField = (row?: MySqlTableField) => {
  *
  * @param row   需要往下移的字段
  */
-const moveBottomField = (row?: MySqlTableField) => {
+const moveDownField = (row?: MySqlTableField) => {
   if (!row) {
     row = selectedRow.value!
   }
@@ -244,13 +244,13 @@ const rowContextmenu = (row: MySqlTableField, column: TableColumn, event: MouseE
       {
         label: '上移',
         onClick: () => {
-          moveTopField(row)
+          moveUpField(row)
         }
       },
       {
         label: '下移',
         onClick: () => {
-          moveBottomField(row)
+          moveDownField(row)
         }
       }
     ]
@@ -283,8 +283,8 @@ defineExpose({
   deleteField,
   appendField,
   triggerPrimaryKey,
-  moveTopField,
-  moveBottomField
+  moveUpField,
+  moveDownField
 })
 
 onMounted(() => {

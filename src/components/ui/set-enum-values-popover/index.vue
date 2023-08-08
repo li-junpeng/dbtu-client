@@ -63,13 +63,13 @@ const deleteItem = () => {
 }
 
 // 上移项
-const moveTopItem = () => {
-  ArrayUtils.moveTop(enums, selectedRow.value, 'id')
+const moveUpItem = () => {
+  ArrayUtils.moveUp(enums, selectedRow.value, 'id')
 }
 
 // 下移项
-const moveBottomItem = () => {
-  ArrayUtils.moveBottom(enums, selectedRow.value, 'id')
+const moveDownItem = () => {
+  ArrayUtils.moveDown(enums, selectedRow.value, 'id')
 }
 
 watch(
@@ -160,7 +160,7 @@ watch(
         <el-button
           text
           link
-          @click="moveTopItem"
+          @click="moveUpItem"
         >
           <template #icon>
             <IconTop />
@@ -170,7 +170,7 @@ watch(
         <el-button
           text
           link
-          @click="moveBottomItem"
+          @click="moveDownItem"
         >
           <template #icon>
             <icon-bottom />

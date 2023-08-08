@@ -106,23 +106,23 @@ const deleteRow = () => {
 /**
  * 上移
  */
-const moveTopRow = () => {
+const moveUpRow = () => {
   if (!selectedRow.value) {
     return
   }
 
-  ArrayUtils.moveTop(tableData.value, selectedRow.value, 'id')
+  ArrayUtils.moveUp(tableData.value, selectedRow.value, 'id')
 }
 
 /**
  * 下移
  */
-const moveBottomRow = () => {
+const moveDownRow = () => {
   if (!selectedRow.value) {
     return
   }
 
-  ArrayUtils.moveBottom(tableData.value, selectedRow.value, 'id')
+  ArrayUtils.moveDown(tableData.value, selectedRow.value, 'id')
 }
 
 // el-table @click-row
@@ -167,13 +167,13 @@ const rowContextmenu = (row: MySqlTableTrigger, column: TableColumn, event: Mous
       {
         label: '上移',
         onClick: () => {
-          moveTopRow()
+          moveUpRow()
         }
       },
       {
         label: '下移',
         onClick: () => {
-          moveBottomRow()
+          moveDownRow()
         }
       }
     ]
@@ -203,8 +203,8 @@ defineExpose({
   addRow,
   appendRow,
   deleteRow,
-  moveTopRow,
-  moveBottomRow
+  moveUpRow,
+  moveDownRow
 })
 </script>
 

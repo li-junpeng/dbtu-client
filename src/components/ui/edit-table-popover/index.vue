@@ -85,13 +85,13 @@ const deleteItem = () => {
 }
 
 // 上移
-const moveTop = () => {
-  ArrayUtils.moveTop(tableRows.value, selectedRow.value, props.rowKey)
+const moveUp = () => {
+  ArrayUtils.moveUp(tableRows.value, selectedRow.value, props.rowKey)
 }
 
 // 下移
-const moveBottom = () => {
-  ArrayUtils.moveBottom(tableRows.value, selectedRow.value, props.rowKey)
+const moveDown = () => {
+  ArrayUtils.moveDown(tableRows.value, selectedRow.value, props.rowKey)
 }
 
 // 单元格内表单组件的实例
@@ -319,7 +319,7 @@ onMounted(() => {
               text
               link
               :disabled="!selectedRow"
-              @click="moveTop"
+              @click="moveUp"
             >
               <template #icon>
                 <IconTop />
@@ -331,7 +331,7 @@ onMounted(() => {
               text
               link
               :disabled="!selectedRow"
-              @click="moveBottom"
+              @click="moveDown"
             >
               <template #icon>
                 <IconBottom />

@@ -27,12 +27,12 @@ const appendField = () => {
   tabPaneRef.value?.appendField()
 }
 
-const moveTopField = () => {
-  tabPaneRef.value?.moveTopField()
+const moveUpField = () => {
+  tabPaneRef.value?.moveUpField()
 }
 
-const moveBottomField = () => {
-  tabPaneRef.value?.moveBottomField()
+const moveDownField = () => {
+  tabPaneRef.value?.moveDownField()
 }
 </script>
 
@@ -83,7 +83,7 @@ const moveBottomField = () => {
     <el-button
       text
       link
-      @click="moveTopField"
+      @click="moveUpField"
     >
       <template #icon>
         <IconTop />
@@ -93,7 +93,7 @@ const moveBottomField = () => {
     <el-button
       text
       link
-      @click="moveBottomField"
+      @click="moveDownField"
     >
       <template #icon>
         <IconBottom />

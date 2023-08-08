@@ -54,12 +54,12 @@ const deleteField = () => {
   }
 }
 
-const moveTop = () => {
-  ArrayUtils.moveTop(fields.value, selectedRow.value, 'id')
+const moveUp = () => {
+  ArrayUtils.moveUp(fields.value, selectedRow.value, 'id')
 }
 
-const moveBottom = () => {
-  ArrayUtils.moveBottom(fields.value, selectedRow.value, 'id')
+const moveDown = () => {
+  ArrayUtils.moveDown(fields.value, selectedRow.value, 'id')
 }
 
 const onClickRow = (row: MySqlTableIndexField, column: TableColumn) => {
@@ -221,7 +221,7 @@ onMounted(() => {
               text
               link
               :disabled="!selectedRow"
-              @click="moveTop"
+              @click="moveUp"
             >
               <template #icon>
                 <IconTop />
@@ -233,7 +233,7 @@ onMounted(() => {
               text
               link
               :disabled="!selectedRow"
-              @click="moveBottom"
+              @click="moveDown"
             >
               <template #icon>
                 <IconBottom />

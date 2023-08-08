@@ -277,6 +277,16 @@ interface MySqlTableIndex {
    * 注释
    */
   comment?: string
+
+  /**
+   * 键块大小
+   */
+  keyBlockSize?: number
+
+  /**
+   * 解析器
+   */
+  parser?: string
 }
 
 /**

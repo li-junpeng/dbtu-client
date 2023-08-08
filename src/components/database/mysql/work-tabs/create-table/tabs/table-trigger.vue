@@ -336,10 +336,13 @@ defineExpose({
     </el-table>
   </div>
   <div class="bottom-sql">
-    <MonacoEditor
-      v-if="selectedRow"
-      v-model="rowSql"
-    />
+    <p style="height: 34px; line-height: 34px">定义</p>
+    <div style="width: 100%; height: calc(100% - 34px)">
+      <MonacoEditor
+        v-if="selectedRow"
+        v-model="rowSql"
+      />
+    </div>
   </div>
 </template>
 

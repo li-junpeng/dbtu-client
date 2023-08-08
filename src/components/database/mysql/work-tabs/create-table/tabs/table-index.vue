@@ -214,96 +214,6 @@ defineExpose({
               v-model="row.fields"
               :fields="props.tableFields"
             />
-            <!-- TODO 仿照Navicat写这个布局吧。。。睡觉啦，晚安 -->
-            <!-- <el-popover
-              v-if="selectedRow?.id === row.id"
-              :width="600"
-              :persistent="false"
-              :hide-after="0"
-              trigger="click"
-            >
-              <template #reference>
-                <el-button
-                  text
-                  link
-                  style="width: 30px"
-                >
-                  <template #icon>
-                    <IconMoreFilled />
-                  </template>
-                </el-button>
-              </template>
-
-              <div class="set-field-popover">
-                <div class="popover-content">
-                  <el-table
-                    :data="props.tableFields"
-                    border
-                    height="366px"
-                    highlight-current-row
-                    scrollbar-always-on
-                    class="el-table-editable"
-                  >
-                  <el-table-column type="selection" width="55" align="center" />
-                    <el-table-column
-                      label="字段"
-                      prop="field"
-                      width="200px"
-                    >
-                      <template #default="{ row }">
-                        <span class="row-readonly-text">{{ row.field }}</span>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="子部分">
-                      <template #default>
-                        <el-input-number :controls="false" class="el-input-number__text-left" style="width: 100%;"/>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </div>
-                <div class="popover-footer">
-                  <el-button
-                    text
-                    link
-                  >
-                    <template #icon>
-                      <IconPlus />
-                    </template>
-                    <span>添加项</span>
-                  </el-button>
-
-                  <el-button
-                    text
-                    link
-                  >
-                    <template #icon>
-                      <IconDelete />
-                    </template>
-                    <span>删除项</span>
-                  </el-button>
-
-                  <el-button
-                    text
-                    link
-                  >
-                    <template #icon>
-                      <IconBottom />
-                    </template>
-                    <span>上移</span>
-                  </el-button>
-
-                  <el-button
-                    text
-                    link
-                  >
-                    <template #icon>
-                      <IconTop />
-                    </template>
-                    <span>下移</span>
-                  </el-button>
-                </div>
-              </div>
-            </el-popover> -->
           </div>
         </template>
       </el-table-column>
@@ -388,7 +298,27 @@ defineExpose({
     </el-table>
   </div>
 
-  <div class="bottom-form"></div>
+  <div class="bottom-form">
+    <el-form
+      v-if="selectedRow"
+      :model="selectedRow"
+      label-width="100px"
+      label-position="left"
+      style="width: 500px"
+    >
+      <el-form-item label="键块大小">
+        <el-input-number
+          v-model="selectedRow.keyBlockSize"
+          :controls="false"
+          style="width: 100%"
+          class="el-input-number__text-left"
+        />
+      </el-form-item>
+      <el-form-item label="解析器">
+        <el-input v-model="selectedRow.parser" :disabled="selectedRow.indexType !== 'FULLTEXT'" />
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <style scoped lang="scss">

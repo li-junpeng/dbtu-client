@@ -54,7 +54,7 @@ const moveDown = () => {
       @click="appendTrigger"
     >
       <template #icon>
-        <IconBottomLeft />
+        <IconTopLeft />
       </template>
       <span>插入触发器</span>
     </el-button>

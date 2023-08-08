@@ -298,7 +298,7 @@ onMounted(() => {
               <template #icon>
                 <IconPlus />
               </template>
-              添加项
+              {{ props.addButtonText }}
             </el-button>
 
             <el-button
@@ -310,7 +310,7 @@ onMounted(() => {
               <template #icon>
                 <IconDelete />
               </template>
-              删除项
+              {{ props.deleteButtonText }}
             </el-button>
 
             <el-button
@@ -322,7 +322,7 @@ onMounted(() => {
               <template #icon>
                 <IconTop />
               </template>
-              上移
+              {{ props.moveUpButtonText }}
             </el-button>
 
             <el-button
@@ -334,7 +334,7 @@ onMounted(() => {
               <template #icon>
                 <IconBottom />
               </template>
-              下移
+              {{ props.moveDownButtonText }}
             </el-button>
           </div>
 

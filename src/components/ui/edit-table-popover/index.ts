@@ -144,9 +144,41 @@ export interface EditTablePopoverProps {
    * @default undefined
    */
   placement?: 'top' | 'bottom' | 'left' | 'right'
+
+  /**
+   * 添加按钮文字
+   * 
+   * @default 添加项
+   */
+  addButtonText?: string
+  
+  /**
+   * 删除按钮文字
+   * 
+   * @default 删除项
+   */
+  deleteButtonText?: string
+
+  /**
+   * 上移按钮文字
+   * 
+   * @default 上移
+   */
+  moveUpButtonText?: string
+
+  /**
+   * 下移按钮文字
+   * 
+   * @default 下移
+   */
+  moveDownButtonText?: string
 }
 
 export const EditTablePopoverPropDefaults: Partial<EditTablePopoverProps> = {
   width: 600,
-  height: 400
+  height: 400,
+  addButtonText: '添加项',
+  deleteButtonText: '删除项',
+  moveUpButtonText: '上移',
+  moveDownButtonText: '下移'
 }

@@ -1,6 +1,7 @@
-import { defineAsyncComponent, type Ref, ref, shallowRef } from 'vue'
+import { type Ref, ref, shallowRef } from 'vue'
 import { defineStore } from 'pinia'
 import type { DialogProps } from 'element-plus'
+import { loadAsyncComponent } from '@/common/utils/AsyncLoadComponent'
 
 type DialogOption = Partial<
   {
@@ -49,18 +50,15 @@ export const useDynamicDialogStore = defineStore('useDynamicDialogStore', {
       this.appendToBody = option.appendToBody || false
       this.modalClass = option.modalClass || ''
       this.footerButtons = option.footerButtons || []
-      component().then(() => {
-        this.component = defineAsyncComponent(component)
-        this.visible = true
-
-        // 防止组件加载成功后this.ref值为空
-        const intervalId = setInterval(() => {
-          if (this.ref) {
-            clearInterval(intervalId)
-            option.afterOpen?.(this.ref)
-          }
-        }, 10)
-      })
+      this.component = loadAsyncComponent(component)
+      this.visible = true
+      // 防止组件加载成功后this.ref值为空
+      const intervalId = setInterval(() => {
+        if (this.ref) {
+          clearInterval(intervalId)
+          option.afterOpen?.(this.ref)
+        }
+      }, 10)
     },
 
     close() {

@@ -6,6 +6,7 @@
 -->
 <script setup lang="ts">
 import { navTabs, useSystemSettingStore } from '@/stores/SystemSettingStore'
+import { loadAsyncComponent } from '@/common/utils/AsyncLoadComponent'
 
 defineOptions({
   name: 'SystemSettingDialog'
@@ -29,11 +30,7 @@ const pageModules = import.meta.glob('./*.vue')
 const contentComponent = shallowRef()
 const loadComponent = () => {
   const path = systemSettingStore.activeTab?.component
-  const component = pageModules[path as string]
-  component().then(() => {
-    // @ts-ignore
-    contentComponent.value = defineAsyncComponent(component)
-  })
+  contentComponent.value = loadAsyncComponent(pageModules[path as string])
 }
 watch(
   () => systemSettingStore.activeTab,

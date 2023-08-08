@@ -11,6 +11,7 @@ import { getCreateConnectionCom } from '@/components/database/component/create-c
 import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import { useConnectionStore } from '@/stores/ConnectionStore'
 import { NumberUtils } from '@/common/utils/NumberUtils'
+import { loadAsyncComponent } from '@/common/utils/AsyncLoadComponent'
 
 defineOptions({
   name: 'CreateConnectionDialog'
@@ -102,13 +103,7 @@ const onChangeFormComponent = () => {
   }
 
   const component = getCreateConnectionCom(activeDb.value!.key)
-  component()
-    .then(() => {
-      formComponent.value = defineAsyncComponent(component)
-    })
-    .catch(() => {
-      MessageBox.error(`加载 [ ${activeDb.value?.name} ] 数据库表单组件失败，请刷新页面后再试！`)
-    })
+  formComponent.value = loadAsyncComponent(component)
 }
 
 const onCloseDialog = () => {

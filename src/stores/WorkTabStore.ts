@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { defineAsyncComponent, shallowRef } from 'vue'
+import { shallowRef } from 'vue'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import { loadAsyncComponent } from '@/common/utils/AsyncLoadComponent'
 
@@ -30,10 +30,8 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
         return
       }
 
-      option.component().then(() => {
-        this.objectPaneProps = option.props
-        this.objectPaneComponent = defineAsyncComponent(option.component)
-      })
+      this.objectPaneProps = option.props
+      this.objectPaneComponent = loadAsyncComponent(option.component)
     },
 
     /**

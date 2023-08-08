@@ -216,6 +216,7 @@ onMounted(() => {
             :label="column.label"
             :prop="column.prop"
             :align="column.align || 'left'"
+            :width="column.width"
           >
             <template #default="{ row }">
               <el-input
@@ -281,13 +282,10 @@ onMounted(() => {
                 v-else
                 class="row-readonly-text"
               >
-                {{ row[column.prop] }}+
+                {{ row[column.prop] }}
               </span>
             </template>
           </el-table-column>
-
-          <!-- <slot name="columns" :current-row="selectedRow">
-          </slot> -->
         </el-table>
 
         <div class="footer">

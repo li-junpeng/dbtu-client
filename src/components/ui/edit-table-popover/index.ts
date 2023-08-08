@@ -28,6 +28,13 @@ export interface TableColumnOption {
   prop: string
 
   /**
+   * 列宽
+   * 
+   * @default 自适应
+   */
+  width?: string | number
+
+  /**
    * 单元格需要以什么组件来编辑值
    * 
    * - text: 纯文本展示

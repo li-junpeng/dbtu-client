@@ -58,6 +58,8 @@ const columns = [
       row-key="id"
       :add-item="addField"
       :columns="columns"
+      add-button-text="添加字段"
+      delete-button-text="删除字段"
     />
   </div>
 </template>

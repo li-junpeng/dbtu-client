@@ -249,6 +249,7 @@ interface WorkTabItem {
   saveFlag?: boolean
   // tab的内容组件
   component: () => Promise<{}> | {}
+  
   // 传入组件的数据，propName is data
   props?: any
 }

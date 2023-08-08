@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
-import { defineAsyncComponent, markRaw, shallowRef } from 'vue'
+import { defineAsyncComponent, markRaw, shallowRef, ref } from 'vue'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
+import Loading from '@/components/ui/loading/index.vue'
 
 type ObjectPaneOption = {
   props: ConnectionTreeNode
@@ -80,13 +81,22 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
       }
 
       try {
-        // 动态加载组件
-        ;(option.component as () => Promise<{}>)().then(() => {
-          // @ts-ignore
-          option.component = markRaw(defineAsyncComponent(option.component as () => Promise<{}>))
-          this.tabs[option.id] = option
-          this.activeTabId = option.id
-        })
+        this.tabs[option.id] = option
+        this.activeTabId = option.id
+        // @ts-ignore
+        this.tabs[option.id].component = markRaw(defineAsyncComponent({
+          // loader: option.component as () => Promise<{}>,
+          loader: option.component as () => Promise<{}>,
+          // 加载异步组件时使用的组件
+          loadingComponent: Loading,
+          // 展示加载组件前的延迟时间，默认为 200ms
+          delay: 200,
+          // 加载失败后展示的组件
+          // errorComponent: ErrorComponent,
+          // 如果提供了一个 timeout 时间限制，并超时了
+          // 也会显示这里配置的报错组件，默认值是：Infinity
+          timeout: 3000
+        }))
       } catch {
         MessageBox.error('MySQL表数据组件加载失败，请刷新页面后再试。').then()
       }

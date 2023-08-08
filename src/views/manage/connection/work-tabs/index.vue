@@ -62,9 +62,9 @@ const onRemoveTab = (name: TabPaneName) => {
             :enterable="false"
             :show-after="TooltipShowAfter"
           >
-            <span class="dbtu-text-ellipsis tab-label">{{
-              tab.saveFlag ? '* &ensp;' + tab.label : tab.label
-            }}</span>
+            <span class="dbtu-text-ellipsis tab-label">
+              {{ tab.saveFlag ? '* &ensp;' + tab.label : tab.label }}
+            </span>
           </el-tooltip>
         </template>
         <component

@@ -1,17 +1,46 @@
-import type { TableColumnCtx } from "element-plus"
+import type { TableColumnCtx } from 'element-plus'
 
 export type TableColumn = TableColumnCtx<unknown>
 export type TableRowItem = any
 
 export interface EditTablePopoverSlots {
-  // 与 el-popover 的reference插槽一样
-  reference(): void,
+  /**
+   * 与 el-popover 的reference插槽一样
+   */
+  reference(): void
 
   // 动态插槽, 插槽名: #column-${column.prop}
-  [key: string]: (row: TableRowItem, column: TableColumnOption, currentRow: TableRowItem, currentColumn: TableColumn) => void
+  [key: string]: (props: {
+    /**
+     * 行数据
+     */
+    row: TableRowItem
+
+    /**
+     * 自定义的列信息, `props.columns`
+     */
+    column: TableColumnOption
+
+    /**
+     * 目前已经选中的行的数据, 注意: 值可能会为null
+     */
+    currentRow: TableRowItem
+
+    /**
+     * 目前选中的单元格
+     */
+    currentColumn: TableColumn | null
+  }) => void
 }
 
-export type TableColumnComponentType = 'text' | 'slot' | 'input' | 'input-number' | 'checkbox' | 'switch' | 'select'
+export type TableColumnComponentType =
+  | 'text'
+  | 'slot'
+  | 'input'
+  | 'input-number'
+  | 'checkbox'
+  | 'switch'
+  | 'select'
 
 /**
  * el-table-column 属性
@@ -29,14 +58,14 @@ export interface TableColumnOption {
 
   /**
    * 列宽
-   * 
+   *
    * @default 自适应
    */
   width?: string | number
 
   /**
    * 单元格需要以什么组件来编辑值
-   * 
+   *
    * - text: 纯文本展示
    * - slot: 自定义插槽, 插槽名为prop
    */
@@ -74,9 +103,9 @@ export interface TableColumnOption {
   select?: {
     // el-option 数据, 如果是普通类型的数组, 则不需要配置valueKey和labelKey
     // 如果是对象数组, 则valueKey和labelKey必须要配置
-    options: any[],
-    valueKey?: string,
-    labelKey?: string,
+    options: any[]
+    valueKey?: string
+    labelKey?: string
     clearable?: boolean
     filterable?: boolean
     placeholder?: string
@@ -84,7 +113,6 @@ export interface TableColumnOption {
 }
 
 export interface EditTablePopoverProps {
-
   /**
    * 数据项的key, 用来标识哪个字段是唯一值
    */
@@ -92,11 +120,11 @@ export interface EditTablePopoverProps {
 
   /**
    * [添加项]按钮的回调函数, 请自定义添加项的业务代码
-   * 
+   *
    * @returns 返回需要添加的数据
-   * 
+   *
    * @example
-   * 
+   *
    * <script setup lang="ts">
    * const fields = [
    *    {
@@ -104,7 +132,7 @@ export interface EditTablePopoverProps {
    *      field: 'name,
    *    }
    * ]
-   * 
+   *
    * const addItem = () => {
    *    return {
    *      id: 2,
@@ -112,7 +140,7 @@ export interface EditTablePopoverProps {
    *    }
    * }
    * </script>
-   * 
+   *
    * <template>
    *    <EditTablePopover v-model="fields" :add-item="addItem"></EditTablePopover>
    * </template>
@@ -126,49 +154,49 @@ export interface EditTablePopoverProps {
 
   /**
    * el-popover的宽度, 单位: px
-   * 
+   *
    * @default 600
    */
   width?: number
 
   /**
    * el-popover的高度, 单位: px
-   * 
+   *
    * @default 400
    */
   height?: number
 
   /**
    * el-popover placement
-   * 
+   *
    * @default undefined
    */
   placement?: 'top' | 'bottom' | 'left' | 'right'
 
   /**
    * 添加按钮文字
-   * 
+   *
    * @default 添加项
    */
   addButtonText?: string
-  
+
   /**
    * 删除按钮文字
-   * 
+   *
    * @default 删除项
    */
   deleteButtonText?: string
 
   /**
    * 上移按钮文字
-   * 
+   *
    * @default 上移
    */
   moveUpButtonText?: string
 
   /**
    * 下移按钮文字
-   * 
+   *
    * @default 下移
    */
   moveDownButtonText?: string

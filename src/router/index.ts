@@ -7,6 +7,12 @@ import IconRecycled from '@/icons/svg/recycled.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // 需要时, 打开注释, 修改component路径, 提交代码前记得先 `git restore src/router/index.ts`
+    /* {
+      path: '/test',
+      name: 'TestPage',
+      component: () => import('@/components/ui/edit-table-popover/__test___/index.vue')
+    }, */
     {
       path: '/',
       name: 'home',

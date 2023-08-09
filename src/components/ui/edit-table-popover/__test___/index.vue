@@ -5,7 +5,7 @@
  * @date 2023-08-08 10:41
 -->
 <script setup lang="ts">
-import type { TableColumnOption } from '@/components/ui/edit-table-popover/index'
+import type { TableColumnOption } from '@/components/ui/editable-table'
 import EditTablePopover from '@/components/ui/edit-table-popover/index.vue'
 
 defineOptions({
@@ -137,9 +137,9 @@ const addItem = () => {
       <template #reference>
         <el-button>选择</el-button>
       </template>
-      <template #column-week="{ currentRow, currentColumn, column, row }">
+      <template #column-week="{ currentRow, currentColumn, column, row, isShowComponent }">
         <el-select
-          v-if="currentRow?.id === row.id"
+          v-if="isShowComponent(column, row)"
           v-model="row.week"
         >
           <el-option

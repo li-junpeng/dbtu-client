@@ -7,20 +7,13 @@
 -->
 <script setup lang="ts">
 import type { CSSProperties } from 'vue'
-import { ElInput } from 'element-plus'
-import type {
-  EditTablePopoverProps,
-  EditTablePopoverSlots,
-  TableColumnOption,
-  TableColumnComponentType,
-  TableColumn,
-  TableRowItem
-} from '.'
+import type { EditTablePopoverProps, EditTablePopoverSlots } from '.'
+import type { TableRowItem } from '@/components/ui/editable-table'
 import { reactive, ref } from 'vue'
 import { useElementVisibility } from '@vueuse/core'
 import { EditTablePopoverPropDefaults } from '.'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
-import { useComponentRef } from '@/components/element-plus/element-plus-util'
+import EditableTable from '@/components/ui/editable-table/src/editable-table.vue'
 
 defineOptions({
   name: 'EditTablePopoverComponent'
@@ -39,12 +32,8 @@ const tableRows = defineModel<TableRowItem[]>({
   required: true
 })
 const selectedRow = ref<TableRowItem | null>(null)
-const selectedColumn = ref<TableColumn | null>(null)
-
-// 点击了表格行
-const onClickRow = (row: TableRowItem, column: TableColumn) => {
+const onClickRow = (row: TableRowItem) => {
   selectedRow.value = row
-  selectedColumn.value = column
 }
 
 // el-table height
@@ -94,46 +83,6 @@ const moveDown = () => {
   ArrayUtils.moveDown(tableRows.value, selectedRow.value, props.rowKey)
 }
 
-// 单元格内表单组件的实例
-const inputRef = useComponentRef(ElInput)
-const inputNumberRef = useComponentRef(ElInputNumber)
-
-// 是否显示单元格内的表单组件
-const isShowComponent = (
-  column: TableColumnOption,
-  component: TableColumnComponentType,
-  row: TableRowItem
-) => {
-  return (
-    selectedRow.value?.[props.rowKey] === row[props.rowKey] &&
-    column.component === component &&
-    selectedColumn.value?.property === column.prop
-  )
-}
-
-// 点击单元格时, 使其变为可编辑状态
-watch(
-  () => [selectedRow.value, selectedColumn.value],
-  () => {
-    nextTick(() => {
-      const prop = selectedColumn.value?.property
-      const column = props.columns.find(item => item.prop === prop)
-      if (column) {
-        switch (column.component) {
-          case 'input':
-            // @ts-ignore
-            inputRef.value?.[0].focus()
-            break
-          case 'input-number':
-            // @ts-ignore
-            inputNumberRef.value?.[0].focus()
-            break
-        }
-      }
-    })
-  }
-)
-
 // #region 在滚动或者切换tab选项卡时, 使popover隐藏
 const mainRef = ref()
 const mainVisible = useElementVisibility(mainRef)
@@ -143,6 +92,16 @@ watch([mainVisible], () => {
   }
 })
 // #endregion
+
+const slots = computed(() => {
+  const data = [] as string[]
+  props.columns.forEach(item => {
+    if (item.component === 'slot') {
+      data.push(item.prop)
+    }
+  })
+  return data
+})
 
 onMounted(() => {
   addItem()
@@ -185,108 +144,28 @@ onMounted(() => {
         class="popover-container"
         :style="containerStyle"
       >
-        <el-table
-          :data="tableRows"
-          border
-          :height="tableHeight"
-          highlight-current-row
-          :current-row-key="selectedRow?.[props.rowKey]"
+        <EditableTable
+          v-model="tableRows"
           :row-key="props.rowKey"
-          scrollbar-always-on
+          :height="tableHeight"
+          :columns="props.columns"
+          :current-row-key="selectedRow?.[props.rowKey]"
           @row-click="onClickRow"
-          class="el-table-editable"
         >
-          <!-- 序号列 -->
-          <el-table-column
-            type="index"
-            width="50px"
-            label="#"
-            align="center"
-            class-name="bg-is-theme-color"
-            style="cursor: pointer"
+          <template
+            v-for="item in slots"
+            #[`column-${item}`]="{ row, column, currentRow, currentColumn, isShowComponent }"
           >
-            <template #default="{ $index }">
-              {{ $index + 1 }}
-            </template>
-          </el-table-column>
-
-          <el-table-column
-            v-for="column in props.columns"
-            :key="column.prop"
-            :label="column.label"
-            :prop="column.prop"
-            :align="column.align || 'left'"
-            :width="column.width"
-          >
-            <template #default="{ row }">
-              <el-input
-                v-if="isShowComponent(column, 'input', row)"
-                ref="inputRef"
-                v-model="row[column.prop]"
-              />
-
-              <el-input-number
-                v-else-if="isShowComponent(column, 'input-number', row)"
-                ref="inputNumberRef"
-                v-model="row[column.prop]"
-                :controls="false"
-                class="el-input-number__text-left"
-                style="width: 100%"
-              />
-
-              <el-checkbox
-                v-else-if="column.component === 'checkbox'"
-                v-model="row[column.prop]"
-                :true-label="column.checkbox?.trueValue"
-                :false-label="column.checkbox?.falseValue || ''"
-              />
-
-              <el-switch
-                v-else-if="column.component === 'switch'"
-                size="small"
-                v-model="row[column.prop]"
-                :active-value="column.switch?.trueValue || true"
-                :inactive-value="column.switch?.falseValue || false"
-              />
-
-              <el-select
-                v-else-if="isShowComponent(column, 'select', row)"
-                v-model="row[column.prop]"
-                :clearable="column.select?.clearable || false"
-                :filterable="column.select?.filterable || false"
-                :placeholder="column.select?.placeholder || ' '"
-                style="width: 100%"
-              >
-                <el-option
-                  v-for="item in column.select?.options"
-                  :key="column.select!.valueKey ? item[column.select!.valueKey] : item"
-                  :value="column.select!.valueKey ? item[column.select!.valueKey] : item"
-                  :label="column.select!.labelKey ? item[column.select!.labelKey] : item"
-                />
-              </el-select>
-
-              <!-- 动态插槽, 插槽名: column-${column.prop} -->
-              <slot
-                v-else-if="column.component === 'slot'"
-                :name="`column-${column.prop}`"
-                :column="column"
-                :row="row"
-                :currentRow="selectedRow"
-                :currentColumn="selectedColumn"
-              >
-                <div style="color: #f00">请自定义插槽: #column-{{ column.prop }}</div>
-              </slot>
-
-              <!-- 文本显示 -->
-              <span
-                v-else
-                class="row-readonly-text"
-              >
-                {{ row[column.prop] }}
-              </span>
-            </template>
-          </el-table-column>
-        </el-table>
+            <slot
+              :name="`column-${column.prop}`"
+              :column="column"
+              :row="row"
+              :currentRow="currentRow"
+              :currentColumn="currentColumn"
+              :isShowComponent="isShowComponent"
+            ></slot>
+          </template>
+        </EditableTable>
 
         <div class="footer">
           <div>
@@ -353,8 +232,6 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
-@use '@/assets/css-style/el-table-editable';
-
 .popover-container {
   width: 100%;
   height: 300px;

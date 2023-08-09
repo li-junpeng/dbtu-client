@@ -197,6 +197,100 @@ watch(
   </el-table>
 </template>
 
-<style scoped lang="scss">
-@use '@/assets/css-style/el-table-editable';
+<style lang="scss">
+.el-table {
+  &.el-table--border {
+    &.el-table-editable {
+      .el-table__body tr.current-row > td.el-table__cell {
+        background-color: transparent;
+
+        /* current row of cell, background-color is --dbtu-theme-active-color */
+        &.bg-is-theme-color {
+          background-color: var(--dbtu-theme-hover-color);
+          color: #fff;
+        }
+      }
+
+      &.el-table--enable-row-transition .el-table__body td.el-table__cell {
+        transition: background-color 0s ease;
+        -webkit-transition: background-color 0s ease;
+        -moz-transition: background-color 0s ease;
+        -ms-transition: background-color 0s ease;
+        -o-transition: background-color 0s ease;
+      }
+
+      .el-table__cell {
+        padding: 5px 0;
+      }
+
+      .el-table__row {
+        .el-table__cell {
+          padding: 0;
+
+          .cell {
+            padding: 0;
+          }
+        }
+      }
+
+      .el-input {
+        --el-input-height: 33px;
+        line-height: 33px;
+
+        .el-input__wrapper {
+          box-shadow: none;
+
+          &.is-focus {
+            background-color: var(--dbtu-theme-hover-color);
+
+            .el-input__inner {
+              color: var(--el-color-white);
+            }
+          }
+        }
+
+        .el-input-group__append {
+          box-shadow: none;
+        }
+      }
+
+      .el-select {
+        .el-input__wrapper.is-focus {
+          box-shadow: none !important;
+
+          .el-select__icon {
+            color: var(--el-color-white);
+          }
+        }
+        .el-input {
+          .el-select__caret.is-reverse {
+            color: var(--el-color-white);
+          }
+
+          &.is-focus {
+            --el-select-input-color: var(--el-color-white);
+            --el-text-color-placeholder: rgba(255, 255, 255, 0.6);
+            .el-input__inner {
+              color: var(--el-color-white);
+            }
+
+            .el-input__suffix {
+              color: var(--el-color-white);
+            }
+
+            .el-input__wrapper {
+              box-shadow: none !important;
+            }
+          }
+        }
+      }
+
+      .row-readonly-text {
+        padding: 0 11px;
+        line-height: 33px;
+        cursor: default;
+      }
+    }
+  }
+}
 </style>

@@ -1,13 +1,13 @@
 import type { TableColumnOption, EditableTableSlots } from '@/components/ui/editable-table'
 
-export interface EditTablePopoverSlots extends EditableTableSlots {
+export interface EditableTablePopoverSlots extends EditableTableSlots {
   /**
    * 与 el-popover 的reference插槽一样
    */
   reference(): void
 }
 
-export interface EditTablePopoverProps {
+export interface EditableTablePopoverProps {
   /**
    * 数据项的key, 用来标识哪个字段是唯一值
    */
@@ -37,7 +37,7 @@ export interface EditTablePopoverProps {
    * </script>
    *
    * <template>
-   *    <EditTablePopover v-model="fields" :add-item="addItem"></EditTablePopover>
+   *    <EditableTablePopover v-model="fields" :add-item="addItem"></EditableTablePopover>
    * </template>
    */
   addItem: () => any
@@ -97,7 +97,7 @@ export interface EditTablePopoverProps {
   moveDownButtonText?: string
 }
 
-export const EditTablePopoverPropDefaults: Partial<EditTablePopoverProps> = {
+export const EditableTablePopoverPropDefaults: Partial<EditableTablePopoverProps> = {
   width: 600,
   height: 400,
   addButtonText: '添加项',

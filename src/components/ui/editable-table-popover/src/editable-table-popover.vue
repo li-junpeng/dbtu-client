@@ -7,22 +7,22 @@
 -->
 <script setup lang="ts">
 import type { CSSProperties } from 'vue'
-import type { EditTablePopoverProps, EditTablePopoverSlots } from '.'
+import type { EditableTablePopoverProps, EditableTablePopoverSlots } from './editable-table-popover'
 import type { TableRowItem } from '@/components/ui/editable-table'
 import { reactive, ref } from 'vue'
 import { useElementVisibility } from '@vueuse/core'
-import { EditTablePopoverPropDefaults } from '.'
+import { EditableTablePopoverPropDefaults } from './editable-table-popover'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
 import EditableTable from '@/components/ui/editable-table/src/editable-table.vue'
 
 defineOptions({
-  name: 'EditTablePopoverComponent'
+  name: 'EditableTablePopoverComponent'
 })
 
-defineSlots<EditTablePopoverSlots>()
+defineSlots<EditableTablePopoverSlots>()
 
 // @ts-ignore
-const props = withDefaults(defineProps<EditTablePopoverProps>(), EditTablePopoverPropDefaults)
+const props = withDefaults(defineProps<EditableTablePopoverProps>(), EditableTablePopoverPropDefaults)
 
 const popover = reactive({
   visible: false

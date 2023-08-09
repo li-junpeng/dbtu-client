@@ -6,7 +6,7 @@
 -->
 <script setup lang="ts">
 import type { TableColumnOption } from '@/components/ui/editable-table'
-import EditTablePopover from '@/components/ui/edit-table-popover/index.vue'
+import EditableTablePopover from '@/components/ui/editable-table-popover'
 
 defineOptions({
   name: 'TestPage'
@@ -127,7 +127,7 @@ const addItem = () => {
       justify-content: center;
     "
   >
-    <EditTablePopover
+    <EditableTablePopover
       v-model="fields"
       row-key="id"
       :add-item="addItem"
@@ -155,7 +155,7 @@ const addItem = () => {
           >{{ row.week }}+</span
         >
       </template>
-    </EditTablePopover>
+    </EditableTablePopover>
   </div>
 </template>
 

@@ -1,7 +1,7 @@
 # 指定添加尾后逗号的方式。
 trailingComma: none
 # 每行代码的长度限制
-printWidth: 100
+printWidth: 140
 # 指定一个制表符等于的空格数。
 tabWidth: 2
 # 是否在行末尾添加分号

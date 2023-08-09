@@ -1,5 +1,11 @@
 {
   "editor.tabSize": 2,
+
+  "path-autocomplete.extensionOnImport": true,
+  "path-autocomplete.pathMappings": {
+    "@":"${folder}/src"
+  },
+
   "cSpell.words": [
     "btns",
     "Coms",
@@ -17,6 +23,7 @@
     "unplugin",
     "vueuse"
   ],
+  
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {

@@ -5,8 +5,8 @@
  * @date 2023-08-07 21:53
 -->
 <script setup lang="ts">
-import type { TableColumnOption } from '@/components/ui/edit-table-popover'
-import EditTablePopover from '@/components/ui/edit-table-popover/index.vue'
+import type { TableColumnOption } from '@/components/ui/editable-table'
+import EditableTablePopover from '@/components/ui/editable-table-popover'
 
 defineOptions({
   name: 'MySqlTableIndexSettingForSelectFieldsComponent'
@@ -53,7 +53,7 @@ const columns = [
 
 <template>
   <div>
-    <EditTablePopover
+    <EditableTablePopover
       v-model="fields"
       row-key="id"
       :add-item="addField"

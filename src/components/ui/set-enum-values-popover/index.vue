@@ -7,8 +7,8 @@
 <script setup lang="ts">
 import type { SetEnumValuesPopoverProp, TableItem, ComponentEmits } from './define'
 import { SetEnumValuesPopoverPropDefault } from './define'
-import type { TableColumnOption } from '@/components/ui/edit-table-popover'
-import EditTablePopover from '@/components/ui/edit-table-popover/index.vue'
+import type { TableColumnOption } from '@/components/ui/editable-table'
+import EditableTablePopover from '@/components/ui/editable-table-popover'
 
 defineOptions({
   name: 'SetEnumValuesPopoverComponent'
@@ -50,7 +50,7 @@ watch(
 </script>
 
 <template>
-  <EditTablePopover
+  <EditableTablePopover
     v-model="enums"
     row-key="id"
     :add-item="addItem"
@@ -62,7 +62,7 @@ watch(
     <template #reference>
       <el-button type="info">设置</el-button>
     </template>
-  </EditTablePopover>
+  </EditableTablePopover>
 </template>
 
 <style scoped lang="scss"></style>

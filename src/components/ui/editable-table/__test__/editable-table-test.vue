@@ -177,7 +177,7 @@ const onClickRow = () => {
     >
       <template #column-year="{ row, column, isShowComponent }">
         <el-select
-          v-if="isShowComponent(column, 'select', row)"
+          v-if="isShowComponent('select')"
           ref="yearSelectRef"
           v-model="row.year"
           clearable
@@ -191,7 +191,10 @@ const onClickRow = () => {
             :label="item.label"
           />
         </el-select>
-        <span v-else class="row-readonly-text">
+        <span
+          v-else
+          class="row-readonly-text"
+        >
           {{ row.year }}年
         </span>
       </template>

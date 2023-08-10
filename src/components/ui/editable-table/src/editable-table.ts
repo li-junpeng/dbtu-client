@@ -35,7 +35,7 @@ export interface EditableTableSlots {
      * @param row     表格行数据
      * @returns true: 需要展示, false: 不需要展示
      */
-    isShowComponent: (column: TableColumnOption, component: TableColumnComponentType, row: TableRowItem) => boolean
+    isShowComponent: (component: TableColumnComponentType) => boolean
   }) => void
 }
 

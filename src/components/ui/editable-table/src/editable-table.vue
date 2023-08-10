@@ -154,7 +154,7 @@ watch(
           :currentRow="selectedRow"
           :currentColumn="selectedColumn"
           :isShowComponent="
-            (column: TableColumnOption, component: TableColumnComponentType, row: TableRowItem) => {
+            (component: TableColumnComponentType) => {
               return isShowComponent(column, component, row)
             }
           "

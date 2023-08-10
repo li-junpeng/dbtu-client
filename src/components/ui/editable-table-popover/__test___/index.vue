@@ -143,7 +143,7 @@ const addItem = () => {
       </template>
       <template #column-week="{ column, row, isShowComponent }">
         <el-select
-          v-if="isShowComponent(column, 'select', row)"
+          v-if="isShowComponent('select')"
           ref="weekSelectRef"
           v-model="row.week"
         >

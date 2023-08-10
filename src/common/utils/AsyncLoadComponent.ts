@@ -8,7 +8,8 @@ export const loadAsyncComponent = (loader: AsyncComponentLoader<any>, isMarkRaw:
     loadingComponent: Loading,
     delay: 200,
     errorComponent: ErrorPage,
-    timeout: 10000
+    // 2分钟 = 2 * 60 * 1000 = 120000
+    timeout: 120000
   })
   return isMarkRaw ? markRaw(component) : component
 }

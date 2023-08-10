@@ -9,7 +9,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { TableColumn, TableRowItem, EditableTableProps, TableColumnOption, TableColumnComponentType } from './editable-table'
-import { ElInput, ElInputNumber } from 'element-plus'
+import { ElInput, ElInputNumber, ElSelect } from 'element-plus'
 import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import { EditableTablePropDefaults } from './editable-table'
 
@@ -58,6 +58,7 @@ const isShowComponent = (column: TableColumnOption, component: TableColumnCompon
 // 表单组件ref
 const inputRef = useComponentRef(ElInput)
 const inputNumberRef = useComponentRef(ElInputNumber)
+const selectRef = useComponentRef(ElSelect)
 
 // 点击单元格时, 使其变为可编辑状态
 watch(
@@ -71,15 +72,36 @@ watch(
 
       const column = props.columns.find(item => item.prop === prop)
       if (column) {
-        switch (column.component) {
-          case 'input':
+        if (column.useSlot) {
+          if (!column.slotRef) {
+            return
+          }
+          if (!isRef(column.slotRef)) {
+            throw new Error(`EditableTable Column Error: slotRef is not a ref object in ${column.prop} prop`)
+          }
+
+          if (Array.isArray(column.slotRef)) {
             // @ts-ignore
-            inputRef.value?.[0].focus()
-            break
-          case 'input-number':
+            column.slotRef.value?.[0].focus?.()
+          } else {
             // @ts-ignore
-            inputNumberRef.value?.[0].focus()
-            break
+            column.slotRef.value?.focus?.()
+          }
+        } else {
+          switch (column.component) {
+            case 'input':
+              // @ts-ignore
+              inputRef.value?.[0].focus()
+              break
+            case 'input-number':
+              // @ts-ignore
+              inputNumberRef.value?.[0].focus()
+              break
+            case 'select':
+              // @ts-ignore
+              selectRef.value?.[0].focus()
+              break
+          }
         }
       }
     })
@@ -122,8 +144,26 @@ watch(
       :width="column.width"
     >
       <template #default="{ row }">
+        <!-- 动态插槽, 插槽名: column-${column.prop} -->
+        <slot
+          v-if="column.useSlot"
+          ref="selectRef"
+          :name="`column-${column.prop}`"
+          :column="column"
+          :row="row"
+          :currentRow="selectedRow"
+          :currentColumn="selectedColumn"
+          :isShowComponent="
+            (column: TableColumnOption, component: TableColumnComponentType, row: TableRowItem) => {
+              return isShowComponent(column, component, row)
+            }
+          "
+        >
+          <div style="color: #f00">请自定义插槽: #column-{{ column.prop }}</div>
+        </slot>
+
         <el-input
-          v-if="isShowComponent(column, 'input', row)"
+          v-else-if="isShowComponent(column, 'input', row)"
           ref="inputRef"
           v-model="row[column.prop]"
         />
@@ -133,7 +173,9 @@ watch(
           ref="inputNumberRef"
           v-model="row[column.prop]"
           :controls="false"
-          class="el-input-number__text-left"
+          :class="{
+            'el-input-number__text-left': column.align !== 'center'
+          }"
           style="width: 100%"
         />
 
@@ -154,6 +196,7 @@ watch(
 
         <el-select
           v-else-if="isShowComponent(column, 'select', row)"
+          ref="selectRef"
           v-model="row[column.prop]"
           :clearable="column.select?.clearable || false"
           :filterable="column.select?.filterable || false"
@@ -167,23 +210,6 @@ watch(
             :label="column.select!.labelKey ? item[column.select!.labelKey] : item"
           />
         </el-select>
-
-        <!-- 动态插槽, 插槽名: column-${column.prop} -->
-        <slot
-          v-else-if="column.component === 'slot'"
-          :name="`column-${column.prop}`"
-          :column="column"
-          :row="row"
-          :currentRow="selectedRow"
-          :currentColumn="selectedColumn"
-          :isShowComponent="
-            (column: TableColumnOption, row: TableRowItem) => {
-              return isShowComponent(column, 'slot', row)
-            }
-          "
-        >
-          <div style="color: #f00">请自定义插槽: #column-{{ column.prop }}</div>
-        </slot>
 
         <!-- 文本显示 -->
         <span

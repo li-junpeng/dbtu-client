@@ -34,6 +34,8 @@ const month = () => {
   return months
 }
 
+const yearSelectRef = ref()
+
 const rows = [
   {
     id: 1,
@@ -99,7 +101,9 @@ const columns = [
   {
     prop: 'year',
     label: '出生年',
-    component: 'slot'
+    component: 'select',
+    useSlot: true,
+    slotRef: yearSelectRef
   },
   {
     prop: 'month',
@@ -108,7 +112,9 @@ const columns = [
     select: {
       options: month(),
       valueKey: 'id',
-      labelKey: 'text'
+      labelKey: 'text',
+      clearable: true,
+      filterable: true
     }
   },
   {
@@ -167,12 +173,12 @@ const onClickRow = () => {
       v-model="rows"
       row-key="id"
       :columns="columns"
-      :height="100"
       @row-click="onClickRow"
     >
       <template #column-year="{ row, column, isShowComponent }">
         <el-select
-          v-if="isShowComponent(column, row)"
+          v-if="isShowComponent(column, 'select', row)"
+          ref="yearSelectRef"
           v-model="row.year"
           clearable
           filterable

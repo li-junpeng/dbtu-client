@@ -12,6 +12,8 @@ defineOptions({
   name: 'TestPage'
 })
 
+const weekSelectRef = ref()
+
 const fields = ref([
   {
     id: 10,
@@ -104,7 +106,9 @@ const columns = [
   {
     label: '星期',
     prop: 'week',
-    component: 'slot'
+    component: 'select',
+    useSlot: true,
+    slotRef: weekSelectRef
   }
 ] as TableColumnOption[]
 
@@ -137,9 +141,10 @@ const addItem = () => {
       <template #reference>
         <el-button>选择</el-button>
       </template>
-      <template #column-week="{ currentRow, currentColumn, column, row, isShowComponent }">
+      <template #column-week="{ column, row, isShowComponent }">
         <el-select
-          v-if="isShowComponent(column, row)"
+          v-if="isShowComponent(column, 'select', row)"
+          ref="weekSelectRef"
           v-model="row.week"
         >
           <el-option

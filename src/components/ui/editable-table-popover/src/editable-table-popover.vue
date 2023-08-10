@@ -96,7 +96,7 @@ watch([mainVisible], () => {
 const slots = computed(() => {
   const data = [] as string[]
   props.columns.forEach(item => {
-    if (item.component === 'slot') {
+    if (item.useSlot) {
       data.push(item.prop)
     }
   })

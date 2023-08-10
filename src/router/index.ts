@@ -8,11 +8,12 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     // 需要时, 打开注释, 修改component路径, 提交代码前记得先 `git restore src/router/index.ts`
-    /* {
+    {
       path: '/test',
       name: 'TestPage',
-      component: () => import('@/components/ui/edit-table-popover/__test___/index.vue')
-    }, */
+      // component: () => import('@/components/ui/editable-table/__test__/editable-table-test.vue')
+      component: () => import('@/components/ui/editable-table-popover/__test___/index.vue')
+    },
     {
       path: '/',
       name: 'home',

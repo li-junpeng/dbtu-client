@@ -1,3 +1,5 @@
+import type { Ref } from 'vue'
+
 import type { TableColumnCtx } from 'element-plus/es/components'
 
 export type TableColumn = TableColumnCtx<unknown>
@@ -28,17 +30,16 @@ export interface EditableTableSlots {
 
     /**
      * 判断是否需要展示表单组件
-     * 
+     *
      * @param column  列配置项
      * @param row     表格行数据
      * @returns true: 需要展示, false: 不需要展示
      */
-    isShowComponent: (column: TableColumnOption, row: TableRowItem) => boolean
-
+    isShowComponent: (column: TableColumnOption, component: TableColumnComponentType, row: TableRowItem) => boolean
   }) => void
 }
 
-export type TableColumnComponentType = 'text' | 'slot' | 'input' | 'input-number' | 'checkbox' | 'switch' | 'select'
+export type TableColumnComponentType = 'text' | 'input' | 'input-number' | 'checkbox' | 'switch' | 'select'
 
 /**
  * el-table-column 属性
@@ -68,6 +69,18 @@ export interface TableColumnOption {
    * - slot: 自定义插槽, 插槽名为prop
    */
   component: TableColumnComponentType
+
+  /**
+   * 是否自定义插槽, 插槽名称为 `column-${prop}`
+   *
+   * @default false
+   */
+  useSlot?: boolean
+
+  /**
+   * 自定义插槽内的表单组件ref, 主要目的是当点击了自定义插槽列, 能使其表单组件自动获取焦点(表单组件必须要有focus()函数)
+   */
+  slotRef?: Ref<any>
 
   /**
    * 单元格对齐方式

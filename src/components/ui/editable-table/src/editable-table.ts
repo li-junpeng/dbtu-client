@@ -31,8 +31,7 @@ export interface EditableTableSlots {
     /**
      * 判断是否需要展示表单组件
      *
-     * @param column  列配置项
-     * @param row     表格行数据
+     * @param component 组件标识
      * @returns true: 需要展示, false: 不需要展示
      */
     isShowComponent: (component: TableColumnComponentType) => boolean
@@ -69,6 +68,18 @@ export interface TableColumnOption {
    * - slot: 自定义插槽, 插槽名为prop
    */
   component: TableColumnComponentType
+
+  /**
+   * 组件的原始prop
+   *
+   * @example
+   * // 如果 component = 'input', 那么这里就可以使用el-input的prop了
+   * componentProp: {
+   *    maxlength: 100,
+   *    clearable: true
+   * }
+   */
+  componentProp?: Record<string, any>
 
   /**
    * 是否自定义插槽, 插槽名称为 `column-${prop}`

@@ -166,6 +166,7 @@ watch(
           v-else-if="isShowComponent(column, 'input', row)"
           ref="inputRef"
           v-model="row[column.prop]"
+          v-bind="column.componentProp"
         />
 
         <el-input-number
@@ -177,6 +178,7 @@ watch(
             'el-input-number__text-left': column.align !== 'center'
           }"
           style="width: 100%"
+          v-bind="column.componentProp"
         />
 
         <el-checkbox
@@ -184,6 +186,7 @@ watch(
           v-model="row[column.prop]"
           :true-label="column.checkbox?.trueValue"
           :false-label="column.checkbox?.falseValue || ''"
+          v-bind="column.componentProp"
         />
 
         <el-switch
@@ -192,6 +195,7 @@ watch(
           v-model="row[column.prop]"
           :active-value="column.switch?.trueValue || true"
           :inactive-value="column.switch?.falseValue || false"
+          v-bind="column.componentProp"
         />
 
         <el-select
@@ -202,6 +206,7 @@ watch(
           :filterable="column.select?.filterable || false"
           :placeholder="column.select?.placeholder || ' '"
           style="width: 100%"
+          v-bind="column.componentProp"
         >
           <el-option
             v-for="item in column.select?.options"

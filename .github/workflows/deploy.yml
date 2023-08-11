@@ -21,6 +21,6 @@ jobs:
           server: ${{ secrets.SERVER_IP }}
           port: ${{ secrets.SERVER_PORT }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
           local_path: "./dist/**"
           target_path: ${{ secrets.APP_PATH }}

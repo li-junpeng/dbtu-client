@@ -10,7 +10,7 @@ import type { CSSProperties } from 'vue'
 import type { EditableTablePopoverProps, EditableTablePopoverSlots } from './editable-table-popover'
 import type { TableRowItem } from '@/components/ui/editable-table'
 import { reactive, ref } from 'vue'
-import { useElementVisibility } from '@vueuse/core'
+import { useElementVisibility, onClickOutside } from '@vueuse/core'
 import { EditableTablePopoverPropDefaults } from './editable-table-popover'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
 import EditableTable from '@/components/ui/editable-table/src/editable-table.vue'
@@ -27,6 +27,7 @@ const props = withDefaults(defineProps<EditableTablePopoverProps>(), EditableTab
 const popover = reactive({
   visible: false
 })
+const containerRef = ref<HTMLDivElement>()
 
 const tableRows = defineModel<TableRowItem[]>({
   required: true
@@ -48,6 +49,15 @@ const containerStyle = computed(() => {
     width: '100%',
     height: `${props.height}px`
   } as CSSProperties
+})
+
+// 优化: 点击popover以外的区域自动关闭popover
+onClickOutside(containerRef, event => {
+  const className = (event.target as HTMLElement)?.className || ""
+  if (className.includes('el-select')) {
+    return
+  }
+  popover.visible = false
 })
 
 // 添加项
@@ -141,6 +151,7 @@ onMounted(() => {
       </template>
 
       <div
+        ref="containerRef"
         class="popover-container"
         :style="containerStyle"
       >

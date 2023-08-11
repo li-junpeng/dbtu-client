@@ -31,7 +31,7 @@ const selectedColumn = ref<TableColumn | null>(null)
 
 /**
  * 设置当前选中行
- * 
+ *
  * @param row 行数据
  */
 const setCurrentRow = (row: TableRowItem | null) => {
@@ -40,7 +40,7 @@ const setCurrentRow = (row: TableRowItem | null) => {
 
 /**
  * 设置当前选中的列
- * 
+ *
  * @param column 列信息
  */
 const setCurrentColumn = (column: TableColumn | null) => {
@@ -129,7 +129,7 @@ watch(
 defineExpose({
   setCurrentRow,
   setCurrentColumn,
-  getCurrentRow: <T>() => selectedRow as Ref<T | null>,
+  getCurrentRow: <T,>() => selectedRow as Ref<T | null>,
   getCurrentColumn: () => selectedColumn as Ref<TableColumn | null>
 })
 </script>
@@ -172,7 +172,6 @@ defineExpose({
         <!-- 动态插槽, 插槽名: column-${column.prop} -->
         <slot
           v-if="column.useSlot"
-          ref="selectRef"
           :name="`column-${column.prop}`"
           :column="column"
           :row="row"

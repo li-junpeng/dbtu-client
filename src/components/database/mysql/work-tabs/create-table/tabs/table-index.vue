@@ -13,6 +13,7 @@ import { IndexTypes } from '@/common/constants/MySqlConstant'
 import Contextmenu from '@/components/ui/contextmenu'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import SelectFields from './table-index-fields.vue'
+import EditableTable, { type TableColumnOption } from '@/components/ui/editable-table'
 
 type TableColumn = TableColumnCtx<any>
 
@@ -25,14 +26,13 @@ const props = withDefaults(defineProps<TableIndexProp>(), TableIndexPropDefault)
 const tableData = defineModel<MySqlTableIndex[]>({
   required: true
 })
-
-const selectedRow = ref<MySqlTableIndex | null>(null)
-const selectedColumn = ref<TableColumn | null>(null)
-
-// 表单组件的ref, 目的是用来做组件自动获取焦点使用的
-const nameInputRef = useComponentRef(ElInput)
-const fieldsInputRef = useComponentRef(ElInput)
-const commentInputRef = useComponentRef(ElInput)
+const editableTableRef = useComponentRef(EditableTable)
+const setCurrentRow = (row: MySqlTableIndex) => {
+  editableTableRef.value?.setCurrentRow(row)
+}
+const getCurrentRow = () => {
+  return editableTableRef.value?.getCurrentRow<MySqlTableIndex>() || ref(null)
+}
 
 // 添加索引
 const addRow = () => {
@@ -41,11 +41,12 @@ const addRow = () => {
     name: '',
     fields: []
   })
-  selectedRow.value = tableData.value[tableData.value.length - 1]
+  setCurrentRow(tableData.value[tableData.value.length - 1])
 }
 
 // 删除索引
 const deleteRow = () => {
+  const selectedRow = getCurrentRow()
   if (!selectedRow.value) {
     return
   }
@@ -63,16 +64,11 @@ const deleteRow = () => {
   })
 }
 
-// el-table @row-click
-const onClickRow = (row: MySqlTableIndex, column: TableColumn) => {
-  selectedRow.value = row
-  selectedColumn.value = column
-}
-
 // el-table @row-contextmenu
 const rowContextmenu = (row: MySqlTableIndex, column: TableColumn, event: MouseEvent) => {
   event.preventDefault()
-  onClickRow(row, column)
+  setCurrentRow(row)
+  editableTableRef.value?.setCurrentColumn(null)
   Contextmenu({
     event,
     menus: [
@@ -103,27 +99,49 @@ const getFieldText = (fields: MySqlTableIndexField[]) => {
     .join(',')
 }
 
-// 优化: 当行被选中时，立刻使其列中的输入框获取焦点
-watch(
-  () => [selectedRow.value, selectedColumn.value],
-  () => {
-    nextTick(() => {
-      const column = selectedColumn.value
-      switch (column?.property) {
-        case 'name':
-          nameInputRef.value?.focus()
-          break
-        case 'fields':
-          fieldsInputRef.value?.focus()
-          break
-        case 'comment':
-          commentInputRef.value?.focus()
-          break
-      }
-    })
+const tableColumns = [
+  {
+    prop: 'name',
+    label: '名',
+    width: '300px',
+    component: 'input'
   },
-  { deep: true }
-)
+  {
+    prop: 'fields',
+    label: '字段',
+    width: '300px',
+    component: 'text',
+    useSlot: true
+  },
+  {
+    prop: 'indexType',
+    label: '索引类型',
+    width: '150px',
+    component: 'select',
+    select: {
+      options: IndexTypes,
+      clearable: true
+    }
+  },
+  {
+    prop: 'indexMethod',
+    label: '索引方法',
+    width: '150px',
+    component: 'select',
+    select: {
+      options: ['BTREE', 'HASH'],
+      clearable: true
+    }
+  },
+  {
+    prop: 'comment',
+    label: '注释',
+    component: 'input',
+    componentProp: {
+      maxlength: 1000
+    }
+  }
+] as TableColumnOption[]
 
 onMounted(() => {
   addRow()
@@ -137,170 +155,46 @@ defineExpose({
 
 <template>
   <div class="top-form">
-    <el-table
-      :data="tableData"
-      :current-row-key="selectedRow?.id"
-      border
+    <EditableTable
+      ref="editableTableRef"
+      v-model="tableData"
       height="390px"
       row-key="id"
-      highlight-current-row
-      scrollbar-always-on
-      @row-click="onClickRow"
+      :columns="tableColumns"
       @row-contextmenu="rowContextmenu"
-      class="el-table-editable"
     >
-      <el-table-column
-        type="index"
-        width="50"
-        align="center"
-        class-name="bg-is-theme-color"
-      >
-        <template #default="{ row, $index }">
-          <span
-            v-if="selectedRow?.id !== row.id"
-            class="dbtu-un-user-select"
-            style="padding: 0 12px"
-            >{{ $index + 1 }}</span
+      <template #column-fields="{ row, isShowComponent }">
+        <div
+          v-if="row.fields"
+          style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: space-between"
+        >
+          <div
+            class="dbtu-text-ellipsis row-readonly-text"
+            style="flex: 1"
           >
-          <el-icon v-else>
-            <IconEditPen />
-          </el-icon>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        label="名"
-        prop="name"
-        width="300px"
-      >
-        <template #default="{ row }">
-          <el-input
-            v-if="selectedRow?.id === row.id"
-            ref="nameInputRef"
-            v-model="row.name"
-          />
-          <span
-            v-else
-            class="row-readonly-text"
-          >
-            {{ row.name }}
-          </span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        label="字段"
-        prop="fields"
-        width="300px"
-      >
-        <template #default="{ row }">
-          <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: space-between">
-            <div
-              class="dbtu-text-ellipsis row-readonly-text"
-              style="flex: 1"
-            >
-              {{ getFieldText(row.fields) }}
-            </div>
-            <SelectFields
-              v-show="selectedRow?.id === row.id"
-              v-model="row.fields"
-              :fields="props.tableFields"
-            />
+            {{ getFieldText(row.fields) }}
           </div>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        label="索引类型"
-        prop="indexType"
-        width="150px"
-      >
-        <template #default="{ row }">
-          <el-select
-            v-if="selectedRow?.id === row.id"
-            v-model="row.indexType"
-            clearable
-            placeholder=" "
-            style="width: 100%"
-          >
-            <el-option
-              v-for="item in IndexTypes"
-              :key="item"
-              :value="item"
-              :label="item"
-            />
-          </el-select>
-          <span
-            v-else
-            class="row-readonly-text"
-          >
-            {{ row.indexType }}
-          </span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        label="索引方法"
-        prop="indexMethod"
-        width="150px"
-      >
-        <template #default="{ row }">
-          <el-select
-            v-if="selectedRow?.id === row.id"
-            v-model="row.indexMethod"
-            clearable
-            placeholder=" "
-            style="width: 100%"
-          >
-            <el-option
-              v-for="item in ['BTREE', 'HASH']"
-              :key="item"
-              :value="item"
-              :label="item"
-            />
-          </el-select>
-          <span
-            v-else
-            class="row-readonly-text"
-          >
-            {{ row.indexMethod }}
-          </span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        label="注释"
-        prop="comment"
-      >
-        <template #default="{ row }">
-          <el-input
-            v-if="selectedRow?.id === row.id"
-            ref="commentInputRef"
-            v-model="row.comment"
-            :maxlength="1000"
+          <SelectFields
+            v-show="isShowComponent()"
+            v-model="row.fields"
+            :fields="props.tableFields"
           />
-          <span
-            v-else
-            class="row-readonly-text"
-          >
-            {{ row.comment }}
-          </span>
-        </template>
-      </el-table-column>
-    </el-table>
+        </div>
+      </template>
+    </EditableTable>
   </div>
 
   <div class="bottom-form">
     <el-form
-      v-if="selectedRow"
-      :model="selectedRow"
+      v-if="getCurrentRow().value"
+      :model="getCurrentRow().value!"
       label-width="100px"
       label-position="left"
       style="width: 500px"
     >
       <el-form-item label="键块大小">
         <el-input-number
-          v-model="selectedRow.keyBlockSize"
+          v-model="getCurrentRow().value!.keyBlockSize"
           :controls="false"
           style="width: 100%"
           class="el-input-number__text-left"
@@ -308,8 +202,8 @@ defineExpose({
       </el-form-item>
       <el-form-item label="解析器">
         <el-input
-          v-model="selectedRow.parser"
-          :disabled="selectedRow.indexType !== 'FULLTEXT'"
+          v-model="getCurrentRow().value!.parser"
+          :disabled="getCurrentRow().value!.indexType !== 'FULLTEXT'"
         />
       </el-form-item>
     </el-form>

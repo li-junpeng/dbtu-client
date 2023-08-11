@@ -6,7 +6,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  install-env:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -15,12 +15,12 @@ jobs:
           node-version: "18.x"
       - run: npm install
       - run: npm run build-only
-      - name: push my server
-        uses: wangyucode/sftp-upload-action@v1.1
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          port: ${{ secrets.SERVER_PORT }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          localDir: "./dist"
-          remoteDir: ${{ secrets.APP_PATH }}
+  deploy:
+    uses: zhenyuWang/Upload-File-Action@v1.0.1
+    with:
+      server: ${{ secrets.SERVER_IP }}
+      port: ${{ secrets.SERVER_PORT }}
+      username: ${{ secrets.USERNAME }}
+      password: ${{ secrets.PASSWORD }}
+      local_path: "./dist/**"
+      target_path: ${{ secrets.APP_PATH }}

@@ -1,0 +1,26 @@
+name: build and deploy to dbtu.junpeng.site
+
+# 触发actions的条件
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+      - run: npm install
+      - run: npm run build-only
+      - name: push my server
+        uses: wangyucode/sftp-upload-action@v1.1
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          port: ${{ secrets.SERVER_PORT }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          localDir: "./dist"
+          remoteDir: ${{ secrets.APP_PATH }}

@@ -35,7 +35,7 @@ const openSystemSettingDialog = () => {
 
 <template>
   <div class="page-header">
-    <div class="left-box">DB兔，稳而快</div>
+    <div class="left-box">DB兔 - 数据库管理平台</div>
     <div class="dbtu-un-user-select right-box">
       <!-- 当前登录用户信息 -->
       <div class="right-box__item user-avatar-box">

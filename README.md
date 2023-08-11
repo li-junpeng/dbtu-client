@@ -43,7 +43,7 @@ dbtu（tu = tool的谐音），中文含义DB兔。国产数据库管理工具�
 哈哈，开玩笑了，主要目的就是想多通过软件开源的方式来提升提升自己的技能，整天在公司写一些CRUD的代码实在是写麻了，如果你在预览代码的时候发现了不足的地方，还希望你多多指点😀。
 
 # 计划
-正在画脑图中...
+<img src"https://raw.githubusercontent.com/li-junpeng/dbtu-client/main/demo/features.png"/>
 
 # 本地运行
 1. 将代码克隆到本地

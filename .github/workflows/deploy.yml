@@ -15,12 +15,12 @@ jobs:
           node-version: "18.x"
       - run: npm install
       - run: npm run build-only
-  deploy:
-    uses: zhenyuWang/Upload-File-Action@v1.0.1
-    with:
-      server: ${{ secrets.SERVER_IP }}
-      port: ${{ secrets.SERVER_PORT }}
-      username: ${{ secrets.USERNAME }}
-      password: ${{ secrets.PASSWORD }}
-      local_path: "./dist/**"
-      target_path: ${{ secrets.APP_PATH }}
+      - name: deploy to my server
+        uses: zhenyuWang/Upload-File-Action@v1.0.1
+        with:
+          server: ${{ secrets.SERVER_IP }}
+          port: ${{ secrets.SERVER_PORT }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          local_path: "./dist/**"
+          target_path: ${{ secrets.APP_PATH }}

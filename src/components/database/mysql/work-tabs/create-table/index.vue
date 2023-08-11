@@ -6,7 +6,7 @@
 -->
 <script setup lang="ts">
 import type { CreateTableProp } from './index'
-import { TabNames } from './index'
+import { TabNames, DATABASE_PROVIDE_KEY } from './index'
 import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import SqlCodePreview from '@/components/ui/sql-code-preview/index.vue'
 
@@ -22,20 +22,26 @@ import TableOption from './tabs/table-option.vue'
 import { TableOptionDefault } from './tabs/table-option'
 import TableTrigger from './tabs/table-trigger.vue'
 import TableIndex from './tabs/table-index.vue'
+import TableForeignKeys from './tabs/table-foreign-keys.vue'
 
 defineOptions({
   name: 'MySQLCreateTableComponent'
 })
 
-defineProps<CreateTableProp>()
+const props = defineProps<CreateTableProp>()
 const tab = reactive({
   selected: TabNames.field
 })
+
+// 往下层组件提供当前的数据库信息
+provide(DATABASE_PROVIDE_KEY, props.data.database)
 
 // 表字段
 const tableFields = reactive<MySqlTableField[]>([])
 // 索引
 const tableIndexes = reactive<MySqlTableIndex[]>([])
+// 外键
+const tableForeignKeys = reactive<MySqlTableForeignKey[]>([])
 // 表触发器
 const tableTriggers = reactive<MySqlTableTrigger[]>([])
 // 表属性信息
@@ -49,6 +55,7 @@ const tableCommentText = ref('')
 const sqlCode = ref('')
 
 const fieldTabPaneRef = useComponentRef(FieldTabPane)
+const tableForeignKeysRef = useComponentRef(TableForeignKeys)
 const tableTriggerRef = useComponentRef(TableTrigger)
 const tableIndexRef = useComponentRef(TableIndex)
 </script>
@@ -59,7 +66,9 @@ const tableIndexRef = useComponentRef(TableIndex)
     <el-button
       text
       link
-      disabled
+      @click="() => {
+        console.log(tableForeignKeys)
+      }"
     >
       <template #icon>
         <IconCollection />
@@ -78,7 +87,10 @@ const tableIndexRef = useComponentRef(TableIndex)
       v-show="tab.selected === TabNames.index"
       :tab-pane-ref="tableIndexRef"
     />
-    <fk-toolbox v-show="tab.selected === TabNames.fk" />
+    <fk-toolbox
+      v-show="tab.selected === TabNames.fk"
+      :tab-pane-ref="tableForeignKeysRef"
+    />
     <trigger-toolbox
       v-show="tab.selected === TabNames.trigger"
       :tab-pane-ref="tableTriggerRef"
@@ -114,6 +126,10 @@ const tableIndexRef = useComponentRef(TableIndex)
         label="外键"
         :name="TabNames.fk"
       >
+        <TableForeignKeys
+          ref="tableForeignKeysRef"
+          v-model="tableForeignKeys"
+        />
       </el-tab-pane>
       <el-tab-pane
         label="触发器"

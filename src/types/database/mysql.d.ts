@@ -308,3 +308,51 @@ interface MySqlTableIndexField {
    */
   subPart?: number
 }
+
+interface MySqlTableForeignKey {
+  /**
+   * 仅在前端展示时使用, 不影响MySQL
+   */
+  id: number
+  
+  /**
+   * 外键名
+   */
+  name: string
+
+  /**
+   * 字段名(当前表的字段)
+   *
+   * @default []
+   */
+  fields?: string[]
+
+  /**
+   * 被引用的数据库
+   *
+   * @default 表当前所在的数据库
+   */
+  refDatabase?: string
+
+  /**
+   * 被引用的表, 从被引用的数据库中进行选择
+   */
+  refTable?: string
+
+  /**
+   * 被引用的字段, 从被引用的表中进行选择
+   *
+   * @default []
+   */
+  refFields?: string[]
+
+  /**
+   * 删除
+   */
+  deleteMode?: 'CASCADE' | 'NO ACTION' | 'RESTRICT' | 'SET NULL'
+
+  /**
+   * 更新
+   */
+  updateMode?: 'CASCADE' | 'NO ACTION' | 'RESTRICT' | 'SET NULL'
+}

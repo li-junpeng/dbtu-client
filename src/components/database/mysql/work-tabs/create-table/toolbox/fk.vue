@@ -5,9 +5,23 @@
  * @date 2023-07-29 22:
 -->
 <script setup lang="ts">
+import TableForeignKeys from '../tabs/table-foreign-keys.vue'
+
 defineOptions({
   name: 'MySQLCreateTableFkToolboxComponent'
 })
+
+const props = defineProps<{
+  tabPaneRef?: InstanceType<typeof TableForeignKeys>
+}>()
+
+const addFk = () => {
+  props.tabPaneRef?.addForeignKey()
+}
+
+const deleteFk = () => {
+  props.tabPaneRef?.deleteForeignKey()
+}
 </script>
 
 <template>
@@ -15,7 +29,7 @@ defineOptions({
     <el-button
       text
       link
-      disabled
+      @click="addFk"
     >
       <template #icon>
         <IconCirclePlus />
@@ -25,7 +39,7 @@ defineOptions({
     <el-button
       text
       link
-      disabled
+      @click="deleteFk"
     >
       <template #icon>
         <IconDelete />

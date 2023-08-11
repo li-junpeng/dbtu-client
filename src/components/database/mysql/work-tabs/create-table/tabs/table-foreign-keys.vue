@@ -1,0 +1,218 @@
+<!--
+ * 创建表外键
+ *
+ * @author HuaYu
+ * @date 2023-08-11 20:39
+-->
+<script setup lang="ts">
+import { ArrayUtils } from '@/common/utils/ArrayUtils'
+import { MessageBox } from '@/components/element-plus/el-feedback-util'
+import { useComponentRef } from '@/components/element-plus/element-plus-util'
+import EditableTable, { type TableColumnOption } from '@/components/ui/editable-table'
+import { DATABASE_PROVIDE_KEY } from '..'
+import { useConnectionSessionStore } from '@/stores/ConnectionSessionStore'
+import type { MySQLConnectionSession } from '../../../connection-session'
+
+defineOptions({
+  name: 'MySqlCreateTableForeignKeysComponent'
+})
+
+// 注入顶级组件提供的数据库信息
+const database = inject<MySqlDatabaseNode>(DATABASE_PROVIDE_KEY)
+const actionModes = ['CASCADE', 'NO ACTION', 'RESTRICT', 'SET NULL']
+
+const connectionSessionStore = useConnectionSessionStore()
+
+// 可编辑表格组件相关
+const editableTableRef = useComponentRef(EditableTable)
+const getSelectedRow = () => {
+  return editableTableRef.value?.getCurrentRow<MySqlTableForeignKey>() || ref(null)
+}
+
+// 外键数据
+const foreignKeys = defineModel<MySqlTableForeignKey[]>({
+  required: true,
+  default: []
+})
+
+// 当前连接会话下的所有数据库的库名列表
+const databaseNames = computed<string[]>(() => {
+  const session = connectionSessionStore.get(database?.sessionId!)
+  if (!session) return []
+
+  return (
+    session.connection.children?.map(item => {
+      return item.name
+    }) || []
+  )
+})
+
+// 当前选择的被引用的数据库信息
+const currentRefDatabase = computed<MySqlDatabaseNode | null>(() => {
+  // TODO 清空引用的表信息，数据清空了，页面没有刷新....
+  getSelectedRow().value!.refTable = ''
+  console.log(getSelectedRow())
+
+  const selectedRow = getSelectedRow().value
+  if (!selectedRow || !selectedRow.refDatabase) return null
+
+  const session = connectionSessionStore.get(database?.sessionId!) as MySQLConnectionSession
+  if (!session) return null
+
+  return (session.connection.children?.find(item => item.name === selectedRow.refDatabase) as MySqlDatabaseNode) || null
+})
+
+// 被引用的数据库下的所有表的表名列表
+const tableNames = computed(() => {
+  if (!currentRefDatabase.value) return []
+
+  const tableNode = currentRefDatabase.value.children?.[0] as TableNode
+  if (!tableNode) return []
+
+  return tableNode.children?.map(item => item.name) || []
+})
+
+// 添加外键
+const addForeignKey = () => {
+  foreignKeys.value.push({
+    id: Date.now(),
+    name: '',
+    fields: [],
+    refFields: []
+  })
+  getSelectedRow().value = foreignKeys.value[foreignKeys.value.length - 1]
+}
+
+// 删除外键
+const deleteForeignKey = () => {
+  const selectedRow = getSelectedRow()
+  console.log(selectedRow.value)
+  if (selectedRow.value) {
+    MessageBox.deleteConfirm('您确定要删除外键吗？', done => {
+      const b = ArrayUtils.remove(foreignKeys.value, selectedRow.value?.id, 'id')
+      if (b) {
+        if (foreignKeys.value.length === 0) {
+          addForeignKey()
+        } else {
+          selectedRow.value = foreignKeys.value[0]
+        }
+      }
+      done()
+    })
+  }
+}
+
+const tableColumns = [
+  {
+    prop: 'name',
+    label: '名',
+    component: 'input',
+    componentProp: {
+      maxlength: 100
+    }
+  },
+  {
+    prop: 'fields',
+    label: '字段',
+    width: '150px',
+    component: 'text',
+    useSlot: true
+  },
+  {
+    prop: 'refDatabase',
+    label: '被引用的数据库',
+    width: '200px',
+    component: 'select',
+    select: {
+      options: databaseNames.value,
+      clearable: true,
+      filterable: true
+    }
+  },
+  {
+    prop: 'refTable',
+    label: '被引用的表',
+    width: '200px',
+    component: 'select',
+    useSlot: true
+  },
+  {
+    prop: 'refFields',
+    label: '被引用的字段',
+    width: '200px',
+    component: 'text',
+    useSlot: true
+  },
+  {
+    prop: 'deleteMode',
+    label: '删除',
+    width: '150px',
+    component: 'select',
+    select: {
+      options: actionModes,
+      clearable: true
+    }
+  },
+  {
+    prop: 'updateMode',
+    label: '更新',
+    width: '150px',
+    component: 'select',
+    select: {
+      options: actionModes,
+      clearable: true
+    }
+  }
+] as TableColumnOption[]
+
+onMounted(() => {
+  addForeignKey()
+})
+
+defineExpose({
+  addForeignKey,
+  deleteForeignKey
+})
+</script>
+
+<template>
+  <el-auto-resizer>
+    <template #default="{ height }">
+      <EditableTable
+        ref="editableTableRef"
+        v-model="foreignKeys"
+        row-key="id"
+        :height="height - 5"
+        :columns="tableColumns"
+      >
+        <template #column-fields> 123 </template>
+        <template #column-refTable="{ row, isShowComponent }">
+          <el-select
+            v-if="isShowComponent()"
+            v-model="row.refTable"
+            clearable
+            filterable
+            placeholder=" "
+            no-data-text="请先选择被引用的数据库"
+          >
+            <el-option
+              v-for="item in tableNames"
+              :key="item"
+              :value="item"
+              :label="item"
+            />
+          </el-select>
+          <span
+            v-else
+            class="row-readonly-text"
+          >
+            +{{ row.refTable }}+
+          </span>
+        </template>
+        <template #column-refFields> 456 </template>
+      </EditableTable>
+    </template>
+  </el-auto-resizer>
+</template>
+
+<style scoped lang="scss"></style>

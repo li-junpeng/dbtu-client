@@ -1,4 +1,4 @@
-import { MySQLDataType } from '@/common/constants/DataTypeConstant'
+export const DATABASE_PROVIDE_KEY = Symbol()
 
 export interface CreateTableProp {
   data: {

@@ -4,13 +4,13 @@
   <a>
     <img src="https://img.shields.io/badge/作者-Huayu-blue"/>
   </a>
-  <a href="/issues">
+  <a href="https://github.com/li-junpeng/dbtu-client/issues">
     <img src="https://img.shields.io/github/issues/li-junpeng/dbtu-client"/>
   </a>
-  <a href="/stargazers">
+  <a href="https://github.com/li-junpeng/dbtu-client/stargazers">
     <img src="https://img.shields.io/github/stars/li-junpeng/dbtu-client"/>
   </a>
-  <a href="/commits/main">
+  <a href="https://github.com/li-junpeng/dbtu-client/commits/main">
     <img src="https://img.shields.io/github/commit-activity/t/li-junpeng/dbtu-client" />
   </a>
   <a>
@@ -60,7 +60,7 @@ npm run dev
 ```
 
 # Star趋势
-<a href="/stargazers">
+<a href="https://github.com/li-junpeng/dbtu-client/stargazers">
   <img src="https://starchart.cc/li-junpeng/dbtu-client.svg"/>
 </a>
 

@@ -30,13 +30,31 @@ const selectedRow = ref<TableRowItem | null>(null)
 const selectedColumn = ref<TableColumn | null>(null)
 
 /**
+ * 设置当前选中行
+ * 
+ * @param row 行数据
+ */
+const setCurrentRow = (row: TableRowItem | null) => {
+  selectedRow.value = row
+}
+
+/**
+ * 设置当前选中的列
+ * 
+ * @param column 列信息
+ */
+const setCurrentColumn = (column: TableColumn | null) => {
+  selectedColumn.value = column
+}
+
+/**
  * 点击了表格行
  *
  * @param row       行数据
  * @param column    点击的单元格
  */
 const onClickRow = (row: TableRowItem, column: TableColumn) => {
-  selectedRow.value = row
+  setCurrentRow(row)
   selectedColumn.value = column
 }
 
@@ -107,6 +125,13 @@ watch(
     })
   }
 )
+
+defineExpose({
+  setCurrentRow,
+  setCurrentColumn,
+  getCurrentRow: <T>() => selectedRow as Ref<T | null>,
+  getCurrentColumn: () => selectedColumn as Ref<TableColumn | null>
+})
 </script>
 
 <template>

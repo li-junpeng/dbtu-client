@@ -211,8 +211,6 @@ defineExpose({
 </template>
 
 <style scoped lang="scss">
-@use '@/assets/css-style/el-table-editable';
-
 .top-form {
   width: 100%;
   height: 400px;

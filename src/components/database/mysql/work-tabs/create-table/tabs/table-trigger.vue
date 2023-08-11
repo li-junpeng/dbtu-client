@@ -6,12 +6,12 @@
 -->
 <script setup lang="ts">
 import type { TableColumnCtx } from 'element-plus/es/components/table/src/table-column/defaults'
-import { ElInput } from 'element-plus'
 import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import Contextmenu from '@/components/ui/contextmenu'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import MonacoEditor from '@/components/ui/monaco-editor/index.vue'
+import EditableTable, { type TableColumnOption } from '@/components/ui/editable-table'
 
 type TableColumn = TableColumnCtx<unknown>
 
@@ -22,22 +22,28 @@ defineOptions({
 const tableData = defineModel<MySqlTableTrigger[]>({
   required: true
 })
-const selectedRow = ref<MySqlTableTrigger | null>(null)
-const selectedColumn = ref<TableColumn | null>(null)
-const nameInputRef = useComponentRef(ElInput)
 const rowSql = ref('')
+
+const editableTableRef = useComponentRef(EditableTable)
+const setSelectedRow = (row: MySqlTableTrigger) => {
+  editableTableRef.value?.setCurrentRow(row)
+}
+const getSelectedRow = () => {
+  return editableTableRef.value?.getCurrentRow<MySqlTableTrigger>() || ref(null)
+}
 
 watch(
   () => rowSql.value,
   () => {
+    const selectedRow = getSelectedRow()
     selectedRow.value && (selectedRow.value.sql = rowSql.value)
   }
 )
 
 watch(
-  () => selectedRow.value,
+  () => getSelectedRow().value,
   () => {
-    rowSql.value = selectedRow.value?.sql || ''
+    rowSql.value = getSelectedRow().value?.sql || ''
   }
 )
 
@@ -53,10 +59,10 @@ const addRow = (index?: number) => {
   }
   if (index !== undefined) {
     tableData.value.splice(index, 0, defaultData)
-    selectedRow.value = tableData.value[index]
+    setSelectedRow(tableData.value[index])
   } else {
     tableData.value.push(defaultData)
-    selectedRow.value = tableData.value[tableData.value.length - 1]
+    setSelectedRow(tableData.value[tableData.value.length - 1])
   }
 }
 
@@ -64,13 +70,14 @@ const addRow = (index?: number) => {
  * 插入触发器
  */
 const appendRow = () => {
-  addRow(ArrayUtils.indexOf(tableData.value, selectedRow.value?.id, 'id'))
+  addRow(ArrayUtils.indexOf(tableData.value, getSelectedRow().value?.id, 'id'))
 }
 
 /**
  * 复制触发器
  */
 const copyRow = () => {
+  const selectedRow = getSelectedRow()
   if (!selectedRow.value) {
     return
   }
@@ -79,13 +86,14 @@ const copyRow = () => {
     ...selectedRow.value,
     id: Date.now()
   })
-  selectedRow.value = tableData.value[tableData.value.length - 1]
+  setSelectedRow(tableData.value[tableData.value.length - 1])
 }
 
 /**
  * 删除触发器
  */
 const deleteRow = () => {
+  const selectedRow = getSelectedRow()
   if (!selectedRow.value) {
     return
   }
@@ -96,7 +104,7 @@ const deleteRow = () => {
       if (tableData.value.length === 0) {
         addRow()
       } else {
-        selectedRow.value = tableData.value[0]
+        setSelectedRow(tableData.value[0])
       }
     }
     done()
@@ -107,6 +115,7 @@ const deleteRow = () => {
  * 上移
  */
 const moveUpRow = () => {
+  const selectedRow = getSelectedRow()
   if (!selectedRow.value) {
     return
   }
@@ -118,6 +127,7 @@ const moveUpRow = () => {
  * 下移
  */
 const moveDownRow = () => {
+  const selectedRow = getSelectedRow()
   if (!selectedRow.value) {
     return
   }
@@ -125,17 +135,11 @@ const moveDownRow = () => {
   ArrayUtils.moveDown(tableData.value, selectedRow.value, 'id')
 }
 
-// el-table @click-row
-const onClickRow = (row: MySqlTableTrigger, column: TableColumn) => {
-  selectedRow.value = row
-  selectedColumn.value = column
-}
-
 // el-table-column @row-contextmenu
 const rowContextmenu = (row: MySqlTableTrigger, column: TableColumn, event: MouseEvent) => {
   event.preventDefault()
-  selectedRow.value = row
-  selectedColumn.value = column
+  getSelectedRow().value = row
+  editableTableRef.value?.setCurrentColumn(null)
   Contextmenu({
     event,
     menus: [
@@ -180,20 +184,57 @@ const rowContextmenu = (row: MySqlTableTrigger, column: TableColumn, event: Mous
   })
 }
 
-// 优化: 当行被选中时，立刻使其列中的输入框获取焦点
-watch(
-  () => [selectedRow.value, selectedColumn.value],
-  () => {
-    nextTick(() => {
-      const column = selectedColumn.value
-      switch (column?.property) {
-        case 'name':
-          nameInputRef.value?.focus()
-          break
-      }
-    })
+const tableColumns = [
+  {
+    prop: 'name',
+    label: '名',
+    width: '300px',
+    component: 'input',
+    componentProp: {
+      maxlength: 100
+    }
+  },
+  {
+    prop: 'trigger',
+    label: '触发',
+    width: '150px',
+    component: 'select',
+    select: {
+      options: ['AFTER', 'BEFORE'],
+      clearable: true
+    }
+  },
+  {
+    prop: 'timing',
+    label: '插入',
+    width: '100px',
+    align: 'center',
+    component: 'checkbox',
+    checkbox: {
+      trueValue: 'INSERT'
+    }
+  },
+  {
+    prop: 'timing',
+    label: '更新',
+    width: '100px',
+    align: 'center',
+    component: 'checkbox',
+    checkbox: {
+      trueValue: 'UPDATE'
+    }
+  },
+  {
+    prop: 'timing',
+    label: '删除',
+    width: '100px',
+    align: 'center',
+    component: 'checkbox',
+    checkbox: {
+      trueValue: 'DELETE'
+    }
   }
-)
+] as TableColumnOption[]
 
 onMounted(() => {
   addRow()
@@ -210,136 +251,20 @@ defineExpose({
 
 <template>
   <div class="top-form">
-    <el-table
-      :data="tableData"
-      :current-row-key="selectedRow?.id"
-      border
-      height="390px"
+    <EditableTable
+      ref="editableTableRef"
+      v-model="tableData"
       row-key="id"
-      highlight-current-row
-      scrollbar-always-on
-      @row-click="onClickRow"
+      height="390px"
+      :columns="tableColumns"
       @row-contextmenu="rowContextmenu"
-      class="el-table-editable"
-    >
-      <el-table-column
-        type="index"
-        width="50"
-        align="center"
-        class-name="bg-is-theme-color"
-      >
-        <template #default="{ row, $index }">
-          <span
-            v-if="selectedRow?.id !== row.id"
-            class="dbtu-un-user-select"
-            style="padding: 0 12px"
-            >{{ $index + 1 }}</span
-          >
-          <el-icon v-else>
-            <IconEditPen />
-          </el-icon>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        label="名"
-        prop="name"
-        width="300px"
-      >
-        <template #default="{ row }">
-          <el-input
-            v-if="selectedRow?.id === row.id"
-            ref="nameInputRef"
-            v-model="row.name"
-            :maxlength="100"
-            autofocus
-          />
-          <span
-            v-else
-            class="row-readonly-text"
-          >
-            {{ row['name'] }}
-          </span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        label="触发"
-        prop="trigger"
-        width="150px"
-      >
-        <template #default="{ row }">
-          <el-select
-            v-if="selectedRow?.id === row.id"
-            v-model="row.trigger"
-            clearable
-            placeholder=" "
-            style="width: 100%"
-          >
-            <el-option
-              v-for="item in ['AFTER', 'BEFORE']"
-              :key="item"
-              :value="item"
-              :label="item"
-            />
-          </el-select>
-          <span
-            v-else
-            class="row-readonly-text"
-          >
-            {{ row['trigger'] }}
-          </span>
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        label="插入"
-        width="100px"
-        align="center"
-      >
-        <template #default="{ row }">
-          <el-checkbox
-            v-model="row.timing"
-            true-label="INSERT"
-            :false-label="''"
-          />
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        label="更新"
-        width="100px"
-        align="center"
-      >
-        <template #default="{ row }">
-          <el-checkbox
-            v-model="row.timing"
-            true-label="UPDATE"
-            :false-label="''"
-          />
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        label="删除"
-        width="100px"
-        align="center"
-      >
-        <template #default="{ row }">
-          <el-checkbox
-            v-model="row.timing"
-            true-label="DELETE"
-            :false-label="''"
-          />
-        </template>
-      </el-table-column>
-    </el-table>
+    />
   </div>
   <div class="bottom-sql">
     <p style="height: 34px; line-height: 34px">定义</p>
     <div style="width: 100%; height: calc(100% - 34px)">
       <MonacoEditor
-        v-if="selectedRow"
+        v-if="getSelectedRow().value"
         v-model="rowSql"
       />
     </div>
@@ -347,8 +272,6 @@ defineExpose({
 </template>
 
 <style scoped lang="scss">
-@use '@/assets/css-style/el-table-editable';
-
 .top-form {
   width: 100%;
   height: 400px;

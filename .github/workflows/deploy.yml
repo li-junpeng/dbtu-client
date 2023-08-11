@@ -2,8 +2,8 @@ name: build and deploy to dbtu.junpeng.site
 
 # 触发actions的条件
 on:
-  push:
-    branches: [main]
+  # push:
+    # branches: [main]
   # 手动触发
   workflow_dispatch:
 jobs:

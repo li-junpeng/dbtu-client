@@ -74,4 +74,3 @@ provide(InjectionKey.openCreateGroup, openCreateGroup)
   }
 }
 </style>
-@/components/element-plus/element-plus-util

@@ -449,4 +449,3 @@ const onClickTreeItem = (data: ConnectionTreeNode) => {
   }
 }
 </style>
-@/components/element-plus/element-plus-util@/stores/ConnectionSessionStore

@@ -143,4 +143,3 @@ $avatar-image-size: 30px;
   }
 }
 </style>
-@/components/element-plus/element-plus-util

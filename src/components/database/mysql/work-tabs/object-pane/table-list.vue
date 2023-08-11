@@ -281,4 +281,3 @@ const openTable = () => {
   justify-content: space-between;
 }
 </style>
-@/stores/ConnectionSessionStore

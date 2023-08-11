@@ -194,4 +194,3 @@ defineExpose({
 </template>
 
 <style scoped lang="scss"></style>
-@/components/element-plus/element-plus-util

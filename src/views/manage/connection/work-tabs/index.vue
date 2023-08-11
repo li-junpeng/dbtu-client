@@ -120,4 +120,3 @@ const onRemoveTab = (name: TabPaneName) => {
   }
 }
 </style>
-@/components/element-plus/element-plus-util

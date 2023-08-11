@@ -194,15 +194,7 @@ defineExpose({
         width="300px"
       >
         <template #default="{ row }">
-          <div
-            style="
-              width: 100%;
-              height: 100%;
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-            "
-          >
+          <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: space-between">
             <div
               class="dbtu-text-ellipsis row-readonly-text"
               style="flex: 1"
@@ -315,7 +307,10 @@ defineExpose({
         />
       </el-form-item>
       <el-form-item label="解析器">
-        <el-input v-model="selectedRow.parser" :disabled="selectedRow.indexType !== 'FULLTEXT'" />
+        <el-input
+          v-model="selectedRow.parser"
+          :disabled="selectedRow.indexType !== 'FULLTEXT'"
+        />
       </el-form-item>
     </el-form>
   </div>
@@ -353,4 +348,3 @@ defineExpose({
   }
 }
 </style>
-@/components/element-plus/element-plus-util

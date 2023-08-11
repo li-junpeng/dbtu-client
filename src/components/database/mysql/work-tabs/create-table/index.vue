@@ -183,4 +183,3 @@ const tableIndexRef = useComponentRef(TableIndex)
   padding: 0 10px;
 }
 </style>
-@/components/element-plus/element-plus-util

@@ -4,23 +4,34 @@ name: build and deploy to dbtu.junpeng.site
 on:
   push:
     branches: [main]
-
+  # 手动触发
+  workflow_dispatch:
 jobs:
-  install-env:
+  build_and_deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: 拉取代码
+        uses: actions/checkout@v3
+      - name: 安装Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: "18.x"
-      - run: npm install
-      - run: npm run build-only
-      - name: deploy to my server
+      - name: 下载依赖
+        run: npm install
+      - name: 打包
+        run: npm run build-only
+      - name: 部署到我的服务器上
         uses: zhenyuWang/Upload-File-Action@v1.0.1
         with:
+          # 服务器IP
           server: ${{ secrets.SERVER_IP }}
+          # 服务器远程访问端口
           port: ${{ secrets.SERVER_PORT }}
+          # 登录服务器的用户
           username: ${{ secrets.USERNAME }}
+          # 私钥
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # 需要上传的本地路径
           local_path: "./dist/**"
+          # 上传本地文件到服务器的路径
           target_path: ${{ secrets.APP_PATH }}

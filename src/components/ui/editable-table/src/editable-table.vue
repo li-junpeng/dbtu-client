@@ -178,8 +178,8 @@ defineExpose({
           :currentRow="selectedRow"
           :currentColumn="selectedColumn"
           :isShowComponent="
-            (component: TableColumnComponentType) => {
-              return isShowComponent(column, component, row)
+            (component?: TableColumnComponentType) => {
+              return isShowComponent(column, component || column.component, row)
             }
           "
         >

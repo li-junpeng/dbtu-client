@@ -31,10 +31,10 @@ export interface EditableTableSlots {
     /**
      * 判断是否需要展示表单组件
      *
-     * @param component 组件标识
+     * @param component 组件标识, 默认为${component}
      * @returns true: 需要展示, false: 不需要展示
      */
-    isShowComponent: (component: TableColumnComponentType) => boolean
+    isShowComponent: (component?: TableColumnComponentType) => boolean
   }) => void
 }
 

@@ -25,12 +25,17 @@ const modelValue = defineModel<MySqlTableField[]>({
   default: []
 })
 
-// TODO 应该把selectedRow从组件中暴露出来，并且提供修改selectedRow的方法，selectColumn也一样
-const selectedRow = ref<MySqlTableField | null>(null)
-const selectedColumn = ref<TableColumn | null>()
-
+const editableTableRef = useComponentRef(EditableTable)
 // 表单组件ref
 const selectRef = useComponentRef(ElSelect)
+
+const setCurrentRow = (row: MySqlTableField) => {
+  editableTableRef.value?.setCurrentRow(row)
+}
+
+const getCurrentRow = () => {
+  return editableTableRef.value?.getCurrentRow<MySqlTableField>() || ref(null)
+}
 
 // 当字段信息改变时，处理字段信息
 const handleField = (row: MySqlTableField) => {
@@ -65,39 +70,39 @@ const addField = (index?: number) => {
     modelValue.value.splice(index, 0, data)
   }
 
-  selectedColumn.value = null
   if (index) {
-    selectedRow.value = modelValue.value[index]
+    setCurrentRow(modelValue.value[index])
   } else {
-    selectedRow.value = modelValue.value[modelValue.value.length - 1]
+    setCurrentRow(modelValue.value[modelValue.value.length - 1])
   }
 }
 
 // 删除字段
 const deleteField = () => {
-  if (!selectedRow.value) {
+  if (!getCurrentRow().value) {
     return
   }
 
   MessageBox.deleteConfirm('您确认要删除字段吗？', done => {
-    const b = ArrayUtils.remove(modelValue.value, selectedRow.value!.id, 'id')
+    const b = ArrayUtils.remove(modelValue.value, getCurrentRow().value?.id, 'id')
     if (b && modelValue.value.length === 0) {
       addField()
     }
-    selectedRow.value = modelValue.value[0]
+    setCurrentRow(modelValue.value[0])
     done()
   })
 }
 
 // 插入字段
 const appendField = () => {
-  if (!selectedRow.value) {
+  if (!getCurrentRow()) {
     return
   }
-  const index = ArrayUtils.indexOf(modelValue.value, selectedRow.value.id, 'id')
+  const index = ArrayUtils.indexOf(modelValue.value, getCurrentRow().value?.id, 'id')
   if (index < 0) {
     return
   }
+  editableTableRef.value?.setCurrentColumn(null)
   addField(index)
 }
 
@@ -111,7 +116,7 @@ const copyField = (row: MySqlTableField) => {
     ...row,
     id: Date.now()
   })
-  selectedRow.value = modelValue.value[modelValue.value.length - 1]
+  setCurrentRow(modelValue.value[modelValue.value.length - 1])
 }
 
 /**
@@ -121,7 +126,7 @@ const copyField = (row: MySqlTableField) => {
  */
 const moveUpField = (row?: MySqlTableField) => {
   if (!row) {
-    row = selectedRow.value!
+    row = getCurrentRow().value!
   }
   const index = ArrayUtils.indexOf(modelValue.value, row.id, 'id')
   if (index >= 1) {
@@ -138,7 +143,7 @@ const moveUpField = (row?: MySqlTableField) => {
  */
 const moveDownField = (row?: MySqlTableField) => {
   if (!row) {
-    row = selectedRow.value!
+    row = getCurrentRow().value!
   }
   const index = ArrayUtils.indexOf(modelValue.value, row.id, 'id')
   if (index < modelValue.value.length - 1) {
@@ -158,7 +163,8 @@ const triggerPrimaryKey = (row?: MySqlTableField) => {
     row.pk = !row.pk
     handleField(row)
   } else {
-    if (!selectedRow.value) {
+    const selectedRow = getCurrentRow()
+    if (!selectedRow?.value) {
       return
     }
     selectedRow.value.pk = !selectedRow.value.pk
@@ -168,8 +174,8 @@ const triggerPrimaryKey = (row?: MySqlTableField) => {
 
 const rowContextmenu = (row: MySqlTableField, column: TableColumn, event: MouseEvent) => {
   event.preventDefault()
-  selectedRow.value = row
-  selectedColumn.value = column
+  setCurrentRow(row)
+  editableTableRef.value?.setCurrentColumn(null)
   Contextmenu({
     event,
     menus: [
@@ -239,7 +245,7 @@ const onChangeDataType = (row: MySqlTableField) => {
 
 // 更新字段的属性值
 const onChangeOption = (option: Record<string, any>) => {
-  selectedRow.value && (selectedRow.value.options = option)
+  getCurrentRow().value && (getCurrentRow().value!.options = option)
 }
 
 const tableColumns = [
@@ -328,13 +334,14 @@ defineExpose({
 
 onMounted(() => {
   addField()
-  selectedRow.value = modelValue.value[0]
+  setCurrentRow(modelValue.value[0])
 })
 </script>
 
 <template>
   <div class="top-form">
     <EditableTable
+      ref="editableTableRef"
       v-model="modelValue"
       :columns="tableColumns"
       row-key="id"
@@ -390,8 +397,8 @@ onMounted(() => {
   <div class="bottom-field-option">
     <el-scrollbar>
       <field-option
-        v-if="selectedRow"
-        :field="selectedRow"
+        v-if="getCurrentRow().value"
+        :field="getCurrentRow().value!"
         @change-option="onChangeOption"
       />
     </el-scrollbar>

@@ -49,10 +49,6 @@ const databaseNames = computed<string[]>(() => {
 
 // 当前选择的被引用的数据库信息
 const currentRefDatabase = computed<MySqlDatabaseNode | null>(() => {
-  // TODO 清空引用的表信息，数据清空了，页面没有刷新....
-  getSelectedRow().value!.refTable = ''
-  console.log(getSelectedRow())
-
   const selectedRow = getSelectedRow().value
   if (!selectedRow || !selectedRow.refDatabase) return null
 
@@ -127,6 +123,12 @@ const tableColumns = [
       options: databaseNames.value,
       clearable: true,
       filterable: true
+    },
+    componentProp: {
+      onClear: () => {
+        const selectedRow = getSelectedRow().value
+        selectedRow && (selectedRow.refTable = '')
+      }
     }
   },
   {
@@ -206,7 +208,7 @@ defineExpose({
             v-else
             class="row-readonly-text"
           >
-            +{{ row.refTable }}+
+            {{ row.refTable }}
           </span>
         </template>
         <template #column-refFields> 456 </template>

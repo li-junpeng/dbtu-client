@@ -30,7 +30,8 @@ const popover = reactive({
 const containerRef = ref<HTMLDivElement>()
 
 const tableRows = defineModel<TableRowItem[]>({
-  required: true
+  required: true,
+  default: []
 })
 const selectedRow = ref<TableRowItem | null>(null)
 const onClickRow = (row: TableRowItem) => {

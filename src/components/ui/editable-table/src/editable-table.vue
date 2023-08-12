@@ -22,7 +22,8 @@ const props = withDefaults(defineProps<EditableTableProps>(), EditableTablePropD
 
 // 展示在表格中的数据
 const tableRows = defineModel<TableRowItem[]>({
-  required: true
+  required: true,
+  default: []
 })
 
 // 当前选中的行和列

@@ -9,6 +9,7 @@ import { ArrayUtils } from '@/common/utils/ArrayUtils'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import EditableTable, { type TableColumnOption } from '@/components/ui/editable-table'
+import EditableTablePopover from '@/components/ui/editable-table-popover'
 import { DATABASE_PROVIDE_KEY } from '..'
 import { useConnectionSessionStore } from '@/stores/ConnectionSessionStore'
 import type { MySQLConnectionSession } from '../../../connection-session'
@@ -16,6 +17,10 @@ import type { MySQLConnectionSession } from '../../../connection-session'
 defineOptions({
   name: 'MySqlCreateTableForeignKeysComponent'
 })
+
+const props = defineProps<{
+  tableFields: MySqlTableField[]
+}>()
 
 // 注入顶级组件提供的数据库信息
 const database = inject<MySqlDatabaseNode>(DATABASE_PROVIDE_KEY)
@@ -110,8 +115,8 @@ const tableColumns = [
   {
     prop: 'fields',
     label: '字段',
-    width: '150px',
-    component: 'text',
+    width: '250px',
+    component: 'select',
     useSlot: true
   },
   {
@@ -167,6 +172,19 @@ const tableColumns = [
   }
 ] as TableColumnOption[]
 
+const selectFieldColumns = [
+  {
+    prop: 'field',
+    label: '字段',
+    component: 'select',
+    select: {
+      options: props.tableFields,
+      valueKey: 'field',
+      labelKey: 'field'
+    }
+  }
+] as TableColumnOption[]
+
 onMounted(() => {
   addForeignKey()
 })
@@ -187,7 +205,16 @@ defineExpose({
         :height="height - 5"
         :columns="tableColumns"
       >
-        <template #column-fields> 123 </template>
+        <template #column-fields="{ row }">
+          <EditableTablePopover
+            v-model="row.fields"
+            :columns="selectFieldColumns"
+            row-key="id"
+            :add-item="() => {
+              console.log(row.fields)
+            }"
+          />
+        </template>
         <template #column-refTable="{ row, isShowComponent }">
           <el-select
             v-if="isShowComponent()"

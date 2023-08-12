@@ -129,6 +129,7 @@ const tableIndexRef = useComponentRef(TableIndex)
         <TableForeignKeys
           ref="tableForeignKeysRef"
           v-model="tableForeignKeys"
+          :table-fields="tableFields"
         />
       </el-tab-pane>
       <el-tab-pane

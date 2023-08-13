@@ -37,7 +37,41 @@ const tab = reactive({
 provide(DATABASE_PROVIDE_KEY, props.data.database)
 
 // 表字段
-const tableFields = reactive<MySqlTableField[]>([])
+const tableFields = reactive<MySqlTableField[]>([
+  {
+    id: 1,
+    field: 'id',
+    dataType: 'int',
+    maxLength: 10,
+    decimalPoint: 0,
+    notNull: 1,
+    virtual: 0,
+    pk: true,
+    options: {}
+  },
+  {
+    id: 2,
+    field: 'name',
+    dataType: 'varchar',
+    maxLength: 64,
+    decimalPoint: 0,
+    notNull: 0,
+    virtual: 0,
+    pk: false,
+    options: {}
+  },
+  {
+    id: 3,
+    field: 'user_name',
+    dataType: 'varchar',
+    maxLength: 64,
+    decimalPoint: 0,
+    notNull: 0,
+    virtual: 0,
+    pk: false,
+    options: {}
+  }
+])
 // 索引
 const tableIndexes = reactive<MySqlTableIndex[]>([])
 // 外键

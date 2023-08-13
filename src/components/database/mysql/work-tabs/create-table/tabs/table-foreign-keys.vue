@@ -87,7 +87,6 @@ const addForeignKey = () => {
 // 删除外键
 const deleteForeignKey = () => {
   const selectedRow = getSelectedRow()
-  console.log(selectedRow.value)
   if (selectedRow.value) {
     MessageBox.deleteConfirm('您确定要删除外键吗？', done => {
       const b = ArrayUtils.remove(foreignKeys.value, selectedRow.value?.id, 'id')
@@ -178,7 +177,7 @@ const selectFieldColumns = [
     label: '字段',
     component: 'select',
     select: {
-      options: props.tableFields,
+      options: props.tableFields.filter(item => item.field),
       valueKey: 'field',
       labelKey: 'field'
     }
@@ -211,7 +210,10 @@ defineExpose({
             :columns="selectFieldColumns"
             row-key="id"
             :add-item="() => {
-              console.log(row.fields)
+              row.fields && (row.fields.push({
+                id: Date.now(),
+                field: ''
+              }))
             }"
           />
         </template>

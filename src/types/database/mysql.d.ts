@@ -325,7 +325,10 @@ interface MySqlTableForeignKey {
    *
    * @default []
    */
-  fields?: string[]
+  fields?: {
+    id: number
+    field: string
+  }[]
 
   /**
    * 被引用的数据库

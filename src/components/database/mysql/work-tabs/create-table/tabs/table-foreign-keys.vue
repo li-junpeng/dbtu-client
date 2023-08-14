@@ -33,6 +33,9 @@ const editableTableRef = useComponentRef(EditableTable)
 const getSelectedRow = () => {
   return editableTableRef.value?.getCurrentRow<MySqlTableForeignKey>() || ref(null)
 }
+const setSelectedRow = (row: MySqlTableForeignKey) => {
+  editableTableRef.value?.setCurrentRow(row)
+}
 
 // 外键数据
 const foreignKeys = defineModel<MySqlTableForeignKey[]>({
@@ -184,6 +187,13 @@ const selectFieldColumns = [
   }
 ] as TableColumnOption[]
 
+const getFieldText = (fields: { id: number; field: '' }[]) => {
+  return fields
+    .filter(item => item.field)
+    .map(item => item.field)
+    .join(',')
+}
+
 onMounted(() => {
   addForeignKey()
 })
@@ -205,17 +215,29 @@ defineExpose({
         :columns="tableColumns"
       >
         <template #column-fields="{ row }">
-          <EditableTablePopover
-            v-model="row.fields"
-            :columns="selectFieldColumns"
-            row-key="id"
-            :add-item="() => {
-              row.fields && (row.fields.push({
-                id: Date.now(),
-                field: ''
-              }))
-            }"
-          />
+          <div style="width: 100%; display: flex; align-items: center">
+            <div
+              class="dbtu-text-ellipsis row-readonly-text"
+              style="flex: 1"
+            >
+              {{ getFieldText(row.fields) }}
+            </div>
+            <EditableTablePopover
+              v-model="row.fields"
+              :columns="selectFieldColumns"
+              row-key="id"
+              add-button-text="添加字段"
+              delete-button-text="删除字段"
+              :add-item="
+                () => {
+                  return {
+                    id: Date.now(),
+                    field: ''
+                  }
+                }
+              "
+            />
+          </div>
         </template>
         <template #column-refTable="{ row, isShowComponent }">
           <el-select

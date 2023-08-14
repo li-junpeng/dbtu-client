@@ -17,7 +17,7 @@ defineOptions({
 
 const activeTab = ref('default')
 const isEdit = ref(false)
-const formData = ref<Optional<MySqlDatabaseNode, 'id' | 'status'>>({
+const formData = ref<Optional<MySqlDatabaseInstance, 'id' | 'status'>>({
   name: '',
   nodeType: 'database',
   character: '',
@@ -82,7 +82,7 @@ watch(
   { deep: true }
 )
 
-const onSubmit = (): Promise<MySqlDatabaseNode> => {
+const onSubmit = (): Promise<MySqlDatabaseInstance> => {
   return new Promise((resolve, reject) => {
     formRef.value?.validate(async valid => {
       if (!valid) {
@@ -90,7 +90,7 @@ const onSubmit = (): Promise<MySqlDatabaseNode> => {
         return
       }
       if (isEdit.value) {
-        resolve(formData.value as MySqlDatabaseNode)
+        resolve(formData.value as MySqlDatabaseInstance)
       } else {
         resolve({
           ...formData.value,
@@ -102,7 +102,7 @@ const onSubmit = (): Promise<MySqlDatabaseNode> => {
   })
 }
 
-const setFormData = (data: MySqlDatabaseNode) => {
+const setFormData = (data: MySqlDatabaseInstance) => {
   isEdit.value = true
   isNoWatch.value = true
   formData.value = JSON.parse(JSON.stringify(data))

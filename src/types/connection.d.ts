@@ -111,19 +111,18 @@ interface ConnectionGroup extends ConnectionTreeNode {
   children?: ConnectionInfo<BaseConnectionDetail>[]
 }
 
+/**
+ * 数据库节点
+ */
 interface DatabaseNode extends ConnectionTreeNode {
   nodeType: 'database'
   status: CommonStatusType
   children?: ConnectionTreeNode[]
 }
 
-interface MySqlDatabaseNode extends DatabaseNode {
-  // 字符集
-  character: string
-  // 排序规则
-  collate: string
-}
-
+/**
+ * 表节点
+ */
 interface TableNode extends ConnectionTreeNode {
   // 数据库ID
   databaseId: number
@@ -131,100 +130,76 @@ interface TableNode extends ConnectionTreeNode {
   children?: ConnectionTreeNode[]
 }
 
+/**
+ * 表实例节点
+ */
 interface TableInstanceNode extends ConnectionTreeNode {
   // 数据库ID
   databaseId: number
   nodeType: 'table_instance'
 }
 
-interface MySqlTableNode extends TableInstanceNode {
-  // 自动递增值
-  autoIncrement: number | null
-  // 修改日期
-  updateTime: string | null
-  // 数据长度, 单位: byte
-  dataLength: number
-  // 引擎
-  engine: string
-  // 行
-  rowsNum: number
-  // 注释
-  comment: string | null
-}
-
+/**
+ * 视图节点
+ */
 interface ViewNode extends ConnectionTreeNode {
   nodeType: 'view'
   children?: ConnectionTreeNode[]
 }
 
+/**
+ * 视图实例节点
+ */
 interface ViewInstanceNode extends ConnectionTreeNode {
   nodeType: 'view_instance'
 }
 
+/**
+ * 函数节点
+ */
 interface FunctionNode extends ConnectionTreeNode {
   nodeType: 'function'
   children?: ConnectionTreeNode[]
 }
 
+/**
+ * 函数实例节点
+ */
 interface FunctionInstanceNode extends ConnectionTreeNode {
   nodeType: 'function_instance'
 }
 
+/**
+ * 查询节点
+ */
 interface SearchNode extends ConnectionTreeNode {
   nodeType: 'search'
   children?: ConnectionTreeNode[]
 }
 
+/**
+ * 查询实例节点
+ */
 interface SearchInstanceNode extends ConnectionTreeNode {
   nodeType: 'search_instance'
 }
 
+/**
+ * 备份节点
+ */
 interface BackupNode extends ConnectionTreeNode {
   nodeType: 'backup'
   children?: ConnectionTreeNode[]
 }
 
+/**
+ * 备份实例节点
+ */
 interface BackupInstanceNode extends ConnectionTreeNode {
   nodeType: 'backup_instance'
 }
 
 interface BaseConnectionDetail {}
-
-/**
- * MySQL数据库连接详情信息
- */
-interface MySQLConnectionInfo extends BaseConnectionDetail {
-  // 驱动
-  driver: MySQLDriverKey
-  // 连接类型
-  connectionType: ConnectionTypeKey
-  // 服务器版本
-  version?: string
-  // 会话数
-  sessionNum?: number
-  // 用户名
-  username?: string
-  // 密码
-  password?: string
-  // 认证方式
-  authType: AuthenticationTypeKey
-  // 保存密码的方式
-  savePwdType: SavePasswordTypeKey
-  // url
-  url?: string
-  // 时区
-  timeZone?: string
-  // 字符集编码
-  charset: string
-  // 是否开启保持连接间隔
-  connectionInterval: boolean
-  // 保持连接间隔时间, 单位: 秒
-  connectionIntervalTime?: number
-  // 是否开启自动断开功能
-  autoBreak: boolean
-  // 自动断开时间, 单位: 秒
-  autoBreakTime?: number
-}
 
 /**
  * SQL Server 2012 数据库连接详情信息

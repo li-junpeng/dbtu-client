@@ -71,7 +71,7 @@ const columns = [
     width: 400
   }
 ] as Column[]
-const selectedRow = ref<MySqlTableNode | null>(null)
+const selectedRow = ref<MySqlTableInstance | null>(null)
 const searchName = ref('')
 // 连接会话
 const connectionSessionStore = useConnectionSessionStore()
@@ -80,8 +80,8 @@ const connectionSession = connectionSessionStore.get(
 ) as MySQLConnectionSession
 
 // 表格数据
-const tableData = computed<MySqlTableNode[]>(() => {
-  const array = (props.data.children || []) as MySqlTableNode[]
+const tableData = computed<MySqlTableInstance[]>(() => {
+  const array = (props.data.children || []) as MySqlTableInstance[]
   if (StringUtils.isEmpty(searchName.value)) {
     return array
   }
@@ -104,7 +104,7 @@ const tableRowEvents: RowEventHandlers = {
 
 // 表格行的样式
 const tableRowClass = ({ rowData }: Parameters<RowClassNameGetter<any>>[0]) => {
-  return (rowData as MySqlTableNode).id === selectedRow.value?.id ? 'is-selected' : ''
+  return (rowData as MySqlTableInstance).id === selectedRow.value?.id ? 'is-selected' : ''
 }
 
 const paneContextmenu = (event: MouseEvent) => {

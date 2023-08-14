@@ -49,7 +49,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
   nodeContextmenu(event: MouseEvent, data: ConnectionTreeNode) {
     switch (data.nodeType) {
       case 'database':
-        TreeNodeContextmenu.database(event, data as MySqlDatabaseNode, this)
+        TreeNodeContextmenu.database(event, data as MySqlDatabaseInstance, this)
         break
       case 'table':
         TreeNodeContextmenu.table(event, data as TableNode, this)
@@ -61,7 +61,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
             {
               label: '打开表',
               onClick: () => {
-                this.openTableInstance(data as MySqlTableNode)
+                this.openTableInstance(data as MySqlTableInstance)
               }
             },
             {
@@ -71,13 +71,13 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
             {
               label: '新建表',
               onClick: () => {
-                this.openCreateTable((data as MySqlTableNode).databaseId)
+                this.openCreateTable((data as MySqlTableInstance).databaseId)
               }
             },
             {
               label: '删除表',
               onClick: () => {
-                this.deleteTable(data as MySqlTableNode)
+                this.deleteTable(data as MySqlTableInstance)
               }
             },
             {
@@ -184,9 +184,9 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
    * @param databaseId   数据库ID
    * @return 数据库信息或者null
    */
-  getDatabase(databaseId: number): MySqlDatabaseNode | null {
+  getDatabase(databaseId: number): MySqlDatabaseInstance | null {
     for (let i = 0; i < this.connection.children!.length; i++) {
-      const database = this.connection.children![i] as MySqlDatabaseNode
+      const database = this.connection.children![i] as MySqlDatabaseInstance
       if (database.id === databaseId) {
         return database
       }
@@ -201,7 +201,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
         ClickNode.table(data as TableNode)
         break
       case 'table_instance':
-        const database = this.getDatabase((data as MySqlTableNode).databaseId)
+        const database = this.getDatabase((data as MySqlTableInstance).databaseId)
         database && ClickNode.table(database.children![0] as TableNode)
         break
     }
@@ -230,7 +230,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
             loadingText: '正在创建',
             onClick: async (): Promise<void> => {
               try {
-                const data = (await dynamicDialogStore.ref.onSubmit()) as MySqlDatabaseNode
+                const data = (await dynamicDialogStore.ref.onSubmit()) as MySqlDatabaseInstance
                 data.sessionId = this.connection.id as number
                 this.connection.children?.push(data)
                 connectionStore.refreshConnectionTree()
@@ -247,7 +247,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
     )
   }
 
-  openEditDatabase(data: MySqlDatabaseNode) {
+  openEditDatabase(data: MySqlDatabaseInstance) {
     dynamicDialogStore.open(
       {
         title: '编辑数据库',
@@ -269,8 +269,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
             onClick: (): Promise<void> => {
               return new Promise(async (resolve, reject) => {
                 try {
-                  const databaseInfo =
-                    (await dynamicDialogStore.ref.onSubmit()) as MySqlDatabaseNode
+                  const databaseInfo = (await dynamicDialogStore.ref.onSubmit()) as MySqlDatabaseInstance
                   for (let i = 0; i < (this.connection.children?.length || 0); i++) {
                     if (this.connection.children![i].id === databaseInfo.id) {
                       this.connection.children![i] = databaseInfo
@@ -295,7 +294,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
     )
   }
 
-  deleteDatabase(data: MySqlDatabaseNode) {
+  deleteDatabase(data: MySqlDatabaseInstance) {
     MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), done => {
       for (let i = 0; i < this.connection.children!.length; i++) {
         if (this.connection.children![i].id === data.id) {
@@ -318,9 +317,8 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
    *
    * @param data  表实例信息
    */
-  openTableInstance(data: MySqlTableNode) {
-    const databaseName =
-      this.connection.children!.find(item => item.id === data.databaseId)?.name || '未知的数据库'
+  openTableInstance(data: MySqlTableInstance) {
+    const databaseName = this.connection.children!.find(item => item.id === data.databaseId)?.name || '未知的数据库'
     const tabId = `${data.sessionId!}_${data.databaseId}_${data.id}`
     workTabStore.addTab({
       id: tabId,
@@ -359,7 +357,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
    *
    * @param data  表信息
    */
-  deleteTable(data: MySqlTableNode) {
+  deleteTable(data: MySqlTableInstance) {
     MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), done => {
       // TODO 掉接口删除表，然后重新刷新列表
       data.name = 'administrative_cont_' + Date.now().toString().substring(9, 13)
@@ -373,7 +371,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
 }
 
 const TreeNodeContextmenu = {
-  database: (event: MouseEvent, data: MySqlDatabaseNode, session: MySQLConnectionSession) => {
+  database: (event: MouseEvent, data: MySqlDatabaseInstance, session: MySQLConnectionSession) => {
     const id = data.id as number
 
     const openDatabase = () => {
@@ -386,64 +384,53 @@ const TreeNodeContextmenu = {
           sessionId: data.sessionId,
           name: '表',
           nodeType: 'table',
-          children: [
-            'administrative_cont',
-            'administrative_cont_pdf',
-            'sys_user',
-            'sys_role',
-            'sys_user_role',
-            'sys_log'
-          ].map((item, index) => {
-            return {
-              id: index + 1,
-              name: item,
-              databaseId: data.id,
-              sessionId: data.sessionId,
-              nodeType: 'table_instance',
-              engine: 'InnoDB',
-              rowsNum: 0,
-              dataLength: 16384,
-              autoIncrement: 0,
-              comment: '我是注释呀，哈哈哈哈' + index,
-              updateTime: '2023-05-07 08:57:32'
+          children: ['administrative_cont', 'administrative_cont_pdf', 'sys_user', 'sys_role', 'sys_user_role', 'sys_log'].map(
+            (item, index) => {
+              return {
+                id: index + 1,
+                name: item,
+                databaseId: data.id,
+                sessionId: data.sessionId,
+                nodeType: 'table_instance',
+                engine: 'InnoDB',
+                rowsNum: 0,
+                dataLength: 16384,
+                autoIncrement: 0,
+                comment: '我是注释呀，哈哈哈哈' + index,
+                updateTime: '2023-05-07 08:57:32'
+              }
             }
-          }) as MySqlTableNode[]
+          ) as MySqlTableInstance[]
         } as TableNode)
         data.children.push({
           id: Date.now() + 2,
           sessionId: data.sessionId,
           name: '视图',
           nodeType: 'view',
-          children: ['getAfterMissData', 'getMissData', 'getMorMissData', 'getNormalData'].map(
-            (item, index) => {
-              return {
-                id: index + 1,
-                name: item,
-                sessionId: data.sessionId,
-                nodeType: 'view_instance'
-              }
+          children: ['getAfterMissData', 'getMissData', 'getMorMissData', 'getNormalData'].map((item, index) => {
+            return {
+              id: index + 1,
+              name: item,
+              sessionId: data.sessionId,
+              nodeType: 'view_instance'
             }
-          ) as ViewInstanceNode[]
+          }) as ViewInstanceNode[]
         } as ViewNode)
         data.children.push({
           id: Date.now() + 3,
           sessionId: data.sessionId,
           name: '函数',
           nodeType: 'function',
-          children: [
-            'fun_diff_day_dur',
-            'fun_name_day_dur',
-            'proc_init_normal',
-            'proc_init_unusual',
-            'proc_leave_everyday'
-          ].map((item, index) => {
-            return {
-              id: index + 1,
-              name: item,
-              sessionId: data.sessionId,
-              nodeType: 'function_instance'
+          children: ['fun_diff_day_dur', 'fun_name_day_dur', 'proc_init_normal', 'proc_init_unusual', 'proc_leave_everyday'].map(
+            (item, index) => {
+              return {
+                id: index + 1,
+                name: item,
+                sessionId: data.sessionId,
+                nodeType: 'function_instance'
+              }
             }
-          }) as FunctionInstanceNode[]
+          ) as FunctionInstanceNode[]
         } as FunctionNode)
         data.children.push({
           id: Date.now() + 4,
@@ -464,12 +451,7 @@ const TreeNodeContextmenu = {
           sessionId: data.sessionId,
           name: '备份',
           nodeType: 'backup',
-          children: [
-            '20230705095432',
-            '2023-03-07_1456',
-            '清空个人地图数据前',
-            '清空模板组件数据前'
-          ].map((item, index) => {
+          children: ['20230705095432', '2023-03-07_1456', '清空个人地图数据前', '清空模板组件数据前'].map((item, index) => {
             return {
               id: index + 1,
               name: item,
@@ -507,12 +489,7 @@ const TreeNodeContextmenu = {
       event,
       menus: [
         {
-          label:
-            data.status === 'disable'
-              ? '打开数据库'
-              : data.status === 'enable'
-              ? '关闭数据库'
-              : '正在打开数据库',
+          label: data.status === 'disable' ? '打开数据库' : data.status === 'enable' ? '关闭数据库' : '正在打开数据库',
           divided: true,
           disabled: data.status === 'loading',
           onClick: () => {

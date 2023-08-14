@@ -1,4 +1,161 @@
 /**
+ * MySQL数据库连接详情信息
+ */
+interface MySQLConnectionInfo extends BaseConnectionDetail {
+  /**
+   * 驱动
+   */
+  driver: MySQLDriverKey
+
+  /**
+   * 连接类型
+   */
+  connectionType: ConnectionTypeKey
+
+  /**
+   * 服务器版本
+   */
+  version?: string
+
+  /**
+   * 会话数
+   */
+  sessionNum?: number
+
+  /**
+   * 用户名
+   */
+  username?: string
+
+  /**
+   * 密码
+   */
+  password?: string
+
+  /**
+   * 认证方式
+   */
+  authType: AuthenticationTypeKey
+
+  /**
+   * 保存密码的方式
+   */
+  savePwdType: SavePasswordTypeKey
+
+  /**
+   * url
+   */
+  url?: string
+
+  /**
+   * 时区
+   */
+  timeZone?: string
+
+  /**
+   * 字符集编码
+   */
+  charset: string
+
+  /**
+   * 是否开启保持连接间隔
+   */
+  connectionInterval: boolean
+
+  /**
+   * 保持连接间隔时间, 单位: 秒
+   */
+  connectionIntervalTime?: number
+
+  /**
+   * 是否开启自动断开功能
+   */
+  autoBreak: boolean
+
+  /**
+   * 自动断开时间, 单位: 秒
+   */
+  autoBreakTime?: number
+}
+
+/**
+ * MySQL 数据库节点信息
+ * 
+ * 数据库节点的子节点如下:
+ * - table(数据表)
+ * - view(数据视图)
+ * - function(函数)
+ * - search(保存的查询)
+ * - backup(备份)
+ */
+interface MySqlDatabaseInstance extends DatabaseNode {
+  /**
+   * 字符集
+   */
+  character: string
+
+  /**
+   * 排序规则
+   */
+  collate: string
+}
+
+/**
+ * MySQL表实例
+ */
+interface MySqlTableInstance extends TableInstanceNode {
+  /**
+   * 自动递增值
+   */
+  autoIncrement: number | null
+
+  /**
+   * 修改日期
+   */
+  updateTime: string | null
+
+  /**
+   * 数据长度, 单位: byte
+   */
+  dataLength: number
+
+  /**
+   * 行
+   */
+  rowsNum: number
+
+  /**
+   * 注释
+   */
+  comment: string | null
+
+  /**
+   * 表字段信息
+   */
+  fields: MySqlTableField[]
+
+  /**
+   * 索引信息
+   */
+  indexes: MySqlTableIndex[]
+
+  /**
+   * 外键信息
+   */
+  foreignKeys: MySqlTableForeignKey[]
+
+  /**
+   * 触发器
+   */
+  triggers: MySqlTableTrigger[]
+
+  /**
+   * 表属性
+   */
+  option: MySqlTableOption
+}
+
+/**
  * MySql表字段信息
  */
 interface MySqlTableField {
@@ -296,12 +453,12 @@ interface MySqlTableIndexField {
   /**
    * id, 仅在展示时使用, 不影响MySQL
    */
-  id: number,
+  id: number
 
   /**
    * 字段名
    */
-  field: string,
+  field: string
 
   /**
    * 子部分
@@ -314,7 +471,7 @@ interface MySqlTableForeignKey {
    * 仅在前端展示时使用, 不影响MySQL
    */
   id: number
-  
+
   /**
    * 外键名
    */

@@ -17,7 +17,7 @@ defineExpose({
 
 defineProps({
   data: {
-    type: Object as PropType<MySqlTableNode>,
+    type: Object as PropType<MySqlTableInstance>,
     required: true
   }
 })

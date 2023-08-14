@@ -2,7 +2,7 @@ export const DATABASE_PROVIDE_KEY = Symbol()
 
 export interface CreateTableProp {
   data: {
-    database: MySqlDatabaseNode
+    database: MySqlDatabaseInstance
   }
 }
 

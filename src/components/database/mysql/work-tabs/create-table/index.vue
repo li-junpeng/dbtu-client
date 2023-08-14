@@ -24,6 +24,8 @@ import TableTrigger from './tabs/table-trigger.vue'
 import TableIndex from './tabs/table-index.vue'
 import TableForeignKeys from './tabs/table-foreign-keys.vue'
 
+import { genCreateTableSql } from '../../sql-preview-gen'
+
 defineOptions({
   name: 'MySQLCreateTableComponent'
 })
@@ -92,6 +94,19 @@ const fieldTabPaneRef = useComponentRef(FieldTabPane)
 const tableForeignKeysRef = useComponentRef(TableForeignKeys)
 const tableTriggerRef = useComponentRef(TableTrigger)
 const tableIndexRef = useComponentRef(TableIndex)
+
+// 动态生成SQL预览内容
+const tableFieldSql = computed(() => {
+  return genCreateTableSql(props.data.database, tableFields)
+})
+
+watch(
+  () => [tableFieldSql.value],
+  () => {
+    sqlCode.value = ''
+    sqlCode.value += tableFieldSql.value
+  }
+)
 </script>
 
 <template>
@@ -100,9 +115,11 @@ const tableIndexRef = useComponentRef(TableIndex)
     <el-button
       text
       link
-      @click="() => {
-        console.log(tableForeignKeys)
-      }"
+      @click="
+        () => {
+          console.log(tableForeignKeys)
+        }
+      "
     >
       <template #icon>
         <IconCollection />

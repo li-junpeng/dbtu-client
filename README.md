@@ -64,9 +64,7 @@ npm run dev
   <img src="https://starchart.cc/li-junpeng/dbtu-client.svg"/>
 </a>
 
-<a href="https://github.com/li-junpeng/dbtu-client/stargazers">
-  <img src="https://bytecrank.com/nastyox/reporoster/php/stargazersSVG.php?user=li-junpeng&repo=dbtu-client"/>
-</a>
+![](https://bytecrank.com/nastyox/reporoster/php/stargazersSVG.php?user=li-junpeng&repo=dbtu-client)
 
 # 贡献者
 <a>

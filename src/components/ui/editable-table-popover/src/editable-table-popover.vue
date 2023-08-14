@@ -54,10 +54,19 @@ const containerStyle = computed(() => {
 
 // 优化: 点击popover以外的区域自动关闭popover
 onClickOutside(containerRef, event => {
-  const className = (event.target as HTMLElement)?.className || ""
-  if (className.includes('el-select')) {
-    return
+  let target = event.target as HTMLElement
+
+  // 是否点击了el-select下拉选项
+  const isElSelect = () => {
+    if (target.localName === 'span') {
+      target = target.parentElement!
+    }
+    const className = target?.className || ''
+    return className.includes('el-select')
   }
+
+  if (isElSelect()) return
+
   popover.visible = false
 })
 

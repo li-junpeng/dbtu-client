@@ -5,6 +5,9 @@ import '@/assets/css-style/base.scss'
 import '@/assets/theme/dark.scss'
 import '@/assets/theme/light.scss'
 
+// 初始化axios
+import '@/api/axios-config'
+
 import { createApp } from 'vue'
 import pinia from '@/stores/pinia-config'
 

@@ -2,6 +2,8 @@
 import { useDark } from '@vueuse/core'
 import { useSystemSettingStore } from '@/stores/SystemSettingStore'
 import DynamicDialog from '@/components/ui/dynamic-dialog/index.vue'
+import 'dayjs/locale/zh-cn'
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
 
 // 页面加载时，更新主题
 const systemSettingStore = useSystemSettingStore()
@@ -24,8 +26,10 @@ watch(
 </script>
 
 <template>
-  <RouterView />
-  <dynamic-dialog />
+  <el-config-provider :locale="zhCn">
+    <RouterView />
+    <dynamic-dialog />
+  </el-config-provider>
 </template>
 
 <style scoped></style>

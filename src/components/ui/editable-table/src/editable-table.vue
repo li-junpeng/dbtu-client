@@ -228,7 +228,7 @@ defineExpose({
           ref="selectRef"
           v-model="row[column.prop]"
           :clearable="column.select?.clearable || false"
-          :filterable="column.select?.filterable || false"
+          :filterable="column.select?.filterable || true"
           :placeholder="column.select?.placeholder || ' '"
           style="width: 100%"
           v-bind="column.componentProp"

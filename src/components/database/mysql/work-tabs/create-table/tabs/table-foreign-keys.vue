@@ -23,7 +23,7 @@ const props = defineProps<{
 }>()
 
 // 注入顶级组件提供的数据库信息
-const database = inject<MySqlDatabaseNode>(DATABASE_PROVIDE_KEY)
+const database = inject<MySqlDatabaseInstance>(DATABASE_PROVIDE_KEY)
 const actionModes = ['CASCADE', 'NO ACTION', 'RESTRICT', 'SET NULL']
 
 const connectionSessionStore = useConnectionSessionStore()
@@ -32,9 +32,6 @@ const connectionSessionStore = useConnectionSessionStore()
 const editableTableRef = useComponentRef(EditableTable)
 const getSelectedRow = () => {
   return editableTableRef.value?.getCurrentRow<MySqlTableForeignKey>() || ref(null)
-}
-const setSelectedRow = (row: MySqlTableForeignKey) => {
-  editableTableRef.value?.setCurrentRow(row)
 }
 
 // 外键数据
@@ -55,25 +52,27 @@ const databaseNames = computed<string[]>(() => {
   )
 })
 
-// 当前选择的被引用的数据库信息
-const currentRefDatabase = computed<MySqlDatabaseNode | null>(() => {
-  const selectedRow = getSelectedRow().value
-  if (!selectedRow || !selectedRow.refDatabase) return null
-
-  const session = connectionSessionStore.get(database?.sessionId!) as MySQLConnectionSession
-  if (!session) return null
-
-  return (session.connection.children?.find(item => item.name === selectedRow.refDatabase) as MySqlDatabaseNode) || null
-})
-
 // 被引用的数据库下的所有表的表名列表
-const tableNames = computed(() => {
-  if (!currentRefDatabase.value) return []
+const refTables = computed<MySqlTableInstance>(() => {
 
+  /* console.log(1)
+  if (!currentRefDatabase.value) return []
+  
   const tableNode = currentRefDatabase.value.children?.[0] as TableNode
   if (!tableNode) return []
 
-  return tableNode.children?.map(item => item.name) || []
+  console.log(tableNode.children)
+  
+  return tableNode.children?.map(item => item.name) || [] */
+})
+
+// 被引用的表中的所有字段列表
+const refTableFields = computed(() => {
+  /* const selectedRow = getSelectedRow()
+  if (!selectedRow.value) return []
+
+  
+  return [] */
 })
 
 // 添加外键
@@ -134,7 +133,10 @@ const tableColumns = [
     componentProp: {
       onClear: () => {
         const selectedRow = getSelectedRow().value
-        selectedRow && (selectedRow.refTable = '')
+        if (selectedRow) {
+          selectedRow.refTable = ''
+          selectedRow.refFields = []
+        }
       }
     }
   },
@@ -143,7 +145,10 @@ const tableColumns = [
     label: '被引用的表',
     width: '200px',
     component: 'select',
-    useSlot: true
+    // useSlot: true
+    select: {
+      options: []
+    }
   },
   {
     prop: 'refFields',
@@ -214,6 +219,7 @@ defineExpose({
         :height="height - 5"
         :columns="tableColumns"
       >
+        <!-- 字段 -->
         <template #column-fields="{ row }">
           <div style="width: 100%; display: flex; align-items: center">
             <div
@@ -239,6 +245,7 @@ defineExpose({
             />
           </div>
         </template>
+        <!-- 被引用的表 -->
         <template #column-refTable="{ row, isShowComponent }">
           <el-select
             v-if="isShowComponent()"
@@ -249,7 +256,7 @@ defineExpose({
             no-data-text="请先选择被引用的数据库"
           >
             <el-option
-              v-for="item in tableNames"
+              v-for="item in refTables"
               :key="item"
               :value="item"
               :label="item"
@@ -262,6 +269,7 @@ defineExpose({
             {{ row.refTable }}
           </span>
         </template>
+        <!-- 被引用的字段 -->
         <template #column-refFields> 456 </template>
       </EditableTable>
     </template>

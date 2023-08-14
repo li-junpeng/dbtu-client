@@ -52,7 +52,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
         TreeNodeContextmenu.database(event, data as MySqlDatabaseInstance, this)
         break
       case 'table':
-        TreeNodeContextmenu.table(event, data as TableNode, this)
+        TreeNodeContextmenu.table(event, data as TableNode<MySqlTableInstance>, this)
         break
       case 'table_instance':
         Contextmenu({
@@ -152,7 +152,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
         })
         break
       case 'view':
-        TreeNodeContextmenu.view(event, data as ViewNode)
+        TreeNodeContextmenu.view(event, data as ViewNode<ViewInstanceNode>)
         break
       case 'view_instance':
         TreeNodeContextmenu.viewInstance(event, data as ViewInstanceNode)
@@ -198,11 +198,11 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
   onClickNode(data: ConnectionTreeNode) {
     switch (data.nodeType) {
       case 'table':
-        ClickNode.table(data as TableNode)
+        ClickNode.table(data as TableNode<MySqlTableInstance>)
         break
       case 'table_instance':
         const database = this.getDatabase((data as MySqlTableInstance).databaseId)
-        database && ClickNode.table(database.children![0] as TableNode)
+        database && ClickNode.table(database.children![0] as TableNode<MySqlTableInstance>)
         break
     }
   }
@@ -392,16 +392,29 @@ const TreeNodeContextmenu = {
                 databaseId: data.id,
                 sessionId: data.sessionId,
                 nodeType: 'table_instance',
-                engine: 'InnoDB',
                 rowsNum: 0,
                 dataLength: 16384,
                 autoIncrement: 0,
                 comment: '我是注释呀，哈哈哈哈' + index,
-                updateTime: '2023-05-07 08:57:32'
+                updateTime: '2023-05-07 08:57:32',
+                fields: [],
+                indexes: [],
+                foreignKeys: [],
+                option: {
+                  engine: 'InnoDB',
+                  autoIncrement: 0,
+                  avgRowLength: 10,
+                  maxRows: 10,
+                  minRows: 1,
+                  keyBlockSize: 1,
+                  statsSamplePages: 1,
+                  encryption: false
+                },
+                triggers: []
               }
             }
-          ) as MySqlTableInstance[]
-        } as TableNode)
+          )
+        } as TableNode<MySqlTableInstance>)
         data.children.push({
           id: Date.now() + 2,
           sessionId: data.sessionId,
@@ -415,7 +428,7 @@ const TreeNodeContextmenu = {
               nodeType: 'view_instance'
             }
           }) as ViewInstanceNode[]
-        } as ViewNode)
+        } as ViewNode<ViewInstanceNode>)
         data.children.push({
           id: Date.now() + 3,
           sessionId: data.sessionId,
@@ -555,7 +568,7 @@ const TreeNodeContextmenu = {
     })
   },
 
-  table: (event: MouseEvent, data: TableNode, session: MySQLConnectionSession) => {
+  table: (event: MouseEvent, data: TableNode<MySqlTableInstance>, session: MySQLConnectionSession) => {
     Contextmenu({
       event,
       menus: [
@@ -592,7 +605,7 @@ const TreeNodeContextmenu = {
     })
   },
 
-  view: (event: MouseEvent, data: ViewNode) => {
+  view: (event: MouseEvent, data: ViewNode<ViewInstanceNode>) => {
     console.log(data)
 
     Contextmenu({
@@ -880,7 +893,7 @@ const TreeNodeContextmenu = {
 }
 
 const ClickNode = {
-  table: (data: TableNode) => {
+  table: (data: TableNode<MySqlTableInstance>) => {
     workTabStore.setObjectPane({
       props: data,
       component: () => import('@/components/database/mysql/work-tabs/object-pane/table-list.vue')

@@ -73,6 +73,9 @@ interface DatabaseDefineItem {
  */
 type DatabaseDefine = Record<DatabaseIdent, DatabaseDefineItem>
 
+/**
+ * 连接树的节点父对象，所有节点必须要继承此对象
+ */
 interface ConnectionTreeNode {
   // 主键
   id: number | null
@@ -117,34 +120,61 @@ interface ConnectionGroup extends ConnectionTreeNode {
 interface DatabaseNode extends ConnectionTreeNode {
   nodeType: 'database'
   status: CommonStatusType
-  children?: ConnectionTreeNode[]
+
+  /**
+   * 此处的children应该为以下节点:
+   * - TableNode
+   * - ViewNode
+   * - FunctionNode
+   * - SearchNode
+   * - BackupNode
+   */
+  children?: (TableNode | ViewNode | FunctionNode | SearchNode | BackupNode)[]
 }
 
 /**
  * 表节点
+ *
+ * @param T 具体的数据表实例信息，比如MySqlTableInstance
  */
-interface TableNode extends ConnectionTreeNode {
-  // 数据库ID
+interface TableNode<T extends TableInstanceNode> extends ConnectionTreeNode {
+  /**
+   * 数据库ID
+   */
   databaseId: number
+
+  /**
+   * 节点类型
+   */
   nodeType: 'table'
-  children?: ConnectionTreeNode[]
+
+  /**
+   * 表实例列表
+   */
+  children?: T[]
 }
 
 /**
  * 表实例节点
  */
 interface TableInstanceNode extends ConnectionTreeNode {
-  // 数据库ID
+  /**
+   * 数据库ID
+   */
   databaseId: number
+
+  /**
+   * 节点类型为表实例
+   */
   nodeType: 'table_instance'
 }
 
 /**
  * 视图节点
  */
-interface ViewNode extends ConnectionTreeNode {
+interface ViewNode<T extends ViewInstanceNode> extends ConnectionTreeNode {
   nodeType: 'view'
-  children?: ConnectionTreeNode[]
+  children?: T[]
 }
 
 /**
@@ -224,7 +254,7 @@ interface WorkTabItem {
   saveFlag?: boolean
   // tab的内容组件
   component: () => Promise<{}> | {}
-  
+
   // 传入组件的数据，propName is data
   props?: any
 }

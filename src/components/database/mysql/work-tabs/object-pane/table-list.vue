@@ -20,7 +20,7 @@ defineOptions({
   name: 'MySQLWorkTabObjectPaneComponent'
 })
 
-const props = defineProps<ObjectPaneProps<TableNode>>()
+const props = defineProps<ObjectPaneProps<TableNode<MySqlTableInstance>>>()
 const columns = [
   {
     key: 'name',

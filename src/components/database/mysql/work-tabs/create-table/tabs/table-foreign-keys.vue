@@ -12,7 +12,6 @@ import EditableTable, { type TableColumnOption } from '@/components/ui/editable-
 import EditableTablePopover from '@/components/ui/editable-table-popover'
 import { DATABASE_PROVIDE_KEY } from '..'
 import { useConnectionSessionStore } from '@/stores/ConnectionSessionStore'
-import type { MySQLConnectionSession } from '../../../connection-session'
 
 defineOptions({
   name: 'MySqlCreateTableForeignKeysComponent'
@@ -53,26 +52,10 @@ const databaseNames = computed<string[]>(() => {
 })
 
 // 被引用的数据库下的所有表的表名列表
-const refTables = computed<MySqlTableInstance>(() => {
+const refTables = computed(() => {
+  // TODO 接入后端，这里发请求获取所有库下的所有表和表字段列表
 
-  /* console.log(1)
-  if (!currentRefDatabase.value) return []
-  
-  const tableNode = currentRefDatabase.value.children?.[0] as TableNode
-  if (!tableNode) return []
-
-  console.log(tableNode.children)
-  
-  return tableNode.children?.map(item => item.name) || [] */
-})
-
-// 被引用的表中的所有字段列表
-const refTableFields = computed(() => {
-  /* const selectedRow = getSelectedRow()
-  if (!selectedRow.value) return []
-
-  
-  return [] */
+  return []
 })
 
 // 添加外键

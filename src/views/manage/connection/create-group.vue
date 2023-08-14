@@ -116,6 +116,7 @@ defineExpose({
         label="分组名称"
         prop="name"
       >
+        <!-- 按下回车会自动刷新是element-plus的bug，详情查看element-plus仓库的issues#13963 -->
         <el-input
           v-model="formData.name"
           maxlength="40"

@@ -16,7 +16,9 @@ defineOptions({
 const props = withDefaults(defineProps<RenameDialogProp>(), {
   title: '重命名',
   width: '500px',
-  label: '名称'
+  label: '名称',
+  confirmText: '保存',
+  confirmLoadingText: '正在保存'
 })
 
 const formRef = useComponentRef(ElForm)
@@ -107,7 +109,7 @@ defineExpose({
         @click="handleConfirm"
         :loading="dialog.loading"
       >
-        {{ dialog.loading ? '正在保存' : '保存' }}
+        {{ dialog.loading ? props.confirmLoadingText : props.confirmText }}
       </el-button>
     </template>
   </el-dialog>

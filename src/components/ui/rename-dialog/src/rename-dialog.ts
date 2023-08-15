@@ -53,4 +53,18 @@ export interface RenameDialogProp {
    * - 返回Promise.reject(message), 不关闭对话框, 并调用MessageBox.error(message)打印错误内容
    */
   confirm: (value: string) => Promise<string>
+
+  /**
+   * 确定按钮文本
+   * 
+   * @default '保存'
+   */
+  confirmText?: string
+
+  /**
+   * 确定按钮loading状态时的文本
+   * 
+   * @default '正在保存'
+   */
+  confirmLoadingText?: string
 }

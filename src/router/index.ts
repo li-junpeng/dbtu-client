@@ -12,7 +12,7 @@ const router = createRouter({
       path: '/test',
       name: 'TestPage',
       // component: () => import('@/components/ui/editable-table/__test__/editable-table-test.vue')
-      component: () => import('@/components/ui/rename-dialog/__test__/rename-dialog-test.vue')
+      component: () => import('@/components/ui/prompt-dialog/__test__/prompt-dialog-test.vue')
     },
     {
       path: '/',

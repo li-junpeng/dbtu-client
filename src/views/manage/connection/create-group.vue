@@ -6,7 +6,7 @@
 -->
 <script setup lang="ts">
 import { useConnectionStore } from '@/stores/ConnectionStore'
-import RenameDialog, { type RenameDialogInstance } from '@/components/ui/rename-dialog'
+import PromptDialog, { type PromptDialogInstance } from '@/components/ui/prompt-dialog'
 
 defineOptions({
   name: 'CreateGroupComponent'
@@ -16,7 +16,7 @@ const emits = defineEmits<{
   (e: 'submit-success', data: ConnectionGroup): void
 }>()
 
-const renameDialogRef = ref<RenameDialogInstance>()
+const renameDialogRef = ref<PromptDialogInstance>()
 
 const connectionStore = useConnectionStore()
 const dialog = reactive({
@@ -70,7 +70,7 @@ defineExpose({
 </script>
 
 <template>
-  <RenameDialog
+  <PromptDialog
     ref="renameDialogRef"
     :title="dialog.isEdit ? '重命名' : '创建分组'"
     :validate-rule="formRules"

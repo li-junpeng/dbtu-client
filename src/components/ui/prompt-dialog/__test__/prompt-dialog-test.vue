@@ -5,13 +5,13 @@
  * @date 2023-08-15 13:45
 -->
 <script setup lang="ts">
-import RenameDialog, { type RenameDialogInstance } from '@/components/ui/rename-dialog'
+import PromptDialog, { type PromptDialogInstance } from '@/components/ui/prompt-dialog'
 
 defineOptions({
   name: 'RenameDialogTest'
 })
 
-const renameDialogRef = ref<RenameDialogInstance>()
+const renameDialogRef = ref<PromptDialogInstance>()
 
 const openDialog = () => {
   renameDialogRef.value?.open('sys_user')
@@ -46,7 +46,7 @@ const onSave = (name: string): Promise<string> => {
     打开
   </el-button>
 
-  <RenameDialog
+  <PromptDialog
     ref="renameDialogRef"
     :validate-rule="nameRule"
     :after-cancel="handleCancel"

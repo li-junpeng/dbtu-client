@@ -1,20 +1,20 @@
 <!--
- * 重命名对话框通用组件
+ * 提交内容对话框通用组件
  *
  * @author HuaYu
  * @date 2023-08-15 11:56
 -->
 <script setup lang="ts">
 import { useComponentRef } from '@/components/element-plus/element-plus-util'
-import { type RenameDialogProp } from '..'
+import { type PromptDialogProp } from './prompt-dialog'
 import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 
 defineOptions({
-  name: 'RenameDialogComponent'
+  name: 'PromptDialogComponent'
 })
 
-const props = withDefaults(defineProps<RenameDialogProp>(), {
-  title: '重命名',
+const props = withDefaults(defineProps<PromptDialogProp>(), {
+  title: '请输入内容',
   width: '500px',
   label: '名称',
   confirmText: '保存',

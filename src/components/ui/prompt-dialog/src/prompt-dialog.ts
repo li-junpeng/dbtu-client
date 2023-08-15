@@ -1,10 +1,10 @@
 import type { FormItemRule } from 'element-plus'
 
-export interface RenameDialogProp {
+export interface PromptDialogProp {
   /**
    * 对话框标题
    *
-   * @default '重命名'
+   * @default '请输入内容'
    */
   title?: string
 

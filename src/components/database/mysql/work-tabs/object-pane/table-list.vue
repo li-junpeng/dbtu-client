@@ -107,6 +107,11 @@ const tableRowClass = ({ rowData }: Parameters<RowClassNameGetter<any>>[0]) => {
   return (rowData as MySqlTableInstance).id === selectedRow.value?.id ? 'is-selected' : ''
 }
 
+// 打开创建表work-tab
+const toCreateTable = () => {
+  connectionSession.openCreateTable(props.data.databaseId)
+}
+
 const paneContextmenu = (event: MouseEvent) => {
   // 清空选择的表
   selectedRow.value = null
@@ -117,7 +122,9 @@ const paneContextmenu = (event: MouseEvent) => {
       {
         label: '新建表',
         divided: true,
-        disabled: true
+        onClick: () => {
+          toCreateTable()
+        }
       },
       {
         label: '导入向导',
@@ -178,6 +185,7 @@ const openTable = () => {
       <el-button
         text
         link
+        @click="toCreateTable"
       >
         <template #icon>
           <IconCirclePlus />

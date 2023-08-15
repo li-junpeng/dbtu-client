@@ -45,13 +45,12 @@ export interface RenameDialogProp {
 
   /**
    * 点击保存按钮时的回调函数
-   * 
+   *
    * @param value input输入框的值
    * @returns Promise
-   * 
+   *
    * - 返回Promise.resolve(message), 关闭对话框，并调用MessageBox.me
-   * - 返回Promise.inject(message), 不关闭对话框, 并调用MessageBox.error(message)打印错误内容
+   * - 返回Promise.reject(message), 不关闭对话框, 并调用MessageBox.error(message)打印错误内容
    */
   confirm: (value: string) => Promise<string>
-
 }

@@ -28,10 +28,10 @@ const handleCancel = () => {
 
 const onSave = (name: string): Promise<string> => {
   // return Promise.resolve()
-  return new Promise((resolve, inject) => {
+  return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve('模仿接口请求成功: ' + name)
-      // inject('模仿接口请求错误')
+      // reject('模仿接口请求错误')
     }, 1000)
   })
 }

@@ -8,7 +8,7 @@ import type { AxiosRequestConfig } from 'axios'
 const request = axios.create({
   // `timeout` 指定请求超时的毫秒数
   // 如果请求时间超过`timeout`的值, 则请求会被中断, 默认值为 `0` (永不超时)
-  timeout: 10000,
+  timeout: 600000,
   baseURL: 'http://localhost:6870'
 })
 
@@ -20,6 +20,7 @@ request.interceptors.request.use(
   },
   error => {
     // 对请求错误做些什么
+    console.log('456')
     return Promise.reject(error)
   }
 )
@@ -34,6 +35,7 @@ request.interceptors.request.use(
   error => {
     // 超出 2xx 范围的状态码都会触发该函数
     // 对响应错误做点什么
+    console.log('123')
     return Promise.reject(error)
   }
 )

@@ -64,7 +64,7 @@ export const useCommonForm = <T extends BaseConnectionDetail>(
       MessageBox.error(message)
     }
     isTestConnecting.value = false
-    options?.afterTestConnection?.(true)
+    options?.afterTestConnection?.(status === 'success', message)
   }
   // endregion 测试连接 end //
 

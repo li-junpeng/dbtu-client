@@ -40,7 +40,7 @@ const { dataInitCompleted } = useCommonForm(props, formData, {
     if (ObjectUtils.isEmpty(formData.value.detail)) {
       formData.value.detail = {
         driver: 'mysql',
-        connectionType: 'default',
+        connectionType: 'normal',
         username: 'root',
         authType: 'user_password',
         savePwdType: 'forever',
@@ -153,7 +153,7 @@ const timeZonesOptions: { value: string; label: string }[] = TimeZones.map(_ => 
           </el-col>
         </el-row>
 
-        <el-row v-if="formData.detail.connectionType === 'default'">
+        <el-row v-if="formData.detail.connectionType === 'normal'">
           <el-col :span="13">
             <el-form-item
               label="主机"

@@ -54,7 +54,7 @@ export const DatabaseDrivers: Partial<Record<DatabaseIdent, DatabaseDriverElOpti
       flag: 'mysql'
     },
     {
-      value: 'mysql_5.1',
+      value: 'mysql_5_1',
       label: 'MySQL for 5.1',
       flag: 'mysql'
     },
@@ -99,7 +99,7 @@ export const ConnectionStatus: Record<ConnectionStatusType, string> = {
  */
 export const ConnectionTypes: ElSelectOption<ConnectionTypeKey>[] = [
   {
-    value: 'default',
+    value: 'normal',
     label: '默认'
   },
   {

@@ -44,12 +44,12 @@ type SavePasswordTypeKey = 'never' | 'until_restart' | 'for_session' | 'forever'
 /**
  * 连接类型
  */
-type ConnectionTypeKey = 'default' | 'only_url'
+type ConnectionTypeKey = 'normal' | 'only_url'
 
 /**
  * MySQL驱动
  */
-type MySQLDriverKey = 'mysql' | 'mysql_5.1' | 'mariadb'
+type MySQLDriverKey = 'mysql' | 'mysql_5_1' | 'mariadb'
 
 /**
  * database driver in el-option

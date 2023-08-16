@@ -95,6 +95,8 @@ interface IResponse<T> {
   data: T | null
   // 消息内容
   message: string
+  // 状态码
+  code: number
 }
 
 /**

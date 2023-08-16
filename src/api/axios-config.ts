@@ -42,13 +42,18 @@ request.interceptors.request.use(
 
 export const IRequest = {
   request<T>(config: AxiosRequestConfig): Promise<IResponse<T>> {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       request(config)
         .then(resp => {
           resolve(resp.data)
         })
         .catch(e => {
-          reject(e)
+          resolve({
+            status: 'fail',
+            code: 404,
+            message: '啊哦 ~ 接口请求失败 😵',
+            data: e
+          })
         })
     })
   },

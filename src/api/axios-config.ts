@@ -3,11 +3,13 @@
 // @date 2023-08-14 22:52
 
 import axios from 'axios'
+import type { AxiosRequestConfig } from 'axios'
 
 const request = axios.create({
   // `timeout` 指定请求超时的毫秒数
   // 如果请求时间超过`timeout`的值, 则请求会被中断, 默认值为 `0` (永不超时)
-  timeout: 10000
+  timeout: 10000,
+  baseURL: 'http://localhost:6870'
 })
 
 // 请求拦截器
@@ -35,3 +37,53 @@ request.interceptors.request.use(
     return Promise.reject(error)
   }
 )
+
+export const IRequest = {
+  request<T>(config: AxiosRequestConfig): Promise<IResponse<T>> {
+    return new Promise((resolve, reject) => {
+      request(config)
+        .then(resp => {
+          resolve(resp.data)
+        })
+        .catch(e => {
+          reject(e)
+        })
+    })
+  },
+
+  get<T>(url: string, config?: AxiosRequestConfig): Promise<IResponse<T>> {
+    return this.request({
+      ...config,
+      url,
+      method: 'GET'
+    })
+  },
+
+  post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<IResponse<T>> {
+    return this.request({
+      ...config,
+      url,
+      data,
+      method: 'POST'
+    })
+  },
+
+  delete<T>(url: string, config?: AxiosRequestConfig): Promise<IResponse<T>> {
+    return this.request({
+      ...config,
+      url,
+      method: 'DELETE'
+    })
+  },
+
+  put<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<IResponse<T>> {
+    return this.request({
+      ...config,
+      url,
+      data,
+      method: 'PUT'
+    })
+  }
+}
+
+export default request

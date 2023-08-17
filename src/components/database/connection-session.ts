@@ -15,7 +15,7 @@ export interface ConnectionSession<T extends BaseConnectionDetail> {
   /**
    * 关闭连接
    */
-  close(): Promise<IResponse<void>>
+  close(): Promise<void>
 
   /**
    * 获取连接树节点的右键菜单

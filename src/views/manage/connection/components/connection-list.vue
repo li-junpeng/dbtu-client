@@ -128,15 +128,16 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
       return
     }
 
-    const { status, message } = await session.close()
-    if (status === 'success') {
+    try {
+      await session.close()
       connection.status = 'no_connection'
       connectionStore.removeExpandKey(connectionId)
       connectionSessionStore.destroy(connectionId)
       workTabStore.closeTabsBySessionId(connectionId)
       loadConnections()
-    } else {
-      throw new Error(message)
+    } catch (e) {
+      connection.status = 'connected'
+      throw new Error(e as string)
     }
   }
 

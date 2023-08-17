@@ -5,7 +5,7 @@ import { useWorkTabStore } from '@/stores/WorkTabStore'
 import { useDynamicDialogStore } from '@/stores/DynamicDialogStore'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
-import { openConnection } from '@/api/connection-api'
+import { openConnection, closeConnection } from '@/api/connection-api'
 
 const connectionStore = useConnectionStore()
 const workTabStore = useWorkTabStore()
@@ -19,22 +19,25 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
   }
 
   async open(): Promise<void> {
-    const { data, status, message } = await openConnection<MySqlDatabaseInstance[]>(this.connection)
+    const { data, status, message } = await openConnection<{
+      data: MySqlDatabaseInstance[]
+      sessionId: number
+    }>(this.connection)
     if (status === 'success') {
-      this.connection.children = data as ConnectionTreeNode[]
+      this.connection.children = (data?.data as ConnectionTreeNode[]) || []
+      this.connection.sessionId = data?.sessionId
       return Promise.resolve()
     }
     return Promise.reject(message)
   }
 
-  close(): Promise<IResponse<void>> {
-    this.connection.children = []
-    return Promise.resolve({
-      code: 200,
-      status: 'success',
-      data: void 0,
-      message: `数据库 "${this.connection.name}" 连接已关闭`
-    })
+  async close(): Promise<void> {
+    const { status, message } = await closeConnection(this.connection.sessionId!)
+    if (status === 'success') {
+      this.connection.children = []
+      return Promise.resolve()
+    }
+    return Promise.reject(message)
   }
 
   nodeContextmenu(event: MouseEvent, data: ConnectionTreeNode) {

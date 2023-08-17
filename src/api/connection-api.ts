@@ -19,3 +19,17 @@ export const testConnection = (connection: ConnectionInfo<BaseConnectionDetail>)
 export const openConnection = <T>(connection: ConnectionInfo<BaseConnectionDetail>) => {
   return IRequest.post<T>('/datasource/connection/open', connection)
 }
+
+/**
+ * 关闭连接
+ *
+ * @param sessionId 数据库连接会话ID
+ * @returns void
+ */
+export const closeConnection = (sessionId: number) => {
+  return IRequest.post<void>('/datasource/connection/close', null, {
+    params: {
+      sessionId
+    }
+  })
+}

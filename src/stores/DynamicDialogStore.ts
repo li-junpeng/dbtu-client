@@ -5,6 +5,7 @@ import { loadAsyncComponent } from '@/common/utils/AsyncLoadComponent'
 
 type DialogOption = Partial<
   {
+    props?: Record<string, any>,
     footerButtons?: FooterButton[]
     afterOpen?: (ref: Ref) => void
   } & DialogProps
@@ -38,7 +39,9 @@ export const useDynamicDialogStore = defineStore('useDynamicDialogStore', {
       // 遮罩的自定义类名
       modalClass: '',
       // 底部按钮
-      footerButtons: [] as FooterButton[]
+      footerButtons: [] as FooterButton[],
+      // prop
+      props: {}
     }
   },
 
@@ -52,6 +55,7 @@ export const useDynamicDialogStore = defineStore('useDynamicDialogStore', {
       this.footerButtons = option.footerButtons || []
       this.component = loadAsyncComponent(component)
       this.visible = true
+      this.props = option.props || {}
       // 防止组件加载成功后this.ref值为空
       const intervalId = setInterval(() => {
         if (this.ref) {

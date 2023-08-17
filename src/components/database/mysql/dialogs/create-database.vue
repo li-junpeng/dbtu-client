@@ -10,9 +10,19 @@ import CharacterAndCollate from '@/assets/data/mysql-character-collate.json'
 import { StringUtils } from '@/common/utils/StringUtils'
 import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import SqlCodePreview from '@/components/ui/sql-code-preview/index.vue'
+import type { PropType } from 'vue'
+import { createDatabase } from '@/api/database/mysql-database-api'
+import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 
 defineOptions({
   name: 'MySQLCreateDatabaseDialog'
+})
+
+const props = defineProps({
+  connection: {
+    type: Object as PropType<ConnectionInfo<MySQLConnectionInfo>>,
+    required: true
+  }
 })
 
 const activeTab = ref('default')
@@ -90,13 +100,25 @@ const onSubmit = (): Promise<MySqlDatabaseInstance> => {
         return
       }
       if (isEdit.value) {
-        resolve(formData.value as MySqlDatabaseInstance)
+        /* formData.value.sessionId = props.connection.sessionId
+        const { status, message, data } = await createDatabase(formData.value as MySqlDatabaseInstance)
+        if (status === 'success') {
+          Message.success(message)
+          resolve(data!)
+        } else {
+          MessageBox.error(message)
+          reject(message)
+        } */
       } else {
-        resolve({
-          ...formData.value,
-          id: Date.now(),
-          status: 'disable'
-        })
+        formData.value.sessionId = props.connection.sessionId
+        const { status, message, data } = await createDatabase(formData.value as MySqlDatabaseInstance)
+        if (status === 'success') {
+          Message.success(message)
+          resolve(data!)
+        } else {
+          MessageBox.error(message)
+          reject(message)
+        }
       }
     })
   })

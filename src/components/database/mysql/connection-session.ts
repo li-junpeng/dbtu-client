@@ -6,6 +6,7 @@ import { useDynamicDialogStore } from '@/stores/DynamicDialogStore'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
 import { openConnection, closeConnection } from '@/api/connection-api'
+import { createDatabase } from '@/api/database/mysql-database-api'
 
 const connectionStore = useConnectionStore()
 const workTabStore = useWorkTabStore()
@@ -211,6 +212,9 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
       {
         title: '新建数据库',
         width: '600px',
+        props: {
+          connection: this.connection
+        },
         footerButtons: [
           {
             type: 'info',

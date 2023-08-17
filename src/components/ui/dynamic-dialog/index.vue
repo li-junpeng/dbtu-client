@@ -41,6 +41,7 @@ onMounted(() => {
   >
     <component
       ref="comRef"
+      v-bind="dynamicDialogStore.props"
       :is="dynamicDialogStore.component"
     />
 

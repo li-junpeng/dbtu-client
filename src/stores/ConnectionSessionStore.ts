@@ -6,11 +6,19 @@ import { useConnectionStore } from '@/stores/ConnectionStore'
 export const useConnectionSessionStore = defineStore('useConnectionSessionStore', {
   state: () => {
     return {
+      // key: sessionId = connectionId, value: 数据库的session实例
+      // sessionId 就是连接Id
       sessions: {} as Record<number, ConnectionSession<BaseConnectionDetail>>
     }
   },
 
   actions: {
+    /**
+     * 获取session
+     *
+     * @param sessionId 数据库的连接会话ID(连接ID)
+     * @returns
+     */
     get(sessionId: number): ConnectionSession<BaseConnectionDetail> {
       return this.sessions[sessionId]
     },
@@ -20,11 +28,9 @@ export const useConnectionSessionStore = defineStore('useConnectionSessionStore'
      *
      * @param connection  数据库连接信息
      */
-    create(
-      connection: ConnectionInfo<BaseConnectionDetail>
-    ): ConnectionSession<BaseConnectionDetail> {
+    create(connection: ConnectionInfo<BaseConnectionDetail>): ConnectionSession<BaseConnectionDetail> {
       const session = ConnectionSessionFactory.createSession(connection.dbType, connection)
-      this.sessions[connection.id as number] = session
+      this.sessions[connection.id!] = session
       return session
     },
 
@@ -48,7 +54,7 @@ export const useConnectionSessionStore = defineStore('useConnectionSessionStore'
     /**
      * 销毁
      *
-     * @param connectionId   数据库连接的ID
+     * @param connectionId  数据库连接ID
      */
     destroy(connectionId: number): void {
       delete this.sessions[connectionId]

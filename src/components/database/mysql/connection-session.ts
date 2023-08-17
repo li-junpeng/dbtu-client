@@ -24,7 +24,10 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
       sessionId: number
     }>(this.connection)
     if (status === 'success') {
-      this.connection.children = (data?.data as ConnectionTreeNode[]) || []
+      const databases = data?.data || []
+      databases.forEach(item => item.status = 'disable')
+      console.log(databases)
+      this.connection.children = databases || []
       this.connection.sessionId = data?.sessionId
       return Promise.resolve()
     }

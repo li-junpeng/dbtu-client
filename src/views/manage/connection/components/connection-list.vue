@@ -102,7 +102,7 @@ const groupContextmenu = (event: MouseEvent, data: ConnectionGroup) => {
 }
 
 const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<BaseConnectionDetail>) => {
-  const connectionId = connection.id as number
+  const connectionId = connection.id!
 
   // 打开连接
   const openConnection = async () => {
@@ -280,7 +280,7 @@ const treeItemContextmenu = (event: MouseEvent, data: ConnectionTreeNode) => {
     case 'search_instance':
     case 'backup':
     case 'backup_instance':
-      const session = connectionSessionStore.get(data.sessionId as number)
+      const session = connectionSessionStore.get(data.sessionId!)
       if (!session) {
         MessageBox.error('未找到数据库连接会话信息，请刷新页面后再试。')
       } else {
@@ -292,7 +292,7 @@ const treeItemContextmenu = (event: MouseEvent, data: ConnectionTreeNode) => {
 
 const onClickTreeItem = (data: ConnectionTreeNode) => {
   if (data.nodeType !== 'group' && data.nodeType !== 'connection') {
-    const session = connectionSessionStore.get(data.sessionId as number)
+    const session = connectionSessionStore.get(data.sessionId!)
     if (!session) {
       MessageBox.error('未找到数据库连接会话信息，请刷新页面后再试。')
     } else {

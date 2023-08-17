@@ -9,20 +9,22 @@ export class SqlServer2012ConnectionSession
     this.connection = data
   }
 
-  open(): Promise<IResponse<ConnectionTreeNode[]>> {
-    return Promise.resolve({
+  open(): Promise<void> {
+    /* return Promise.resolve({
       status: 'success',
       data: [],
       message: `数据库 ${this.connection.name} 连接已打开`
-    })
+    }) */
+    return Promise.resolve()
   }
 
-  close(): Promise<IResponse<void>> {
-    return Promise.resolve({
+  close(): Promise<void> {
+    /* return Promise.resolve({
       status: 'success',
       data: void 0,
       message: `数据库 "${this.connection.name}" 连接已关闭`
-    })
+    }) */
+    return Promise.resolve()
   }
 
   nodeContextmenu(event: MouseEvent, data: ConnectionTreeNode) {}

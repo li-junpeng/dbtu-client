@@ -10,7 +10,7 @@ export interface ConnectionSession<T extends BaseConnectionDetail> {
   /**
    * 打开连接
    */
-  open(): Promise<IResponse<ConnectionTreeNode[]>>
+  open(): Promise<void>
 
   /**
    * 关闭连接

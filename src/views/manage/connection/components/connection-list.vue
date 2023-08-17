@@ -21,9 +21,9 @@ defineOptions({
 })
 
 const tooltipShowAfter = 600
-const openCreateConnection = inject<
-  (data?: ConnectionInfo<BaseConnectionDetail>, db?: DatabaseIdent, groupId?: number) => void
->(InjectionKey.openCreateConnection)
+const openCreateConnection = inject<(data?: ConnectionInfo<BaseConnectionDetail>, db?: DatabaseIdent, groupId?: number) => void>(
+  InjectionKey.openCreateConnection
+)
 const openCreateGroup = inject<(data?: ConnectionGroup) => void>(InjectionKey.openCreateGroup)
 
 const treeProps = {
@@ -101,25 +101,21 @@ const groupContextmenu = (event: MouseEvent, data: ConnectionGroup) => {
   })
 }
 
-const connectionContextmenu = (
-  event: MouseEvent,
-  connection: ConnectionInfo<BaseConnectionDetail>
-) => {
+const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<BaseConnectionDetail>) => {
   const connectionId = connection.id as number
 
   // 打开连接
   const openConnection = async () => {
     const session = connectionSessionStore.create(connection)
     connection.status = 'connecting'
-    const { status, message } = await session.open()
-    if (status === 'success') {
-      setTimeout(() => {
-        connection.status = 'connected'
-        connectionStore.setExpandKey(connectionId)
-        loadConnections()
-      }, 1000)
-    } else {
-      throw new Error(message)
+    try {
+      await session.open()
+      connection.status = 'connected'
+      connectionStore.setExpandKey(connectionId)
+      loadConnections()
+    } catch (e) {
+      connection.status = 'no_connection'
+      throw new Error(e as string)
     }
   }
 
@@ -148,12 +144,7 @@ const connectionContextmenu = (
     event,
     menus: [
       {
-        label:
-          connection.status === 'connected'
-            ? '关闭连接'
-            : connection.status === 'connecting'
-            ? '正在连接'
-            : '打开连接',
+        label: connection.status === 'connected' ? '关闭连接' : connection.status === 'connecting' ? '正在连接' : '打开连接',
         divided: true,
         disabled: connection.status === 'connecting',
         onClick: async () => {

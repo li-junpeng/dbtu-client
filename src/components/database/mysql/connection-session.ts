@@ -3,10 +3,10 @@ import Contextmenu from '@/components/ui/contextmenu/src/contextmenu-install'
 import { useConnectionStore } from '@/stores/ConnectionStore'
 import { useWorkTabStore } from '@/stores/WorkTabStore'
 import { useDynamicDialogStore } from '@/stores/DynamicDialogStore'
-import { MessageBox } from '@/components/element-plus/el-feedback-util'
+import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
 import { openConnection, closeConnection } from '@/api/connection-api'
-import { createDatabase } from '@/api/database/mysql-database-api'
+import { deleteDatabase } from '@/api/database/mysql-database-api'
 
 const connectionStore = useConnectionStore()
 const workTabStore = useWorkTabStore()
@@ -26,8 +26,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
     }>(this.connection)
     if (status === 'success') {
       const databases = data?.data || []
-      databases.forEach(item => item.status = 'disable')
-      console.log(databases)
+      databases.forEach(item => (item.status = 'disable'))
       this.connection.children = databases || []
       this.connection.sessionId = data?.sessionId
       return Promise.resolve()
@@ -296,14 +295,20 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
   }
 
   deleteDatabase(data: MySqlDatabaseInstance) {
-    MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), done => {
-      for (let i = 0; i < this.connection.children!.length; i++) {
-        if (this.connection.children![i].id === data.id) {
-          this.connection.children!.splice(i, 1)
-          // TODO 需要判断该数据库下有没有已经打开的work-tab
-          connectionStore.refreshConnectionTree()
-          break
+    MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), async done => {
+      const { status, message } = await deleteDatabase(data.sessionId!, data.name)
+      if (status === 'success') {
+        for (let i = 0; i < this.connection.children!.length; i++) {
+          if (this.connection.children![i].id === data.id) {
+            this.connection.children!.splice(i, 1)
+            // TODO 需要判断该数据库下有没有已经打开的work-tab
+            connectionStore.refreshConnectionTree()
+            break
+          }
         }
+        Message.success(message)
+      } else {
+        MessageBox.error(message)
       }
       done()
     }).then()

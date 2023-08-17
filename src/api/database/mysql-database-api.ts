@@ -7,5 +7,16 @@ import { IRequest } from '../axios-config'
  * @returns 创建后的数据库对象
  */
 export const createDatabase = (database: MySqlDatabaseInstance) => {
-  return IRequest.post<MySqlDatabaseInstance>('/database/mysql/create-database', database)
+  return IRequest.post<MySqlDatabaseInstance>('/database/mysql/create', database)
+}
+
+/**
+ * 删除数据库
+ * 
+ * @param sessionId     连接会话ID
+ * @param databaseName  数据库名称
+ * @returns void
+ */
+export const deleteDatabase = (sessionId: number, databaseName: string) => {
+  return IRequest.post<void>('/database/mysql/drop', { sessionId, databaseName })
 }

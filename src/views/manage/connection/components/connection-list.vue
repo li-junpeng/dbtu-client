@@ -244,6 +244,7 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
       },
       {
         label: '从组中移除',
+        disabled: !connection.groupId,
         hidden: NumberUtils.isEmpty(connection.groupId),
         onClick: () => {
           connectionStore.removeInGroup(connection)

@@ -6,7 +6,7 @@ import { useDynamicDialogStore } from '@/stores/DynamicDialogStore'
 import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
 import { openConnection, closeConnection } from '@/api/connection-api'
-import { deleteDatabase } from '@/api/database/mysql-database-api'
+import { deleteDatabase, getDatabaseObject } from '@/api/database/mysql-database-api'
 
 const connectionStore = useConnectionStore()
 const workTabStore = useWorkTabStore()
@@ -68,7 +68,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
             {
               label: '新建表',
               onClick: () => {
-                this.openCreateTable((data as MySqlTableInstance).databaseId)
+                this.openCreateTable((data as MySqlTableInstance).database)
               }
             },
             {
@@ -178,13 +178,13 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
   /**
    * 通过数据库的ID获取数据库信息
    *
-   * @param databaseId   数据库ID
+   * @param databaseName   数据库名称
    * @return 数据库信息或者null
    */
-  getDatabase(databaseId: number): MySqlDatabaseInstance | null {
+  getDatabase(databaseName: string): MySqlDatabaseInstance | null {
     for (let i = 0; i < this.connection.children!.length; i++) {
       const database = this.connection.children![i] as MySqlDatabaseInstance
-      if (database.id === databaseId) {
+      if (database.name === databaseName) {
         return database
       }
     }
@@ -198,7 +198,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
         ClickNode.table(data as TableNode<MySqlTableInstance>)
         break
       case 'table_instance':
-        const database = this.getDatabase((data as MySqlTableInstance).databaseId)
+        const database = this.getDatabase((data as MySqlTableInstance).database)
         database && ClickNode.table(database.children![0] as TableNode<MySqlTableInstance>)
         break
     }
@@ -332,11 +332,10 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
    * @param data  表实例信息
    */
   openTableInstance(data: MySqlTableInstance) {
-    const databaseName = this.connection.children!.find(item => item.id === data.databaseId)?.name || '未知的数据库'
-    const tabId = `${data.sessionId!}_${data.databaseId}_${data.id}`
+    const tabId = `${data.sessionId!}_${data.database}_${data.id}`
     workTabStore.addTab({
       id: tabId,
-      label: `表 - ${data.name} @${databaseName} (${this.connection.name})`,
+      label: `表 - ${data.name} @${data.database} (${this.connection.name})`,
       component: () => import('@/components/database/mysql/work-tabs/table-data.vue'),
       props: {
         tableInfo: data,
@@ -348,16 +347,16 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
   /**
    * 在work-tab中打开创建表
    *
-   * @param databaseId  数据库ID
+   * @param databaseName  数据库名
    */
-  openCreateTable(databaseId: number) {
-    const database = this.getDatabase(databaseId)
+  openCreateTable(databaseName: string) {
+    const database = this.getDatabase(databaseName)
     if (!database) {
       MessageBox.error('未找到数据库信息，无法创建表，请刷新页面后再试。').then()
       return
     }
     workTabStore.addTab({
-      id: `create_table_${database.sessionId}_${databaseId}`,
+      id: `create_table_${database.sessionId}_${databaseName}`,
       label: `创建表 - 无标题 @${database.name} (${this.connection.name})`,
       component: () => import('@/components/database/mysql/work-tabs/create-table/index.vue'),
       props: {
@@ -390,108 +389,7 @@ const TreeNodeContextmenu = {
 
     const openDatabase = () => {
       data.status = 'loading'
-      setTimeout(() => {
-        data.children = []
-        data.children.push({
-          id: Date.now() + 1,
-          databaseId: data.id,
-          sessionId: data.sessionId,
-          name: '表',
-          nodeType: 'table',
-          children: ['administrative_cont', 'administrative_cont_pdf', 'sys_user', 'sys_role', 'sys_user_role', 'sys_log'].map(
-            (item, index) => {
-              return {
-                id: index + 1,
-                name: item,
-                databaseId: data.id,
-                sessionId: data.sessionId,
-                nodeType: 'table_instance',
-                rowsNum: 0,
-                dataLength: 16384,
-                autoIncrement: 0,
-                comment: '我是注释呀，哈哈哈哈' + index,
-                updateTime: '2023-05-07 08:57:32',
-                fields: [],
-                indexes: [],
-                foreignKeys: [],
-                option: {
-                  engine: 'InnoDB',
-                  autoIncrement: 0,
-                  avgRowLength: 10,
-                  maxRows: 10,
-                  minRows: 1,
-                  keyBlockSize: 1,
-                  statsSamplePages: 1,
-                  encryption: false
-                },
-                triggers: []
-              }
-            }
-          )
-        } as TableNode<MySqlTableInstance>)
-        data.children.push({
-          id: Date.now() + 2,
-          sessionId: data.sessionId,
-          name: '视图',
-          nodeType: 'view',
-          children: ['getAfterMissData', 'getMissData', 'getMorMissData', 'getNormalData'].map((item, index) => {
-            return {
-              id: index + 1,
-              name: item,
-              sessionId: data.sessionId,
-              nodeType: 'view_instance'
-            }
-          }) as ViewInstanceNode[]
-        } as ViewNode<ViewInstanceNode>)
-        data.children.push({
-          id: Date.now() + 3,
-          sessionId: data.sessionId,
-          name: '函数',
-          nodeType: 'function',
-          children: ['fun_diff_day_dur', 'fun_name_day_dur', 'proc_init_normal', 'proc_init_unusual', 'proc_leave_everyday'].map(
-            (item, index) => {
-              return {
-                id: index + 1,
-                name: item,
-                sessionId: data.sessionId,
-                nodeType: 'function_instance'
-              }
-            }
-          ) as FunctionInstanceNode[]
-        } as FunctionNode)
-        data.children.push({
-          id: Date.now() + 4,
-          sessionId: data.sessionId,
-          name: '查询',
-          nodeType: 'search',
-          children: ['select_rb_by_user', 'select_report_by_user'].map((item, index) => {
-            return {
-              id: index + 1,
-              name: item,
-              sessionId: data.sessionId,
-              nodeType: 'search_instance'
-            }
-          }) as SearchInstanceNode[]
-        } as SearchNode)
-        data.children.push({
-          id: Date.now() + 5,
-          sessionId: data.sessionId,
-          name: '备份',
-          nodeType: 'backup',
-          children: ['20230705095432', '2023-03-07_1456', '清空个人地图数据前', '清空模板组件数据前'].map((item, index) => {
-            return {
-              id: index + 1,
-              name: item,
-              sessionId: data.sessionId,
-              nodeType: 'backup_instance'
-            }
-          }) as BackupInstanceNode[]
-        } as BackupNode)
-
-        data.status = 'enable'
-        connectionStore.setExpandKey(id)
-        connectionStore.refreshConnectionTree()
-      }, 1000)
+      
     }
 
     const closeDatabase = () => {
@@ -590,7 +488,7 @@ const TreeNodeContextmenu = {
           label: '新建表',
           divided: true,
           onClick: () => {
-            session.openCreateTable(data.databaseId)
+            session.openCreateTable(data.database)
           }
         },
         {

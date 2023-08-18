@@ -80,7 +80,7 @@ interface MySQLConnectionInfo extends BaseConnectionDetail {
 
 /**
  * MySQL 数据库节点信息
- * 
+ *
  * 数据库节点的子节点如下:
  * - table(数据表)
  * - view(数据视图)
@@ -515,4 +515,47 @@ interface MySqlTableForeignKey {
    * 更新
    */
   updateMode?: 'CASCADE' | 'NO ACTION' | 'RESTRICT' | 'SET NULL'
+}
+
+interface MySqlViewInstance extends ViewInstanceNode {
+  /**
+   * SQL语句
+   */
+  viewSql: string
+
+  /**
+   * 是否可以更新
+   *
+   * - YES: 是
+   * - NO: 否
+   */
+  updatable: 'YES' | 'NO'
+}
+
+interface MySqlFunctionInstance extends FunctionInstanceNode {
+  /**
+   * 类型
+   *
+   * - FUNCTION: 函数
+   * - PROCEDURE: 存储过程
+   */
+  type: 'FUNCTION' | 'PROCEDURE'
+
+  /**
+   * 更新时间
+   */
+  updateTime: number
+
+  /**
+   * 注释
+   */
+  comment: comment | null
+
+  /**
+   * 决定性
+   * 
+   * - YES: 是
+   * - NO: 否
+   */
+  deterministic: 'YES' | 'NO'
 }

@@ -141,7 +141,7 @@ interface TableNode<T extends TableInstanceNode> extends ConnectionTreeNode {
   /**
    * 数据库ID
    */
-  databaseId: number
+  database: string
 
   /**
    * 节点类型
@@ -159,9 +159,9 @@ interface TableNode<T extends TableInstanceNode> extends ConnectionTreeNode {
  */
 interface TableInstanceNode extends ConnectionTreeNode {
   /**
-   * 数据库ID
+   * 数据库名
    */
-  databaseId: number
+  database: string
 
   /**
    * 节点类型为表实例
@@ -182,6 +182,11 @@ interface ViewNode<T extends ViewInstanceNode> extends ConnectionTreeNode {
  */
 interface ViewInstanceNode extends ConnectionTreeNode {
   nodeType: 'view_instance'
+
+  /**
+   * 数据库名
+   */
+  database: string
 }
 
 /**
@@ -197,6 +202,11 @@ interface FunctionNode extends ConnectionTreeNode {
  */
 interface FunctionInstanceNode extends ConnectionTreeNode {
   nodeType: 'function_instance'
+
+  /**
+   * 所属的数据库名称
+   */
+  database: string
 }
 
 /**

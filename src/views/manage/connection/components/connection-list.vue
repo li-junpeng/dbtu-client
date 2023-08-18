@@ -226,6 +226,7 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
       },
       {
         label: '新建数据库',
+        disabled: connection.status === 'no_connection',
         onClick: () => {
           const session = connectionSessionStore.get(connectionId)
           session.openCreateDatabase()

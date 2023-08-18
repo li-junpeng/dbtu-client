@@ -102,6 +102,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
       data.nodeType = 'group'
       this.connections.push(data)
       return Promise.resolve({
+        code: 200,
         status: 'success',
         data,
         message: '分组创建成功'
@@ -118,6 +119,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
         if (this.connections[i].id === data.id) {
           this.connections[i] = data
           return Promise.resolve({
+            code: 200,
             status: 'success',
             data,
             message: '分组信息修改成功'
@@ -143,6 +145,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
       this.connections.push(data)
 
       return Promise.resolve({
+        code: 200,
         status: 'success',
         data,
         message: '数据库连接创建成功'
@@ -161,6 +164,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
           this.connections[i] = data
 
           return Promise.resolve({
+            code: 200,
             status: 'success',
             data,
             message: '数据库连接修改成功'
@@ -169,6 +173,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
       }
 
       return Promise.resolve({
+        code: 500,
         status: 'fail',
         data,
         message: '修改失败，未找到相关数据库连接，请刷新页面后再试。'
@@ -199,6 +204,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
           done()
 
           resolve({
+            code: 200,
             status: 'success',
             data: null,
             message: '删除成功'
@@ -220,6 +226,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
       data.groupId = void 0
 
       return Promise.resolve({
+        code: 2000,
         status: 'success',
         data: null,
         message: '从分组中移除成功'
@@ -238,6 +245,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
           // TODO 删除之前先关掉数据库连接session
           this.connections.splice(i, 1)
           return Promise.resolve({
+            code: 200,
             status: 'success',
             data: null,
             message: `数据库连接 "${connection.name}" 删除成功`
@@ -246,6 +254,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
       }
 
       return Promise.resolve({
+        code: 500,
         status: 'fail',
         data: null,
         message: '删除失败，未找到相关数据库连接，请刷新页面后再试。'
@@ -274,6 +283,7 @@ export const useConnectionStore = defineStore('useConnectionStore', {
 
       this.connections.push(newData)
       return Promise.resolve({
+        code: 200,
         status: 'success',
         data: newData,
         message: '数据库连接复制成功'

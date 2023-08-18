@@ -457,7 +457,7 @@ const TreeNodeContextmenu = {
         data.status = 'disable'
         connectionStore.removeExpandKey(databaseId)
         connectionStore.refreshConnectionTree()
-      }, 1000)
+      }, 100)
     }
 
     Contextmenu({

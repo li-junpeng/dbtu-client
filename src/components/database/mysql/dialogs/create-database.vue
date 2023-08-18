@@ -11,7 +11,7 @@ import { StringUtils } from '@/common/utils/StringUtils'
 import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import SqlCodePreview from '@/components/ui/sql-code-preview/index.vue'
 import type { PropType } from 'vue'
-import { createDatabase } from '@/api/database/mysql-database-api'
+import { createDatabase, alterDatabase } from '@/api/database/mysql-database-api'
 import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 
 defineOptions({
@@ -80,7 +80,7 @@ watch(
       str += character ? ` CHARACTER SET '${character}'` : ''
       str += collate ? ` COLLATE '${collate}'` : ''
       if (str) {
-        str = `ALERT DATABASE \`${name}\`` + str
+        str = `ALTER DATABASE \`${name}\`` + str
       }
     } else {
       str = `CREATE DATABASE \`${name}\``
@@ -100,15 +100,14 @@ const onSubmit = (): Promise<MySqlDatabaseInstance> => {
         return
       }
       if (isEdit.value) {
-        /* formData.value.sessionId = props.connection.sessionId
-        const { status, message, data } = await createDatabase(formData.value as MySqlDatabaseInstance)
+        const { status, message } = await alterDatabase(formData.value as MySqlDatabaseInstance)
         if (status === 'success') {
           Message.success(message)
-          resolve(data!)
+          resolve(formData.value as MySqlDatabaseInstance)
         } else {
           MessageBox.error(message)
           reject(message)
-        } */
+        }
       } else {
         formData.value.sessionId = props.connection.sessionId
         const { status, message, data } = await createDatabase(formData.value as MySqlDatabaseInstance)

@@ -257,6 +257,9 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
       {
         title: '编辑数据库',
         width: '600px',
+        props: {
+          connection: this.connection
+        },
         footerButtons: [
           {
             text: '取消',

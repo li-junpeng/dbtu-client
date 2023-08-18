@@ -15,6 +15,7 @@ import type { MySQLConnectionSession } from '@/components/database/mysql/connect
 import { useConnectionSessionStore } from '@/stores/ConnectionSessionStore'
 import { StringUtils } from '@/common/utils/StringUtils'
 import Contextmenu from '@/components/ui/contextmenu'
+import { DateUtil } from '@/common/utils/DateUtil'
 
 defineOptions({
   name: 'MySQLWorkTabObjectPaneComponent'
@@ -33,19 +34,25 @@ const columns = [
     dataKey: 'autoIncrement',
     title: '自动递增值',
     width: 150,
-    align: 'right'
+    align: 'right',
+    cellRenderer: ({ cellData }) => {
+      return cellData || 0
+    }
   },
   {
     key: 'updateTime',
     dataKey: 'updateTime',
     title: '修改日期',
-    width: 190
+    width: 190,
+    cellRenderer: ({ cellData }) => {
+      return cellData ? DateUtil.timestamp2Str(cellData) : ''
+    }
   },
   {
     key: 'dataLength',
     dataKey: 'dataLength',
     title: '数据长度',
-    width: 100,
+    width: 130,
     align: 'right',
     cellRenderer: ({ cellData }) => {
       return StringUtils.formatFileSize(cellData)
@@ -62,7 +69,10 @@ const columns = [
     dataKey: 'rowsNum',
     title: '行',
     width: 100,
-    align: 'right'
+    align: 'right',
+    cellRenderer: ({ cellData }) => {
+      return cellData || 0
+    }
   },
   {
     key: 'comment',
@@ -109,7 +119,7 @@ const tableRowClass = ({ rowData }: Parameters<RowClassNameGetter<any>>[0]) => {
 
 // 打开创建表work-tab
 const toCreateTable = () => {
-  connectionSession.openCreateTable(props.data.databaseId)
+  connectionSession.openCreateTable(props.data.database)
 }
 
 const paneContextmenu = (event: MouseEvent) => {

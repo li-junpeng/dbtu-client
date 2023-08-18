@@ -130,6 +130,11 @@ interface MySqlTableInstance extends TableInstanceNode {
   comment: string | null
 
   /**
+   * 引擎
+   */
+  engine: string
+
+  /**
    * 表字段信息
    */
   fields: MySqlTableField[]
@@ -151,6 +156,7 @@ interface MySqlTableInstance extends TableInstanceNode {
 
   /**
    * 表属性
+   * TODO 将属性平铺出来...
    */
   option: MySqlTableOption
 }

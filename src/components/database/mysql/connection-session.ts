@@ -232,7 +232,12 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
               try {
                 const data = (await dynamicDialogStore.ref.onSubmit()) as MySqlDatabaseInstance
                 data.sessionId = this.connection.id as number
-                this.connection.children?.push(data)
+                if (!this.connection.children) {
+                  this.connection.children = []
+                }
+                this.connection.children.push(data)
+                // 按数据库名称排序
+                this.connection.children.sort((item1, item2) => item1.name.localeCompare(item2.name))
                 connectionStore.refreshConnectionTree()
                 dynamicDialogStore.close()
                 return Promise.resolve()

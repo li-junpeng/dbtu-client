@@ -155,19 +155,19 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
         TreeNodeContextmenu.viewInstance(event, data as ViewInstanceNode)
         break
       case 'function':
-        TreeNodeContextmenu.function(event, data as FunctionNode)
+        TreeNodeContextmenu.function(event, data as FunctionNode<FunctionInstanceNode>)
         break
       case 'function_instance':
         TreeNodeContextmenu.functionInstance(event, data as FunctionInstanceNode)
         break
       case 'search':
-        TreeNodeContextmenu.search(event, data as SearchNode)
+        TreeNodeContextmenu.search(event, data as SearchNode<SearchInstanceNode>)
         break
       case 'search_instance':
         TreeNodeContextmenu.searchInstance(event, data as SearchInstanceNode)
         break
       case 'backup':
-        TreeNodeContextmenu.backup(event, data as BackupNode)
+        TreeNodeContextmenu.backup(event, data as BackupNode<BackupInstanceNode>)
         break
       case 'backup_instance':
         TreeNodeContextmenu.backupInstance(event, data as BackupInstanceNode)
@@ -644,7 +644,7 @@ const TreeNodeContextmenu = {
     })
   },
 
-  function: (event: MouseEvent, data: FunctionNode) => {
+  function: (event: MouseEvent, data: FunctionNode<FunctionInstanceNode>) => {
     console.log(data)
 
     Contextmenu({
@@ -711,7 +711,7 @@ const TreeNodeContextmenu = {
     })
   },
 
-  search: (event: MouseEvent, data: SearchNode) => {
+  search: (event: MouseEvent, data: SearchNode<SearchInstanceNode>) => {
     console.log(data)
 
     Contextmenu({
@@ -780,7 +780,7 @@ const TreeNodeContextmenu = {
     })
   },
 
-  backup: (event: MouseEvent, data: BackupNode) => {
+  backup: (event: MouseEvent, data: BackupNode<BackupInstanceNode>) => {
     console.log(data)
 
     Contextmenu({

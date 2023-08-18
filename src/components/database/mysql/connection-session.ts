@@ -385,11 +385,61 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
 
 const TreeNodeContextmenu = {
   database: (event: MouseEvent, data: MySqlDatabaseInstance, session: MySQLConnectionSession) => {
-    const id = data.id as number
+    const databaseId = data.id as number
 
-    const openDatabase = () => {
+    const openDatabase = async () => {
+      data.children = []
       data.status = 'loading'
-      
+      const response = await getDatabaseObject(data.sessionId!, data.name)
+      if (response.status === 'fail') {
+        data.status = 'disable'
+        MessageBox.error(response.message)
+      } else {
+        data.children.push({
+          id: Date.now() + 1,
+          database: data.name,
+          sessionId: data.sessionId,
+          name: '表',
+          nodeType: 'table',
+          children: response.data?.tables || []
+        } as TableNode<MySqlTableInstance>)
+        data.children.push({
+          id: Date.now() + 2,
+          database: data.name,
+          sessionId: data.sessionId,
+          name: '视图',
+          nodeType: 'view',
+          children: response.data?.views || []
+        } as ViewNode<MySqlViewInstance>)
+        data.children.push({
+          id: Date.now() + 3,
+          database: data.name,
+          sessionId: data.sessionId,
+          name: '函数',
+          nodeType: 'function',
+          children: response.data?.functions || []
+        } as FunctionNode<MySqlFunctionInstance>)
+        data.children.push({
+          id: Date.now() + 4,
+          database: data.name,
+          sessionId: data.sessionId,
+          name: '查询',
+          nodeType: 'search',
+          children: []
+        } as SearchNode<SearchInstanceNode>)
+        data.children.push({
+          id: Date.now() + 5,
+          database: data.name,
+          sessionId: data.sessionId,
+          name: '备份',
+          nodeType: 'backup',
+          children: []
+        } as BackupNode<BackupInstanceNode>)
+
+        data.status = 'enable'
+        connectionStore.setExpandKey(databaseId)
+        connectionStore.refreshConnectionTree()
+      }
     }
 
     const closeDatabase = () => {
@@ -405,7 +455,7 @@ const TreeNodeContextmenu = {
 
         data.children = []
         data.status = 'disable'
-        connectionStore.removeExpandKey(id)
+        connectionStore.removeExpandKey(databaseId)
         connectionStore.refreshConnectionTree()
       }, 1000)
     }

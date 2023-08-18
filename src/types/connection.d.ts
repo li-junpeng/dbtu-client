@@ -173,6 +173,10 @@ interface TableInstanceNode extends ConnectionTreeNode {
  * 视图节点
  */
 interface ViewNode<T extends ViewInstanceNode> extends ConnectionTreeNode {
+  /**
+   * 数据库名
+   */
+  database: string
   nodeType: 'view'
   children?: T[]
 }
@@ -192,15 +196,23 @@ interface ViewInstanceNode extends ConnectionTreeNode {
 /**
  * 函数节点
  */
-interface FunctionNode extends ConnectionTreeNode {
+interface FunctionNode<T extends FunctionInstanceNode> extends ConnectionTreeNode {
+  /**
+   * 数据库名
+   */
+  database: string
   nodeType: 'function'
-  children?: ConnectionTreeNode[]
+  children?: T[]
 }
 
 /**
  * 函数实例节点
  */
 interface FunctionInstanceNode extends ConnectionTreeNode {
+  /**
+   * 数据库名
+   */
+  database: string
   nodeType: 'function_instance'
 
   /**
@@ -212,30 +224,46 @@ interface FunctionInstanceNode extends ConnectionTreeNode {
 /**
  * 查询节点
  */
-interface SearchNode extends ConnectionTreeNode {
+interface SearchNode<T extends SearchInstanceNode> extends ConnectionTreeNode {
+  /**
+   * 数据库名
+   */
+  database: string
   nodeType: 'search'
-  children?: ConnectionTreeNode[]
+  children?: T[]
 }
 
 /**
  * 查询实例节点
  */
 interface SearchInstanceNode extends ConnectionTreeNode {
+  /**
+   * 数据库名
+   */
+  database: string
   nodeType: 'search_instance'
 }
 
 /**
  * 备份节点
  */
-interface BackupNode extends ConnectionTreeNode {
+interface BackupNode<T extends BackupInstanceNode> extends ConnectionTreeNode {
+  /**
+   * 数据库名
+   */
+  database: string
   nodeType: 'backup'
-  children?: ConnectionTreeNode[]
+  children?: T[]
 }
 
 /**
  * 备份实例节点
  */
 interface BackupInstanceNode extends ConnectionTreeNode {
+  /**
+   * 数据库名
+   */
+  database: string
   nodeType: 'backup_instance'
 }
 

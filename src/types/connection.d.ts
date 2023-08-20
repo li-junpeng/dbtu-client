@@ -294,7 +294,10 @@ interface WorkTabItemProp {
 
 interface WorkTabItem {
   /**
-   * ID, 建议使用${connectionId}_${databaseName}_${table_id}之类的多个ID进行拼接
+   * ID
+   * 建议使用下面规则设置ID:
+   * ${功能, 比如: createTable、queryTable等驼峰命名}_${connectionId | sessionId}_${databaseName}_${table_id}
+   * 建议直接调用workTabStore.generateId()函数生成ID
    */
   id: string
 

@@ -40,12 +40,21 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
      * @param sessionId   会话ID
      * @return true: 已关闭, false: 未匹配成功，未关闭
      */
-    closeTabsBySessionId(sessionId: number): boolean {
+    closeTabsBySessionId(sessionId?: number): boolean {
+      if (!sessionId) {
+        return false
+      }
       // 清空对象面板内容
       if (this.objectPaneProps.sessionId === sessionId) {
         this.objectPaneComponent = null
-        return true
       }
+
+      // 根据tabId判断有没有sessionId
+      Object.keys(this.tabs).forEach(tabId => {
+        if (tabId.indexOf(sessionId + '') >= 0) {
+          this.closeById(tabId)
+        }
+      })
       return false
     },
 
@@ -61,6 +70,20 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
         return true
       }
       return false
+    },
+
+    /**
+     * 
+     * @param flag        选项卡内的主要功能, 英文, 驼峰命名法
+     * @param sessionId   connectionId or sessionId
+     * @param args        内容会拼接到最后
+     */
+    generateId(flag: string, sessionId: number, args: (string | number)[]) {
+      let str = `${flag}_${sessionId}`
+      args.forEach(item => {
+        str += `_${item}`
+      })
+      return str
     },
 
     /**

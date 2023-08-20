@@ -332,7 +332,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
    * @param data  表实例信息
    */
   openTableInstance(data: MySqlTableInstance) {
-    const tabId = `${data.sessionId!}_${data.database}_${data.id}`
+    const tabId = workTabStore.generateId('queryTable', data.sessionId!, [data.database, data.id!])
     workTabStore.addTab(
       {
         id: tabId,
@@ -358,7 +358,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
     }
     workTabStore.addTab(
       {
-        id: `create_table_${database.sessionId}_${databaseName}`,
+        id: workTabStore.generateId('createTable', database.sessionId!, ['databaseName']),
         label: `创建表 - 无标题 @${database.name} (${this.connection.name})`,
         component: () => import('@/components/database/mysql/work-tabs/create-table/index.vue')
       },
@@ -455,6 +455,9 @@ const TreeNodeContextmenu = {
             break
           }
         }
+
+        // 关闭与该数据库有关系的work-tabs
+        workTabStore.closeTabsBySessionId(data.sessionId)
 
         data.children = []
         data.status = 'disable'

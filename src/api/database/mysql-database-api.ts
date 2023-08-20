@@ -47,3 +47,15 @@ export const getDatabaseObject = (sessionId: number, databaseName: string) => {
     params: { sessionId, databaseName }
   })
 }
+
+/**
+ * 查询指定数据库下指定表的数据
+ * 
+ * @param searchParam 查询参数
+ * @returns 查询表数据SQL执行结果
+ */
+export const queryTableData = (searchParam: SearchTableParam) => {
+  return IRequest.get<SQLExecuteResult>('/database/mysql/table-data', {
+    params: searchParam
+  })
+}

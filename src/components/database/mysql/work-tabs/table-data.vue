@@ -7,16 +7,18 @@
 <script setup lang="ts">
 import type { Column } from 'element-plus'
 import { TooltipShowAfter, useComponentRef } from '@/components/element-plus/element-plus-util'
-import MockData from '@/assets/data/mock-table-data-test.json'
 import SizerDrawer from '@/components/ui/sizer-drawer/index.vue'
 import DataSortDrawer from '@/components/ui/data-sort-drawer/index.vue'
+import { queryTableData } from '@/api/database/mysql-database-api'
+import { MessageBox } from '@/components/element-plus/el-feedback-util'
 
 defineExpose({
   name: 'MySQLWorkTabTableDataComponent'
 })
 
-defineProps({
-  data: {
+const props = defineProps({
+  workTabId: String,
+  tableInfo: {
     type: Object as PropType<MySqlTableInstance>,
     required: true
   }
@@ -28,22 +30,44 @@ const fields = [] as string[]
 const whereSql = ref('')
 // 排序语句
 const sortSql = ref('')
+const sqlExecuteResult = shallowRef<SQLExecuteResult>({
+  success: false,
+  executeTime: 0,
+  originSql: ''
+})
+const loadTableData = async () => {
+  const { sessionId, database, name } = props.tableInfo
+  const { status, message, data } = await queryTableData({
+    sessionId: sessionId!,
+    databaseName: database,
+    tableName: name,
+    current: 1,
+    page: 1000
+  })
+  if (status === 'success') {
+    sqlExecuteResult.value = data!
+  } else {
+    MessageBox.error(message)
+  }
+}
+
 const columns = computed<Column[]>(() => {
-  const row = MockData.RECORDS[0]
-  const columns = []
-  for (let key in row) {
+  const _columns = sqlExecuteResult.value.queryResult?.columns || []
+  const columns = [] as Column[]
+  _columns.forEach(_column => {
+    const name = _column.label
     columns.push({
-      key,
-      dataKey: key,
-      title: key,
+      key: name,
+      dataKey: name,
+      title: name,
       width: 150
     })
-    fields.push(key)
-  }
+    fields.push(name)
+  })
   return columns
 })
 const tableData = computed(() => {
-  return MockData.RECORDS
+  return sqlExecuteResult.value.queryResult?.rows || []
 })
 
 const openSizerDrawer = () => {
@@ -53,6 +77,10 @@ const openSizerDrawer = () => {
 const openDataFilter = () => {
   dataSortDrawerRef.value?.open()
 }
+
+onMounted(() => {
+  loadTableData()
+})
 </script>
 
 <template>

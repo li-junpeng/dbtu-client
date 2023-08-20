@@ -1,9 +1,8 @@
 export const DATABASE_PROVIDE_KEY = Symbol()
 
 export interface CreateTableProp {
-  data: {
-    database: MySqlDatabaseInstance
-  }
+  workTabId: string
+  database: MySqlDatabaseInstance
 }
 
 export const TabNames = {

@@ -333,15 +333,16 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
    */
   openTableInstance(data: MySqlTableInstance) {
     const tabId = `${data.sessionId!}_${data.database}_${data.id}`
-    workTabStore.addTab({
-      id: tabId,
-      label: `表 - ${data.name} @${data.database} (${this.connection.name})`,
-      component: () => import('@/components/database/mysql/work-tabs/table-data.vue'),
-      props: {
-        tableInfo: data,
-        workTabId: tabId
+    workTabStore.addTab(
+      {
+        id: tabId,
+        label: `表 - ${data.name} @${data.database} (${this.connection.name})`,
+        component: () => import('@/components/database/mysql/work-tabs/table-data.vue')
+      },
+      {
+        tableInfo: data
       }
-    })
+    )
   }
 
   /**
@@ -355,14 +356,16 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
       MessageBox.error('未找到数据库信息，无法创建表，请刷新页面后再试。').then()
       return
     }
-    workTabStore.addTab({
-      id: `create_table_${database.sessionId}_${databaseName}`,
-      label: `创建表 - 无标题 @${database.name} (${this.connection.name})`,
-      component: () => import('@/components/database/mysql/work-tabs/create-table/index.vue'),
-      props: {
+    workTabStore.addTab(
+      {
+        id: `create_table_${database.sessionId}_${databaseName}`,
+        label: `创建表 - 无标题 @${database.name} (${this.connection.name})`,
+        component: () => import('@/components/database/mysql/work-tabs/create-table/index.vue')
+      },
+      {
         database
       }
-    })
+    )
   }
 
   /**

@@ -36,7 +36,7 @@ const tab = reactive({
 })
 
 // 往下层组件提供当前的数据库信息
-provide(DATABASE_PROVIDE_KEY, props.data.database)
+provide(DATABASE_PROVIDE_KEY, props.database)
 
 // 表字段
 const tableFields = reactive<MySqlTableField[]>([
@@ -97,7 +97,7 @@ const tableIndexRef = useComponentRef(TableIndex)
 
 // 动态生成SQL预览内容
 const tableFieldSql = computed(() => {
-  return genCreateTableSql(props.data.database, tableFields)
+  return genCreateTableSql(props.database, tableFields)
 })
 
 watch(

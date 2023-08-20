@@ -69,7 +69,7 @@ const onRemoveTab = (name: TabPaneName) => {
         </template>
         <component
           :is="tab.component"
-          :data="tab.props"
+          v-bind="tab.props"
         />
       </el-tab-pane>
     </el-tabs>

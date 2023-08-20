@@ -66,9 +66,10 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
     /**
      * 添加tab页
      *
-     * @param option    tab页的属性
+     * @param option tab页的属性
+     * @param props  传给组件的prop
      */
-    addTab(option: WorkTabItem): void {
+    addTab(option: WorkTabItem, props?: Partial<WorkTabItemProp>): void {
       // 重复打开同一个tab时，直接激活已创建的tab
       if (this.activeTabId) {
         const tab = this.tabs[option.id]
@@ -79,6 +80,11 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
       }
 
       try {
+        if (!props) {
+          props = {}
+        }
+        props.workTabId = option.id
+        option.props = props as WorkTabItemProp
         this.tabs[option.id] = option
         this.activeTabId = option.id
         this.tabs[option.id].component = loadAsyncComponent(option.component as () => Promise<{}>, true)

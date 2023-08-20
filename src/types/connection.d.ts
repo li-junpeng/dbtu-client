@@ -283,16 +283,38 @@ interface SQLServer2012ConnectionInfo extends BaseConnectionDetail {
   password?: string
 }
 
+interface WorkTabItemProp {
+  /**
+   * 选项卡的ID
+   */
+  workTabId: string
+
+  [key: string]: any
+}
+
 interface WorkTabItem {
-  // ID, 建议使用${connectionId}_${database_id}_${table_id}之类的多个ID进行拼接
+  /**
+   * ID, 建议使用${connectionId}_${databaseName}_${table_id}之类的多个ID进行拼接
+   */
   id: string
-  // tab标签的名称
+
+  /**
+   * tab标签的名称
+   */
   label: string
-  // 是否需要保存的标识，值 = true时，在标签左侧显示*字符
+
+  /**
+   * 是否需要保存的标识，值 = true时，在标签左侧显示*字符
+   */
   saveFlag?: boolean
-  // tab的内容组件
+
+  /**
+   * tab的内容组件
+   */
   component: () => Promise<{}> | {}
 
-  // 传入组件的数据，propName is data
-  props?: any
+  /**
+   * 传入组件的数据, 系统会自动往props里面添加`workTabId`(当前选项卡的ID)
+   */
+  props?: WorkTabItemProp
 }

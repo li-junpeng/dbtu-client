@@ -35,7 +35,9 @@ const sqlExecuteResult = shallowRef<SQLExecuteResult>({
   executeTime: 0,
   originSql: ''
 })
+const isLoadData = ref(false)
 const loadTableData = async () => {
+  isLoadData.value = true
   const { sessionId, database, name } = props.tableInfo
   const { status, message, data } = await queryTableData({
     sessionId: sessionId!,
@@ -49,6 +51,7 @@ const loadTableData = async () => {
   } else {
     MessageBox.error(message)
   }
+  isLoadData.value = false
 }
 
 const columns = computed<Column[]>(() => {
@@ -127,6 +130,58 @@ onMounted(() => {
         </template>
         <span>导出数据</span>
       </el-button>
+      <div class="button-divided"></div>
+      <el-button
+        text
+        link
+        disabled
+      >
+        <template #icon>
+          <IconPlus />
+        </template>
+        <span>添加记录</span>
+      </el-button>
+      <el-button
+        text
+        link
+        disabled
+      >
+        <template #icon>
+          <IconSemiSelect />
+        </template>
+        <span>删除记录</span>
+      </el-button>
+      <el-button
+        text
+        link
+        disabled
+      >
+        <template #icon>
+          <IconSelect />
+        </template>
+        <span>应用更改</span>
+      </el-button>
+      <el-button
+        text
+        link
+        disabled
+      >
+        <template #icon>
+          <IconCloseBold />
+        </template>
+        <span>放弃更改</span>
+      </el-button>
+      <el-button
+        text
+        link
+        :loading="isLoadData"
+        @click="loadTableData"
+      >
+        <template #icon>
+          <IconRefreshRight />
+        </template>
+        <span>刷新</span>
+      </el-button>
     </div>
     <!-- 中间数据表格 -->
     <div class="center-table">
@@ -148,80 +203,7 @@ onMounted(() => {
     <!-- 底部工具栏和提示栏 -->
     <div class="bottom-toolbox">
       <div>
-        <el-tooltip
-          content="添加记录"
-          :enterable="false"
-          :show-after="TooltipShowAfter"
-        >
-          <el-button
-            text
-            link
-            disabled
-          >
-            <template #icon>
-              <IconPlus />
-            </template>
-          </el-button>
-        </el-tooltip>
-        <el-tooltip
-          content="删除记录"
-          :enterable="false"
-          :show-after="TooltipShowAfter"
-        >
-          <el-button
-            text
-            link
-            disabled
-          >
-            <template #icon>
-              <IconSemiSelect />
-            </template>
-          </el-button>
-        </el-tooltip>
-        <el-tooltip
-          content="应用更改"
-          :enterable="false"
-          :show-after="TooltipShowAfter"
-        >
-          <el-button
-            text
-            link
-            disabled
-          >
-            <template #icon>
-              <IconSelect />
-            </template>
-          </el-button>
-        </el-tooltip>
-        <el-tooltip
-          content="放弃更改"
-          :enterable="false"
-          :show-after="TooltipShowAfter"
-        >
-          <el-button
-            text
-            link
-            disabled
-          >
-            <template #icon>
-              <IconCloseBold />
-            </template>
-          </el-button>
-        </el-tooltip>
-        <el-tooltip
-          content="刷新"
-          :enterable="false"
-          :show-after="TooltipShowAfter"
-        >
-          <el-button
-            text
-            link
-          >
-            <template #icon>
-              <IconRefreshRight />
-            </template>
-          </el-button>
-        </el-tooltip>
+        {{ sqlExecuteResult.originSql || '' }}
       </div>
     </div>
   </div>
@@ -241,6 +223,12 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
+.button-divided {
+  width: 2px;
+  height: 35%;
+  background-color: var(--dbtu-divide-borer-color);
+  margin: 0 12px;
+}
 .table-data-container {
   width: 100%;
   height: 100%;
@@ -252,6 +240,12 @@ onMounted(() => {
     padding: 0 10px;
     display: flex;
     align-items: center;
+    color: var(--dbtu-font-color);
+  }
+
+  .bottom-toolbox {
+    border-top: 1px solid var(--dbtu-divide-borer-color);
+    gap: 40px;
   }
 
   .center-table {

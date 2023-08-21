@@ -7,7 +7,6 @@ import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
 import { openConnection, closeConnection } from '@/api/connection-api'
 import { deleteDatabase, getDatabaseObject, deleteTable, queryTableList } from '@/api/database/mysql-database-api'
-import { el } from 'element-plus/es/locale'
 
 const connectionStore = useConnectionStore()
 const workTabStore = useWorkTabStore()
@@ -375,24 +374,23 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
    * @param databaseName 数据库名
    */
   async loadTable(databaseName: string) {
-    const databases = (this.connection.children || []) as DatabaseNode[]
-    for (let i = 0; i < (databases.length || 0); i++) {
-      if (databases[i].name !== databaseName) {
-        continue
-      }
-      // 可能数据库是关闭状态
-      if (!databases[i].children) {
-        break
-      }
+    const database = this.getDatabase(databaseName)
+    // 可能数据库处于关闭状态
+    if (!database || !database.children) {
+      return
+    }
 
-      const { status, message, data } = await queryTableList(this.connection.sessionId!, databaseName)
-      if (status === 'success') {
-        ;(databases[i].children![0] as TableNode<MySqlTableInstance>).children = data!
-        connectionStore.refreshConnectionTree()
-      } else {
-        MessageBox.error(message)
+    const { status, message, data } = await queryTableList(this.connection.sessionId!, databaseName)
+    if (status === 'success') {
+      for (let i = 0; i < database.children.length; i++) {
+        if (database.children[i].nodeType === 'table') {
+          ;(database.children[i] as TableNode<MySqlTableInstance>).children = data!
+          connectionStore.refreshConnectionTree()
+          break
+        }
       }
-      break
+    } else {
+      MessageBox.error(message)
     }
   }
 

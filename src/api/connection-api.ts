@@ -21,6 +21,16 @@ export const openConnection = <T>(connection: ConnectionInfo<BaseConnectionDetai
 }
 
 /**
+ * 刷新连接
+ *
+ * @param connection 连接信息
+ * @returns 需要返回数据库列表
+ */
+export const refreshConnection = <T>(connection: ConnectionInfo<BaseConnectionDetail>) => {
+  return IRequest.post<T>('/datasource/connection/refresh', connection)
+}
+
+/**
  * 关闭连接
  *
  * @param sessionId 数据库连接会话ID

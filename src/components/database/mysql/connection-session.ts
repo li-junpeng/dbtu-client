@@ -5,7 +5,7 @@ import { useWorkTabStore } from '@/stores/WorkTabStore'
 import { useDynamicDialogStore } from '@/stores/DynamicDialogStore'
 import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
-import { openConnection, closeConnection } from '@/api/connection-api'
+import { openConnection, closeConnection, refreshConnection } from '@/api/connection-api'
 import { deleteDatabase, getDatabaseObject, deleteTable, queryTableList } from '@/api/database/mysql-database-api'
 
 const connectionStore = useConnectionStore()
@@ -41,6 +41,47 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
       return Promise.resolve()
     }
     return Promise.reject(message)
+  }
+
+  async refresh(): Promise<void> {
+    const { status, message, data } = await refreshConnection<MySqlDatabaseInstance[]>(this.connection)
+    if (status === 'success') {
+      const oldDatabases = (this.connection.children as MySqlDatabaseInstance[]) || []
+      const newDatabases = data || []
+      for (let i = oldDatabases.length - 1; i >= 0; i--) {
+        let isDel = true
+        for (let j = newDatabases.length - 1; j >= 0; j--) {
+          if (oldDatabases[i].name === newDatabases[j].name) {
+            isDel = false
+            newDatabases.splice(j, 1)
+            break
+          }
+        }
+        if (isDel) {
+          const databaseName = oldDatabases[i].name
+          // @ts-ignore 判断需不需要移除对象面板
+          if (workTabStore.objectPaneProps['database'] === databaseName) {
+            workTabStore.clearObjectPaneByProp(workTabStore.objectPaneProps)
+          }
+          // 移除相关的work-tab
+          Object.keys(workTabStore.tabs).forEach(tabId => {
+            if (tabId.indexOf(databaseName) >= 0) {
+              workTabStore.closeById(tabId)
+            }
+          })
+          oldDatabases.splice(i, 1)
+        }
+      }
+      newDatabases.forEach(item => {
+        item.status = 'disable'
+        oldDatabases.push(item)
+      })
+      oldDatabases.sort((item1, item2) => item1.name.localeCompare(item2.name))
+
+      return Promise.resolve()
+    } else {
+      return Promise.reject(message)
+    }
   }
 
   nodeContextmenu(event: MouseEvent, data: ConnectionTreeNode) {
@@ -359,7 +400,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
     }
     workTabStore.addTab(
       {
-        id: workTabStore.generateId('createTable', database.sessionId!, ['databaseName']),
+        id: workTabStore.generateId('createTable', database.sessionId!, [databaseName]),
         label: `创建表 - 无标题 @${database.name} (${this.connection.name})`,
         component: () => import('@/components/database/mysql/work-tabs/create-table/index.vue')
       },

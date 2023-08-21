@@ -18,6 +18,11 @@ export interface ConnectionSession<T extends BaseConnectionDetail> {
   close(): Promise<void>
 
   /**
+   * 刷新连接
+   */
+  refresh(): Promise<void>
+
+  /**
    * 获取连接树节点的右键菜单
    *
    * @param event   鼠标事件对象

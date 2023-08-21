@@ -141,6 +141,20 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
     }
   }
 
+  // 刷新连接
+  const refreshConnection = async () => {
+    const session = connectionSessionStore.get(connection.sessionId!)
+    connection.status = 'connecting'
+    try {
+      await session.refresh()
+      loadConnections()
+    } catch(e) {
+      MessageBox.error(e as string)
+    } finally {
+      connection.status = 'connected'
+    }
+  }
+
   Contextmenu({
     event,
     menus: [
@@ -253,7 +267,9 @@ const connectionContextmenu = (event: MouseEvent, connection: ConnectionInfo<Bas
       },
       {
         label: '刷新',
-        disabled: true
+        onClick: () => {
+          refreshConnection()
+        }
       }
     ]
   })

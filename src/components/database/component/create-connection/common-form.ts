@@ -57,6 +57,7 @@ export const useCommonForm = <T extends BaseConnectionDetail>(
     }
 
     isTestConnecting.value = true
+    formData.value.id = Date.now()
     const { status, message } = await testConnection(formData.value)
     if (status === 'success') {
       Message.success(message)

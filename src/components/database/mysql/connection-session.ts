@@ -231,6 +231,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
             onClick: async (): Promise<void> => {
               try {
                 const data = (await dynamicDialogStore.ref.onSubmit()) as MySqlDatabaseInstance
+                data.status = 'disable'
                 data.sessionId = this.connection.id as number
                 if (!this.connection.children) {
                   this.connection.children = []

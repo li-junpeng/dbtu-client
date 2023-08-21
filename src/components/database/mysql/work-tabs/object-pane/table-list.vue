@@ -156,7 +156,9 @@ const paneContextmenu = (event: MouseEvent) => {
       },
       {
         label: '刷新',
-        disabled: true
+        onClick: () => {
+          connectionSession.loadTable(props.data.database)
+        }
       }
     ]
   })

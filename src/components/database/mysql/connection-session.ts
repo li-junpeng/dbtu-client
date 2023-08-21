@@ -370,28 +370,29 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
   }
 
   /**
-   * 刷新指定数据库下的表信息
+   * 加载指定数据库下的表信息
    *
    * @param databaseName 数据库名
    */
   async loadTable(databaseName: string) {
     const databases = (this.connection.children || []) as DatabaseNode[]
     for (let i = 0; i < (databases.length || 0); i++) {
-      if (databases[i].name === databaseName) {
-        // 可能数据库是关闭状态
-        if (!databases[i].children) {
-          break
-        }
-
-        const { status, message, data } = await queryTableList(this.connection.sessionId!, databaseName)
-        if (status === 'success') {
-          ;(databases[i].children![0] as TableNode<MySqlTableInstance>).children = data!
-          connectionStore.refreshConnectionTree()
-        } else {
-          MessageBox.error(message)
-        }
+      if (databases[i].name !== databaseName) {
+        continue
+      }
+      // 可能数据库是关闭状态
+      if (!databases[i].children) {
         break
       }
+
+      const { status, message, data } = await queryTableList(this.connection.sessionId!, databaseName)
+      if (status === 'success') {
+        ;(databases[i].children![0] as TableNode<MySqlTableInstance>).children = data!
+        connectionStore.refreshConnectionTree()
+      } else {
+        MessageBox.error(message)
+      }
+      break
     }
   }
 
@@ -598,7 +599,9 @@ const TreeNodeContextmenu = {
         },
         {
           label: '刷新',
-          disabled: true
+          onClick: () => {
+            session.loadTable(data.database)
+          }
         }
       ]
     })

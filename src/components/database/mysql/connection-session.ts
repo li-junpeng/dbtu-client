@@ -6,7 +6,8 @@ import { useDynamicDialogStore } from '@/stores/DynamicDialogStore'
 import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
 import { openConnection, closeConnection } from '@/api/connection-api'
-import { deleteDatabase, getDatabaseObject } from '@/api/database/mysql-database-api'
+import { deleteDatabase, getDatabaseObject, deleteTable, queryTableList } from '@/api/database/mysql-database-api'
+import { el } from 'element-plus/es/locale'
 
 const connectionStore = useConnectionStore()
 const workTabStore = useWorkTabStore()
@@ -369,17 +370,47 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
   }
 
   /**
+   * 刷新指定数据库下的表信息
+   *
+   * @param databaseName 数据库名
+   */
+  async loadTable(databaseName: string) {
+    const databases = (this.connection.children || []) as DatabaseNode[]
+    for (let i = 0; i < (databases.length || 0); i++) {
+      if (databases[i].name === databaseName) {
+        // 可能数据库是关闭状态
+        if (!databases[i].children) {
+          break
+        }
+
+        const { status, message, data } = await queryTableList(this.connection.sessionId!, databaseName)
+        if (status === 'success') {
+          ;(databases[i].children![0] as TableNode<MySqlTableInstance>).children = data!
+          connectionStore.refreshConnectionTree()
+        } else {
+          MessageBox.error(message)
+        }
+        break
+      }
+    }
+  }
+
+  /**
    * 删除表
    *
    * @param data  表信息
    */
   deleteTable(data: MySqlTableInstance) {
-    MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), done => {
-      // TODO 掉接口删除表，然后重新刷新列表
-      data.name = 'administrative_cont_' + Date.now().toString().substring(9, 13)
+    MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), async done => {
+      const { status, message } = await deleteTable(data.sessionId!, data.database, data.name)
+      if (status === 'success') {
+        this.loadTable(data.database)
+        Message.success(message)
+      } else {
+        MessageBox.error(message)
+      }
 
       done()
-      connectionStore.refreshConnectionTree()
     }).then(() => {})
   }
 

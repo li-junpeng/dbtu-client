@@ -340,6 +340,9 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
       if (status === 'success') {
         for (let i = 0; i < this.connection.children!.length; i++) {
           if (this.connection.children![i].id === data.id) {
+            // 关闭对应的work-tab
+            workTabStore.closeByStr(data.name, 'database')
+            
             this.connection.children!.splice(i, 1)
             // TODO 需要判断该数据库下有没有已经打开的work-tab
             connectionStore.refreshConnectionTree()

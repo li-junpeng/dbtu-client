@@ -73,7 +73,7 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
     },
 
     /**
-     * 
+     *
      * @param flag        选项卡内的主要功能, 英文, 驼峰命名法
      * @param sessionId   connectionId or sessionId
      * @param args        内容会拼接到最后
@@ -124,6 +124,28 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
     closeById(tabId: string) {
       delete this.tabs[tabId]
       this.activeTabId = 'object-pane'
+    },
+
+    /**
+     * 根据传入的str使用tabId.indexOf()做比较, 如果满足条件则关闭这个work-tab
+     * 
+     * @param str                   可能会出现在tabId中的字符
+     * @param objectPanelPropField  在对象面板中可能出现的prop字段名，如果满足则关闭对象面板，不需要关闭对象面板的不需要传入该字段
+     */
+    closeByStr(str: string, objectPanelPropField?: string) {
+      if (objectPanelPropField) {
+        // @ts-ignore
+        if (this.objectPaneProps[objectPanelPropField] === str) {
+          this.clearObjectPaneByProp(this.objectPaneProps)
+        }
+      }
+
+      // 删除work-tab
+      Object.keys(this.tabs).forEach(tabId => {
+        if (tabId.indexOf(str) >= 0) {
+          this.closeById(tabId)
+        }
+      })
     }
   }
 })

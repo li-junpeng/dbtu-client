@@ -58,17 +58,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
           }
         }
         if (isDel) {
-          const databaseName = oldDatabases[i].name
-          // @ts-ignore 判断需不需要移除对象面板
-          if (workTabStore.objectPaneProps['database'] === databaseName) {
-            workTabStore.clearObjectPaneByProp(workTabStore.objectPaneProps)
-          }
-          // 移除相关的work-tab
-          Object.keys(workTabStore.tabs).forEach(tabId => {
-            if (tabId.indexOf(databaseName) >= 0) {
-              workTabStore.closeById(tabId)
-            }
-          })
+          workTabStore.closeByStr(oldDatabases[i].name, 'database')
           oldDatabases.splice(i, 1)
         }
       }

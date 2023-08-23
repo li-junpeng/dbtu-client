@@ -24,7 +24,8 @@ import TableTrigger from './tabs/table-trigger.vue'
 import TableIndex from './tabs/table-index.vue'
 import TableForeignKeys from './tabs/table-foreign-keys.vue'
 
-import { genCreateTableSql } from '../../sql-preview-gen'
+import { generateCreateTableSql } from '@/api/database/mysql-database-api'
+import { MessageBox } from '@/components/element-plus/el-feedback-util'
 
 defineOptions({
   name: 'MySQLCreateTableComponent'
@@ -121,18 +122,38 @@ const tableForeignKeysRef = useComponentRef(TableForeignKeys)
 const tableTriggerRef = useComponentRef(TableTrigger)
 const tableIndexRef = useComponentRef(TableIndex)
 
-// 动态生成SQL预览内容
-const tableFieldSql = computed(() => {
-  return genCreateTableSql(props.database, tableFields)
-})
+// 加载生成SQL语句接口
+const loadGenerateSqlCode = async () => {
+  const { status, message, data } = await generateCreateTableSql(tableInfo, tableTriggers)
+  if (status === 'success') {
+    sqlCode.value = data!
+  } else {
+    MessageBox.error(message)
+    sqlCode.value = ''
+  }
+}
 
 watch(
+  () => tab.selected,
+  tabName => {
+    if (tabName === TabNames.sql_preview) {
+      loadGenerateSqlCode()
+    }
+  }
+)
+
+// 动态生成SQL预览内容
+/* const tableFieldSql = computed(() => {
+  return genCreateTableSql(props.database, tableFields)
+}) */
+
+/* watch(
   () => [tableFieldSql.value],
   () => {
     sqlCode.value = ''
     sqlCode.value += tableFieldSql.value
   }
-)
+) */
 </script>
 
 <template>

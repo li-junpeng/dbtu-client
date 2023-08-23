@@ -65,7 +65,8 @@ const addRow = (index?: number) => {
     id: Date.now(),
     name: '',
     table: props.tableInfo.name,
-    body: ''
+    body: '',
+    forEachRow: true
   }
   if (index === 0) {
     index = void 0

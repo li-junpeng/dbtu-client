@@ -84,3 +84,14 @@ export const queryTableData = (searchParam: SearchTableParam) => {
 export const deleteTable = (sessionId: number, databaseName: string, tableName: string) => {
   return IRequest.post<void>('/database/mysql/drop-table', { sessionId, databaseName, tableName })
 }
+
+/**
+ * 生成SQL语句
+ * 
+ * @param tableInfo 表信息
+ * @param triggers  触发器信息
+ * @returns SQL语句
+ */
+export const generateCreateTableSql = (tableInfo: MySqlTableInstance, triggers: TableTrigger[]) => {
+  return IRequest.post<string>('/database/mysql/generate-sql/create-table', { tableInfo, triggers })
+}

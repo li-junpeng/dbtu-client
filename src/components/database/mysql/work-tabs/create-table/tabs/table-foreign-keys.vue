@@ -168,7 +168,7 @@ const selectFieldColumns = [
     label: '字段',
     component: 'select',
     select: {
-      options: props.tableFields.filter(item => item.field),
+      options: props.tableFields.filter(item => item.name),
       valueKey: 'field',
       labelKey: 'field'
     }

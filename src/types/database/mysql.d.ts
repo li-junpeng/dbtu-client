@@ -173,7 +173,7 @@ interface MySqlTableField {
   /**
    * 字段名
    */
-  field: string
+  name: string
 
   /**
    * 数据类型
@@ -183,12 +183,12 @@ interface MySqlTableField {
   /**
    * 数据类型的最大长度
    */
-  maxLength?: number
+  precision?: number
 
   /**
    * 小数点
    */
-  decimalPoint: number
+  scale: number
 
   /**
    * 不为空

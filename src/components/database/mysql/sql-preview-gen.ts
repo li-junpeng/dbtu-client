@@ -14,11 +14,11 @@ export const genCreateTableSql = (database: MySqlDatabaseInstance, fields: MySql
   // 获取数据类型长度
   const getDataTypeAndLength = (field: MySqlTableField) => {
     let str = ` ${field.dataType}`
-    if (!field.maxLength) return str
+    if (!field.precision) return str
 
-    str += `(${field.maxLength || 0}`
+    str += `(${field.precision || 0}`
     // 小数点
-    if (field.decimalPoint) str += `, ${field.decimalPoint}`
+    if (field.scale) str += `, ${field.scale}`
     return (str += ')')
   }
 
@@ -40,13 +40,11 @@ export const genCreateTableSql = (database: MySqlDatabaseInstance, fields: MySql
 
   let sql = `CREATE TABLE \`${database.name}\`.\`Untitled\` (\n`
   fields.forEach(item => {
-    if (!item.field) return
+    if (!item.name) return
     // 主SQL
-    sql += `\t\`${item.field}\`${getDataTypeAndLength(item)}${getVirtual(item)}${getNotNull(item.notNull)}${getComment(
-      item.comment
-    )},\n`
+    sql += `\t\`${item.name}\`${getDataTypeAndLength(item)}${getVirtual(item)}${getNotNull(item.notNull)}${getComment(item.comment)},\n`
     // 记录主键
-    item.pk && pks.push(item.field)
+    item.pk && pks.push(item.name)
   })
 
   // 拼接主键

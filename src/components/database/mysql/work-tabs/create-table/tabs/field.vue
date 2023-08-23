@@ -52,13 +52,13 @@ const handleField = (row: MySqlTableField) => {
 const addField = (index?: number) => {
   const data = {
     id: Date.now(),
-    field: '',
+    name: '',
     dataType: '',
     notNull: 0,
     virtual: 0,
     comment: '',
     pk: false,
-    decimalPoint: 0,
+    scale: 0,
     options: {}
   } as MySqlTableField
   if (index === 0) {
@@ -233,14 +233,14 @@ const rowContextmenu = (row: MySqlTableField, column: TableColumn, event: MouseE
  * @param row   字段信息
  */
 const onChangeDataType = (row: MySqlTableField) => {
-  row.maxLength = void 0
-  row.decimalPoint = 0
+  row.precision = void 0
+  row.scale = 0
 
   if (!row.dataType) {
     return
   }
 
-  row.maxLength = MySQLDataType[row.dataType].default
+  row.precision = MySQLDataType[row.dataType].default
 }
 
 // 更新字段的属性值

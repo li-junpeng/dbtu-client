@@ -18,7 +18,7 @@ defineOptions({
 })
 
 const props = defineProps<{
-  tableFields: MySqlTableField[]
+  tableFields: TableColumn[]
 }>()
 
 // 注入顶级组件提供的数据库信息
@@ -60,12 +60,16 @@ const refTables = computed(() => {
 
 // 添加外键
 const addForeignKey = () => {
-  foreignKeys.value.push({
+  const _default: Partial<MySqlTableForeignKey> = {
     id: Date.now(),
     name: '',
-    fields: [],
-    refFields: []
-  })
+    referencingColumns: [],
+    referencedColumns: [],
+    referencedSchema: '',
+    referencedTable: '',
+    comment: null
+  }
+  foreignKeys.value.push(_default as MySqlTableForeignKey)
   getSelectedRow().value = foreignKeys.value[foreignKeys.value.length - 1]
 }
 
@@ -117,8 +121,8 @@ const tableColumns = [
       onClear: () => {
         const selectedRow = getSelectedRow().value
         if (selectedRow) {
-          selectedRow.refTable = ''
-          selectedRow.refFields = []
+          selectedRow.referencedTable = ''
+          selectedRow.referencedColumns = []
         }
       }
     }

@@ -15,13 +15,13 @@ import EditableTable, { type TableColumnOption } from '@/components/ui/editable-
 import Contextmenu from '@/components/ui/contextmenu'
 import FieldOption from './field-option.vue'
 
-type TableColumn = TableColumnCtx<unknown>
+type ElTableColumn = TableColumnCtx<unknown>
 
 defineOptions({
   name: 'MySQLCreateTableTabPaneComponent'
 })
 
-const modelValue = defineModel<MySqlTableField[]>({
+const modelValue = defineModel<TableColumn[]>({
   default: []
 })
 
@@ -29,18 +29,18 @@ const editableTableRef = useComponentRef(EditableTable)
 // 表单组件ref
 const selectRef = useComponentRef(ElSelect)
 
-const setCurrentRow = (row: MySqlTableField) => {
+const setCurrentRow = (row: TableColumn) => {
   editableTableRef.value?.setCurrentRow(row)
 }
 
 const getCurrentRow = () => {
-  return editableTableRef.value?.getCurrentRow<MySqlTableField>() || ref(null)
+  return editableTableRef.value?.getCurrentRow<TableColumn>() || ref(null)
 }
 
 // 当字段信息改变时，处理字段信息
-const handleField = (row: MySqlTableField) => {
+const handleField = (row: TableColumn) => {
   if (row.pk) {
-    row.notNull = 1
+    row.notNull = true
   }
 }
 
@@ -54,13 +54,11 @@ const addField = (index?: number) => {
     id: Date.now(),
     name: '',
     dataType: '',
-    notNull: 0,
-    virtual: 0,
+    notNull: false,
     comment: '',
     pk: false,
-    scale: 0,
-    options: {}
-  } as MySqlTableField
+    scale: 0
+  } as TableColumn
   if (index === 0) {
     index = 1
   }
@@ -111,7 +109,7 @@ const appendField = () => {
  *
  * @param row  要复制的字段信息
  */
-const copyField = (row: MySqlTableField) => {
+const copyField = (row: TableColumn) => {
   modelValue.value.push({
     ...row,
     id: Date.now()
@@ -124,7 +122,7 @@ const copyField = (row: MySqlTableField) => {
  *
  * @param row   需要往上移动的字段
  */
-const moveUpField = (row?: MySqlTableField) => {
+const moveUpField = (row?: TableColumn) => {
   if (!row) {
     row = getCurrentRow().value!
   }
@@ -141,7 +139,7 @@ const moveUpField = (row?: MySqlTableField) => {
  *
  * @param row   需要往下移的字段
  */
-const moveDownField = (row?: MySqlTableField) => {
+const moveDownField = (row?: TableColumn) => {
   if (!row) {
     row = getCurrentRow().value!
   }
@@ -158,7 +156,7 @@ const moveDownField = (row?: MySqlTableField) => {
  *
  * @param row  如果不指定字段，则默认以当前选择的字段为准
  */
-const triggerPrimaryKey = (row?: MySqlTableField) => {
+const triggerPrimaryKey = (row?: TableColumn) => {
   if (row) {
     row.pk = !row.pk
     handleField(row)
@@ -172,7 +170,7 @@ const triggerPrimaryKey = (row?: MySqlTableField) => {
   }
 }
 
-const rowContextmenu = (row: MySqlTableField, column: TableColumn, event: MouseEvent) => {
+const rowContextmenu = (row: TableColumn, column: ElTableColumn, event: MouseEvent) => {
   event.preventDefault()
   setCurrentRow(row)
   editableTableRef.value?.setCurrentColumn(null)
@@ -232,8 +230,8 @@ const rowContextmenu = (row: MySqlTableField, column: TableColumn, event: MouseE
  *
  * @param row   字段信息
  */
-const onChangeDataType = (row: MySqlTableField) => {
-  row.precision = void 0
+const onChangeDataType = (row: TableColumn) => {
+  row.precision = 0
   row.scale = 0
 
   if (!row.dataType) {
@@ -241,11 +239,6 @@ const onChangeDataType = (row: MySqlTableField) => {
   }
 
   row.precision = MySQLDataType[row.dataType].default
-}
-
-// 更新字段的属性值
-const onChangeOption = (option: Record<string, any>) => {
-  getCurrentRow().value && (getCurrentRow().value!.options = option)
 }
 
 const tableColumns = [
@@ -396,6 +389,7 @@ onMounted(() => {
   </div>
   <div class="bottom-field-option">
     <el-scrollbar>
+      <!-- TODO 改成v-model -->
       <field-option
         v-if="getCurrentRow().value"
         :field="getCurrentRow().value!"

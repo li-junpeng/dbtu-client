@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import { type TableIndexProp, TableIndexPropDefault } from './table-index'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
-import { ElInput, type TableColumnCtx } from 'element-plus'
+import { type TableColumnCtx } from 'element-plus'
 import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import { IndexTypes } from '@/common/constants/MySqlConstant'
 import Contextmenu from '@/components/ui/contextmenu'
@@ -39,7 +39,11 @@ const addRow = () => {
   tableData.value.push({
     id: Date.now(),
     name: '',
-    fields: []
+    columns: [],
+    method: '',
+    keyBlockSize: 0,
+    type: '',
+    comment: '',
   })
   setCurrentRow(tableData.value[tableData.value.length - 1])
 }
@@ -89,13 +93,14 @@ const rowContextmenu = (row: MySqlTableIndex, column: TableColumn, event: MouseE
 }
 
 // 生成用来描述的表字段文本
-const getFieldText = (fields: MySqlTableIndexField[]) => {
+const getFieldText = (fields: { name: string; precision?: number }[]) => {
+  console.log(fields)
   if (ArrayUtils.isEmpty(fields)) {
     return ''
   }
   return fields
-    .filter(item => item.field)
-    .map(item => `\`${item.field}\``)
+    .filter(item => item.name)
+    .map(item => `\`${item.name}\``)
     .join(',')
 }
 
@@ -107,14 +112,14 @@ const tableColumns = [
     component: 'input'
   },
   {
-    prop: 'fields',
+    prop: 'columns',
     label: '字段',
     width: '300px',
     component: 'text',
     useSlot: true
   },
   {
-    prop: 'indexType',
+    prop: 'type',
     label: '索引类型',
     width: '150px',
     component: 'select',
@@ -124,7 +129,7 @@ const tableColumns = [
     }
   },
   {
-    prop: 'indexMethod',
+    prop: 'method',
     label: '索引方法',
     width: '150px',
     component: 'select',
@@ -163,20 +168,20 @@ defineExpose({
       :columns="tableColumns"
       @row-contextmenu="rowContextmenu"
     >
-      <template #column-fields="{ row, isShowComponent }">
+      <template #column-columns="{ row, isShowComponent }">
         <div
-          v-if="row.fields"
+          v-if="row.columns"
           style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: space-between"
         >
           <div
             class="dbtu-text-ellipsis row-readonly-text"
             style="flex: 1"
           >
-            {{ getFieldText(row.fields) }}
+            {{ getFieldText(row.columns) }}
           </div>
           <SelectFields
             v-show="isShowComponent()"
-            v-model="row.fields"
+            v-model="row.columns"
             :fields="props.tableFields"
           />
         </div>
@@ -200,12 +205,12 @@ defineExpose({
           class="el-input-number__text-left"
         />
       </el-form-item>
-      <el-form-item label="解析器">
+      <!-- <el-form-item label="解析器">
         <el-input
           v-model="getCurrentRow().value!.parser"
           :disabled="getCurrentRow().value!.indexType !== 'FULLTEXT'"
         />
-      </el-form-item>
+      </el-form-item> -->
     </el-form>
   </div>
 </template>

@@ -14,25 +14,26 @@ defineOptions({
 
 const props = defineProps({
   fields: {
-    type: Array as () => MySqlTableField[],
+    type: Array as () => TableColumn[],
     required: true
   }
 })
 
-const fields = defineModel<MySqlTableIndexField[]>({
+const fields = defineModel<{ name: string; precision?: number }[]>({
   required: true
 })
 
 const addField = () => {
   return {
     id: Date.now(),
-    field: ''
+    name: '',
+    precision: null
   }
 }
 
 const columns = [
   {
-    prop: 'field',
+    prop: 'name',
     label: '字段',
     component: 'select',
     select: {
@@ -42,7 +43,7 @@ const columns = [
     }
   },
   {
-    prop: 'subPart',
+    prop: 'precision',
     label: '子部分',
     component: 'input-number',
     width: '150px'

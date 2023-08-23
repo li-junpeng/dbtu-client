@@ -16,7 +16,7 @@ defineOptions({
 })
 
 const props = defineProps<{
-  field: MySqlTableField
+  field: TableColumn
 }>()
 const emits = defineEmits<{
   (e: 'change-option', option: FormDataType): void
@@ -74,7 +74,7 @@ watch(
       label-position="left"
     >
       <!-- 设置虚拟属性 -->
-      <el-form-item
+      <!-- <el-form-item
         v-if="props.field.virtual"
         label="虚拟类型"
         prop="virtualType"
@@ -99,7 +99,7 @@ watch(
         prop="virtualExp"
       >
         <el-input v-model="formData.virtualExp" />
-      </el-form-item>
+      </el-form-item> -->
 
       <!-- 设置枚举值 -->
       <el-form-item
@@ -129,7 +129,6 @@ watch(
           clearable
           style="width: 100%"
           placeholder=" "
-          :disabled="props.field.virtual === 1"
         >
           <el-option
             v-for="item in [
@@ -241,7 +240,6 @@ watch(
       >
         <el-switch
           v-model="formData.update_by_current_timestamp"
-          :disabled="props.field.virtual === 1"
         />
       </el-form-item>
     </el-form>

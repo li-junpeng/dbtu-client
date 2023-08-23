@@ -6,53 +6,37 @@
 -->
 <script setup lang="ts">
 import CharacterAndCollate from '@/assets/data/mysql-character-collate.json'
-import { Compressions } from '@/common/constants/MySqlConstant'
 import { RowFormats } from '@/common/constants/MySqlConstant'
-import {
-  Engines,
-  Storages,
-  TableSpaces,
-  CommonSelectOptions
-} from '@/common/constants/MySqlConstant'
+import { Engines } from '@/common/constants/MySqlConstant'
 
 defineOptions({
   name: 'MySQLTableOptionSettingComponent'
 })
 
-const formData = defineModel<MySqlTableOption>({
+const formData = defineModel<MySqlTableInstance>({
   required: true
 })
 
 const Collates = computed(() => {
-  return CharacterAndCollate[formData.value.character as keyof typeof CharacterAndCollate] || []
+  return CharacterAndCollate[formData.value.charSet as keyof typeof CharacterAndCollate] || []
 })
 
-// 根据引擎来决定显示哪些字段
-const visibleFields = computed<(keyof MySqlTableOption)[]>(() => {
+// @ts-ignore 根据引擎来决定显示哪些字段
+
+const visibleFields = computed<(keyof MySqlTableInstance)[]>(() => {
   const engine = formData.value.engine as (typeof Engines)[number]
   switch (engine) {
     case 'ARCHIVE':
     case 'BLACKHOLE':
     case 'CSV':
     case 'PERFORMANCE_SCHEMA':
-      return [
-        'engine',
-        'tableSpace',
-        'storage',
-        'character',
-        'collate',
-        'rowFormat',
-        'avgRowLength',
-        'maxRows',
-        'minRows',
-        'keyBlockSize'
-      ]
+      return ['engine', 'tableSpace', 'storage', 'charSet', 'collate', 'rowFormat', 'avgRowLength', 'maxRows', 'minRows', 'keyBlockSize']
     case 'InnoDB':
       return [
         'engine',
         'tableSpace',
         'storage',
-        'character',
+        'charSet',
         'collate',
         'autoIncrement',
         'rowFormat',
@@ -73,7 +57,7 @@ const visibleFields = computed<(keyof MySqlTableOption)[]>(() => {
         'engine',
         'tableSpace',
         'storage',
-        'character',
+        'charSet',
         'collate',
         'autoIncrement',
         'rowFormat',
@@ -87,7 +71,7 @@ const visibleFields = computed<(keyof MySqlTableOption)[]>(() => {
         'engine',
         'tableSpace',
         'storage',
-        'character',
+        'charSet',
         'collate',
         'autoIncrement',
         'checksum',
@@ -108,7 +92,7 @@ const visibleFields = computed<(keyof MySqlTableOption)[]>(() => {
         'storage',
         'union',
         'insertMethod',
-        'character',
+        'charSet',
         'collate',
         'rowFormat',
         'avgRowLength',
@@ -135,7 +119,7 @@ const visibleFields = computed<(keyof MySqlTableOption)[]>(() => {
           label="引擎"
         >
           <el-select
-            v-model="formData.engine"
+            v-model="formData.engine as string"
             style="width: 100%"
           >
             <el-option
@@ -147,7 +131,7 @@ const visibleFields = computed<(keyof MySqlTableOption)[]>(() => {
           </el-select>
         </el-form-item>
 
-        <el-form-item
+        <!-- <el-form-item
           v-if="visibleFields.includes('tableSpace')"
           label="表空间"
         >
@@ -165,9 +149,9 @@ const visibleFields = computed<(keyof MySqlTableOption)[]>(() => {
               :label="item"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
 
-        <el-form-item
+        <!-- <el-form-item
           v-if="visibleFields.includes('storage')"
           label="存储"
         >
@@ -184,9 +168,9 @@ const visibleFields = computed<(keyof MySqlTableOption)[]>(() => {
               :label="item"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
 
-        <el-form-item
+        <!-- <el-form-item
           v-if="visibleFields.includes('union')"
           label="联合"
         >
@@ -210,18 +194,19 @@ const visibleFields = computed<(keyof MySqlTableOption)[]>(() => {
               :label="item"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item
-          v-if="visibleFields.includes('character')"
+          v-if="visibleFields.includes('charSet')"
           label="字符集"
         >
           <el-select
-            v-model="formData.character"
+            v-model="formData.charSet as string"
             clearable
             filterable
             placeholder=" "
-            @clear="() => (formData.collate = void 0)"
+            @clear="() => (formData.collate = null)"
+            @change="() => (formData.collate = null)"
             style="width: 100%"
           >
             <el-option
@@ -238,7 +223,7 @@ const visibleFields = computed<(keyof MySqlTableOption)[]>(() => {
           label="排序规则"
         >
           <el-select
-            v-model="formData.collate"
+            v-model="formData.collate as string"
             clearable
             filterable
             placeholder=" "
@@ -259,7 +244,7 @@ const visibleFields = computed<(keyof MySqlTableOption)[]>(() => {
           label="自动递增"
         >
           <el-input-number
-            v-model="formData.autoIncrement"
+            v-model="formData.autoIncrement as number"
             :controls="false"
             class="el-input-number__text-left"
             style="width: 100%"
@@ -269,19 +254,19 @@ const visibleFields = computed<(keyof MySqlTableOption)[]>(() => {
           />
         </el-form-item>
 
-        <el-form-item
+        <!-- <el-form-item
           v-if="visibleFields.includes('checksum')"
           label="校验和"
         >
           <el-switch v-model="formData.checksum" />
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item
           v-if="visibleFields.includes('rowFormat')"
           label="行格式"
         >
           <el-select
-            v-model="formData.rowFormat"
+            v-model="(formData.rowFormat as string)"
             clearable
             placeholder=" "
             style="width: 100%"
@@ -295,7 +280,7 @@ const visibleFields = computed<(keyof MySqlTableOption)[]>(() => {
           </el-select>
         </el-form-item>
 
-        <el-form-item
+        <!-- <el-form-item
           v-if="visibleFields.includes('avgRowLength')"
           label="平均行长度"
         >
@@ -338,9 +323,9 @@ const visibleFields = computed<(keyof MySqlTableOption)[]>(() => {
             :precision="0"
             :value-on-clear="0"
           />
-        </el-form-item>
+        </el-form-item> -->
 
-        <el-form-item
+        <!-- <el-form-item
           v-if="visibleFields.includes('keyBlockSize')"
           label="键块大小"
         >
@@ -480,7 +465,7 @@ const visibleFields = computed<(keyof MySqlTableOption)[]>(() => {
           label="加密"
         >
           <el-switch v-model="formData.encryption" />
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
     </div>
   </el-scrollbar>

@@ -167,6 +167,32 @@ interface TableInstanceNode extends ConnectionTreeNode {
    * 节点类型为表实例
    */
   nodeType: 'table_instance'
+
+  /**
+   * 注释
+   */
+  comment: string | null
+
+  /**
+   * 引擎
+   */
+  engine: string | null
+
+  /**
+   * 字段信息列表
+   */
+  columns: TableColumn[]
+
+  /**
+   * 索引信息
+   */
+  indexes: TableIndex[]
+
+  /**
+   * 外键信息
+   */
+  foreignKeys: TableForeignKey[]
+  
 }
 
 /**

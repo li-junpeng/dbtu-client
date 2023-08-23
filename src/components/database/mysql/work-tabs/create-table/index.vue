@@ -66,51 +66,13 @@ const tableInfo = reactive<MySqlTableInstance>({
 })
 
 // 表字段
-const tableFields = reactive<MySqlTableField[]>([
-  {
-    id: 1,
-    name: 'id',
-    dataType: 'int',
-    precision: 10,
-    scale: 0,
-    notNull: 1,
-    virtual: 0,
-    pk: true,
-    options: {}
-  },
-  {
-    id: 2,
-    name: 'name',
-    dataType: 'varchar',
-    precision: 64,
-    scale: 0,
-    notNull: 0,
-    virtual: 0,
-    pk: false,
-    options: {}
-  },
-  {
-    id: 3,
-    name: 'user_name',
-    dataType: 'varchar',
-    precision: 64,
-    scale: 0,
-    notNull: 0,
-    virtual: 0,
-    pk: false,
-    options: {}
-  }
-])
+const tableFields = reactive<TableColumn[]>([])
 // 索引
 const tableIndexes = reactive<MySqlTableIndex[]>([])
 // 外键
 const tableForeignKeys = reactive<MySqlTableForeignKey[]>([])
 // 表触发器
 const tableTriggers = reactive<TableTrigger[]>([])
-// 表属性信息
-const tableOption = reactive<MySqlTableOption>({
-  ...TableOptionDefault
-})
 // 表注释内容
 const tableCommentText = ref('')
 
@@ -244,7 +206,7 @@ watch(
         label="选项"
         :name="TabNames.option"
       >
-        <TableOption v-model="tableOption" />
+        <TableOption v-model="tableInfo" />
       </el-tab-pane>
       <el-tab-pane
         label="注释"

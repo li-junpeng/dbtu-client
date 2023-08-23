@@ -132,6 +132,175 @@ interface SQLExecuteResult {
 }
 
 /**
+ * 表字段信息
+ */
+interface TableColumn {
+  /**
+   * id
+   */
+  id: number
+
+  /**
+   * 字段名
+   */
+  name: string
+
+  /**
+   * 数据类型
+   */
+  dataType: string
+
+  /**
+   * 精度
+   */
+  precision: number
+
+  /**
+   * 小数点
+   *
+   * @default 0
+   */
+  scale?: number
+
+  /**
+   * 不为NULL
+   *
+   * @default false
+   */
+  notNull?: boolean
+
+  /**
+   * 是否是主键
+   *
+   * @default false
+   */
+  pk?: boolean
+
+  /**
+   * 注释
+   */
+  comment: string | null
+
+  /**
+   * 默认值
+   */
+  defaultValue: any
+
+  /**
+   * 自动递增
+   *
+   * @default false
+   */
+  autoIncrement?: boolean
+
+  /**
+   * 无符号
+   */
+  unsigned?: boolean
+
+  /**
+   * 零填充
+   */
+  zeroFill?: boolean
+
+  /**
+   * 是否为二进制
+   */
+  binary?: boolean
+
+  /**
+   * 字符集
+   */
+  charSet?: string
+
+  /**
+   * 排序规则
+   */
+  collate?: string
+
+  /**
+   * 是否根据当前时间戳更新
+   */
+  onUpdateTimestamp?: boolean
+
+  /**
+   * 枚举值
+   */
+  enums: string[]
+}
+
+/**
+ * 索引信息
+ */
+interface TableIndex {
+  /**
+   * id
+   */
+  id: number
+
+  /**
+   * 索引名
+   */
+  name: string
+
+  /**
+   * 字段
+   */
+  columns: { name: string; precision?: number }[]
+
+  /**
+   * 索引类型
+   */
+  type: string
+
+  /**
+   * 注释
+   */
+  comment: string
+}
+
+/**
+ * 外键信息
+ */
+interface TableForeignKey {
+  
+  /**
+   * id
+   */
+  id: number
+
+  /**
+   * 外键名
+   */
+  name: string
+
+  /**
+   * 当前所属的表字段
+   */
+  referencingColumns: string[]
+
+  /**
+   * 被引用的模式
+   */
+  referencedSchema: string
+
+  /**
+   * 被引用的表
+   */
+  referencedTable: string
+
+  /**
+   * 被引用的字段
+   */
+  referencedColumns: string[]
+
+  /**
+   * 注释
+   */
+  comment: string | null
+}
+
+/**
  * MySql表的触发器
  */
 interface TableTrigger {

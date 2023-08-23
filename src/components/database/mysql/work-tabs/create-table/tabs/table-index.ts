@@ -3,7 +3,7 @@ export interface TableIndexProp {
   /**
    * 表字段
    */
-  tableFields: MySqlTableField[]
+  tableFields: TableColumn[]
 }
 
 export const TableIndexPropDefault: Record<keyof TableIndexProp, any> = {

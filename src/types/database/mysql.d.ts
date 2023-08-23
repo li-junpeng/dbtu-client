@@ -150,11 +150,6 @@ interface MySqlTableInstance extends TableInstanceNode {
   foreignKeys: MySqlTableForeignKey[]
 
   /**
-   * 触发器
-   */
-  triggers: MySqlTableTrigger[]
-
-  /**
    * 表属性
    * TODO 将属性平铺出来...
    */
@@ -377,35 +372,6 @@ interface MySqlTableOption {
    * 如果值为true时, SQL: DELAY_KEY_WRITE = 1
    */
   delayKeyWrite?: boolean
-}
-
-/**
- * MySql表的触发器
- */
-interface MySqlTableTrigger {
-  /**
-   * ID, 在展示的时候有用, 对数据库没用任何作用
-   */
-  id: number
-  /**
-   * 触发器的名称
-   */
-  name: string
-
-  /**
-   * 触发方式
-   */
-  trigger?: 'AFTER' | 'BEFORE'
-
-  /**
-   * 触发时机, 在${trigger}时触发
-   */
-  timing?: 'INSERT' | 'UPDATE' | 'DELETE'
-
-  /**
-   * sql定义
-   */
-  sql?: string
 }
 
 /**

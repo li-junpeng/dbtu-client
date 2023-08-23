@@ -12,6 +12,7 @@ import { ArrayUtils } from '@/common/utils/ArrayUtils'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import MonacoEditor from '@/components/ui/monaco-editor/index.vue'
 import EditableTable, { type TableColumnOption } from '@/components/ui/editable-table'
+import type { PropType } from 'vue'
 
 type TableColumn = TableColumnCtx<unknown>
 
@@ -19,31 +20,38 @@ defineOptions({
   name: 'MySQLTableTriggerSettingComponent'
 })
 
-const tableData = defineModel<MySqlTableTrigger[]>({
+const props = defineProps({
+  tableInfo: {
+    type: Object as PropType<MySqlTableInstance>,
+    required: true
+  }
+})
+
+const tableData = defineModel<TableTrigger[]>({
   required: true
 })
 const rowSql = ref('')
 
 const editableTableRef = useComponentRef(EditableTable)
-const setSelectedRow = (row: MySqlTableTrigger) => {
+const setSelectedRow = (row: TableTrigger) => {
   editableTableRef.value?.setCurrentRow(row)
 }
 const getSelectedRow = () => {
-  return editableTableRef.value?.getCurrentRow<MySqlTableTrigger>() || ref(null)
+  return editableTableRef.value?.getCurrentRow<TableTrigger>() || ref(null)
 }
 
 watch(
   () => rowSql.value,
   () => {
     const selectedRow = getSelectedRow()
-    selectedRow.value && (selectedRow.value.sql = rowSql.value)
+    selectedRow.value && (selectedRow.value.body = rowSql.value)
   }
 )
 
 watch(
   () => getSelectedRow().value,
   () => {
-    rowSql.value = getSelectedRow().value?.sql || ''
+    rowSql.value = getSelectedRow().value?.body || ''
   }
 )
 
@@ -53,15 +61,20 @@ watch(
  * @param index  指定在列表中的位置, 默认在末尾添加
  */
 const addRow = (index?: number) => {
-  const defaultData: MySqlTableTrigger = { id: Date.now(), name: '' }
+  const defaultData: Partial<TableTrigger> = {
+    id: Date.now(),
+    name: '',
+    table: props.tableInfo.name,
+    body: ''
+  }
   if (index === 0) {
     index = void 0
   }
   if (index !== undefined) {
-    tableData.value.splice(index, 0, defaultData)
+    tableData.value.splice(index, 0, defaultData as TableTrigger)
     setSelectedRow(tableData.value[index])
   } else {
-    tableData.value.push(defaultData)
+    tableData.value.push(defaultData as TableTrigger)
     setSelectedRow(tableData.value[tableData.value.length - 1])
   }
 }
@@ -136,7 +149,7 @@ const moveDownRow = () => {
 }
 
 // el-table-column @row-contextmenu
-const rowContextmenu = (row: MySqlTableTrigger, column: TableColumn, event: MouseEvent) => {
+const rowContextmenu = (row: TableTrigger, column: TableColumn, event: MouseEvent) => {
   event.preventDefault()
   getSelectedRow().value = row
   editableTableRef.value?.setCurrentColumn(null)
@@ -195,7 +208,7 @@ const tableColumns = [
     }
   },
   {
-    prop: 'trigger',
+    prop: 'type',
     label: '触发',
     width: '150px',
     component: 'select',
@@ -205,33 +218,48 @@ const tableColumns = [
     }
   },
   {
-    prop: 'timing',
+    prop: 'insert',
     label: '插入',
     width: '100px',
     align: 'center',
     component: 'checkbox',
-    checkbox: {
-      trueValue: 'INSERT'
+    componentProp: {
+      onChange: (value: boolean) => {
+        if (value) {
+          getSelectedRow().value!.update = false
+          getSelectedRow().value!.delete = false
+        }
+      }
     }
   },
   {
-    prop: 'timing',
+    prop: 'update',
     label: '更新',
     width: '100px',
     align: 'center',
     component: 'checkbox',
-    checkbox: {
-      trueValue: 'UPDATE'
+    componentProp: {
+      onChange: (value: boolean) => {
+        if (value) {
+          getSelectedRow().value!.insert = false
+          getSelectedRow().value!.delete = false
+        }
+      }
     }
   },
   {
-    prop: 'timing',
+    prop: 'delete',
     label: '删除',
     width: '100px',
     align: 'center',
     component: 'checkbox',
-    checkbox: {
-      trueValue: 'DELETE'
+    componentProp: {
+      onChange: (value: boolean) => {
+        if (value) {
+          getSelectedRow().value!.insert = false
+          getSelectedRow().value!.update = false
+        }
+      }
     }
   }
 ] as TableColumnOption[]

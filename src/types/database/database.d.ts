@@ -130,3 +130,58 @@ interface SQLExecuteResult {
    */
   updateCount?: number
 }
+
+/**
+ * MySql表的触发器
+ */
+interface TableTrigger {
+  /**
+   * ID, 在展示的时候有用, 对数据库没用任何作用
+   */
+  id: number
+
+  /**
+   * 触发器的名称
+   */
+  name: string
+
+  /**
+   * or replace
+   */
+  orReplace?: boolean
+
+  /**
+   * 触发器类型
+   */
+  type: 'BEFORE' | 'AFTER' | 'INSTEAD_OF'
+
+  /**
+   * 插入时触发
+   */
+  insert?: boolean
+
+  /**
+   * 更新时触发
+   */
+  update?: boolean
+
+  /**
+   * 删除时触发
+   */
+  delete?: boolean
+
+  /**
+   * 指定哪个表生效
+   */
+  table: string
+
+  /**
+   * for each row (行级触发器)
+   */
+  forEachRow?: boolean
+
+  /**
+   * 触发时执行的SQL
+   */
+  body: string
+}

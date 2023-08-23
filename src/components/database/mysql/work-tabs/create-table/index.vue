@@ -38,14 +38,40 @@ const tab = reactive({
 // 往下层组件提供当前的数据库信息
 provide(DATABASE_PROVIDE_KEY, props.database)
 
+const tableInfo = reactive<MySqlTableInstance>({
+  id: Date.now(),
+  database: props.database.name,
+  name: 'Untitled',
+  autoIncrement: null,
+  updateTime: null,
+  dataLength: 0,
+  rowsNum: 0,
+  comment: null,
+  engine: 'InnoDB',
+  fields: [],
+  indexes: [],
+  foreignKeys: [],
+  option: {
+    engine: '',
+    autoIncrement: 0,
+    avgRowLength: 0,
+    maxRows: 0,
+    minRows: 0,
+    keyBlockSize: 0,
+    statsSamplePages: 0,
+    encryption: false
+  },
+  nodeType: 'table_instance'
+})
+
 // 表字段
 const tableFields = reactive<MySqlTableField[]>([
   {
     id: 1,
-    field: 'id',
+    name: 'id',
     dataType: 'int',
-    maxLength: 10,
-    decimalPoint: 0,
+    precision: 10,
+    scale: 0,
     notNull: 1,
     virtual: 0,
     pk: true,
@@ -53,10 +79,10 @@ const tableFields = reactive<MySqlTableField[]>([
   },
   {
     id: 2,
-    field: 'name',
+    name: 'name',
     dataType: 'varchar',
-    maxLength: 64,
-    decimalPoint: 0,
+    precision: 64,
+    scale: 0,
     notNull: 0,
     virtual: 0,
     pk: false,
@@ -64,10 +90,10 @@ const tableFields = reactive<MySqlTableField[]>([
   },
   {
     id: 3,
-    field: 'user_name',
+    name: 'user_name',
     dataType: 'varchar',
-    maxLength: 64,
-    decimalPoint: 0,
+    precision: 64,
+    scale: 0,
     notNull: 0,
     virtual: 0,
     pk: false,
@@ -79,7 +105,7 @@ const tableIndexes = reactive<MySqlTableIndex[]>([])
 // 外键
 const tableForeignKeys = reactive<MySqlTableForeignKey[]>([])
 // 表触发器
-const tableTriggers = reactive<MySqlTableTrigger[]>([])
+const tableTriggers = reactive<TableTrigger[]>([])
 // 表属性信息
 const tableOption = reactive<MySqlTableOption>({
   ...TableOptionDefault
@@ -117,7 +143,7 @@ watch(
       link
       @click="
         () => {
-          console.log(tableForeignKeys)
+          console.log(tableTriggers)
         }
       "
     >
@@ -190,6 +216,7 @@ watch(
         <TableTrigger
           ref="tableTriggerRef"
           v-model="tableTriggers"
+          :table-info="tableInfo"
         />
       </el-tab-pane>
       <el-tab-pane

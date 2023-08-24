@@ -95,3 +95,14 @@ export const deleteTable = (sessionId: number, databaseName: string, tableName: 
 export const generateCreateTableSql = (tableInfo: MySqlTableInstance, triggers: TableTrigger[]) => {
   return IRequest.post<string>('/database/mysql/generate-sql/create-table', { tableInfo, triggers })
 }
+
+/**
+ * 创建表
+ * 
+ * @param tableInfo 表信息
+ * @param triggers  触发器
+ * @returns void
+ */
+export const createTable = (sessionId: number, tableInfo: MySqlTableInstance, triggers: TableTrigger[]) => {
+  return IRequest.post<void>('/database/mysql/create-table', { sessionId, tableInfo, triggers })
+}

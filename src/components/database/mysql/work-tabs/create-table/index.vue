@@ -9,6 +9,7 @@ import type { CreateTableProp } from './index'
 import { TabNames, DATABASE_PROVIDE_KEY } from './index'
 import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import SqlCodePreview from '@/components/ui/sql-code-preview/index.vue'
+import PromptDialog from '@/components/ui/prompt-dialog'
 
 // toolbox components
 import FieldToolbox from './toolbox/field.vue'
@@ -24,7 +25,11 @@ import TableIndex from './tabs/table-index.vue'
 import TableForeignKeys from './tabs/table-foreign-keys.vue'
 
 import { generateCreateTableSql } from '@/api/database/mysql-database-api'
-import { MessageBox } from '@/components/element-plus/el-feedback-util'
+import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
+import { useWorkTabStore } from '@/stores/WorkTabStore'
+import { createTable } from '@/api/database/mysql-database-api'
+import { useConnectionSessionStore } from '@/stores/ConnectionSessionStore'
+import type { MySQLConnectionSession } from '../../connection-session'
 
 defineOptions({
   name: 'MySQLCreateTableComponent'
@@ -34,8 +39,10 @@ const props = defineProps<CreateTableProp>()
 const tab = reactive({
   selected: TabNames.field
 })
+const workTabStore = useWorkTabStore()
+const connectionSessionStore = useConnectionSessionStore()
 // 数据是否有变化
-const isChange = ref(false)
+const isDataChange = ref(false)
 // 是否需要重新请求来获取SQL预览数据
 const isReloadSqlCode = ref(false)
 
@@ -45,7 +52,7 @@ provide(DATABASE_PROVIDE_KEY, props.database)
 // 表信息
 const tableInfo = reactive<MySqlTableInstance>({
   id: Date.now(),
-  name: 'Untitled',
+  name: '',
   autoIncrement: 0,
   updateTime: null,
   dataLength: 0,
@@ -97,14 +104,65 @@ watch(
   }
 )
 
+// 当数据库修改时, 修改work-tab的状态
 watch(
-  () => [tableInfo, tableTriggers],
+  () => isDataChange.value,
   () => {
-    isChange.value = true
-    isReloadSqlCode.value = true
-  },
-  { deep: true }
+    const workTab = workTabStore.tabs[props.workTabId]
+    workTab && (workTab.saveFlag = isDataChange.value)
+  }
 )
+
+const renameDialogRef = useComponentRef(PromptDialog)
+/**
+ * 保存
+ */
+const onSave = async (from?: 'rename') => {
+  if (!tableInfo.name) {
+    renameDialogRef.value?.open()
+    return
+  }
+
+  const { status, message } = await createTable(props.database.sessionId!, tableInfo, tableTriggers)
+  if (status === 'success') {
+    Message.success(message)
+    isDataChange.value = false
+    const session = connectionSessionStore.get(props.database.sessionId!) as MySQLConnectionSession
+    if (session) {
+      session.loadTable(props.database.name)
+    }
+    // 关闭tab
+    workTabStore.closeById(props.workTabId)
+  } else {
+    MessageBox.error(message)
+    if (from === 'rename') tableInfo.name = ''
+  }
+}
+
+/**
+ * 修改表名
+ *
+ * @param name 表名
+ */
+const onChangeTableName = (name: string) => {
+  tableInfo.name = name
+  onSave('rename')
+  return Promise.resolve()
+}
+
+onMounted(() => {
+  // 因为页面初始化时会增加一堆默认值会改变tableInfo和tableTriggers, 所以需要延迟执行
+  setTimeout(() => {
+    watch(
+      () => [tableInfo, tableTriggers],
+      () => {
+        isDataChange.value = true
+        isReloadSqlCode.value = true
+      },
+      { deep: true }
+    )
+  }, 500)
+})
 </script>
 
 <template>
@@ -113,11 +171,7 @@ watch(
     <el-button
       text
       link
-      @click="
-        () => {
-          console.log(tableInfo)
-        }
-      "
+      @click="onSave"
     >
       <template #icon>
         <IconCollection />
@@ -130,12 +184,12 @@ watch(
     ></div>
     <el-button
       v-if="TabNames.sql_preview === tab.selected"
-      text 
+      text
       link
       @click="loadGenerateSqlCode(true)"
     >
       <template #icon>
-        <IconRefresh/>
+        <IconRefresh />
       </template>
       <span>刷新</span>
     </el-button>
@@ -231,6 +285,15 @@ watch(
       </el-tab-pane>
     </el-tabs>
   </div>
+
+  <!-- 表名修改对话框 -->
+  <PromptDialog
+    ref="renameDialogRef"
+    title="表名"
+    label="输入表名"
+    :validateRule="{ required: true, message: '表名不能必填项' }"
+    :confirm="onChangeTableName"
+  />
 </template>
 
 <style scoped lang="scss">

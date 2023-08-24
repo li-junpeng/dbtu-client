@@ -53,7 +53,9 @@ const handleConfirm = () => {
     dialog.loading = true
     try {
       const message = await props.confirm(formData.name)
-      Message.success(message || '保存成功')
+      if (message) {
+        Message.success(message || '保存成功')
+      }
       dialog.visible = false
     } catch (e) {
       MessageBox.error((e as string) || '保存失败。')

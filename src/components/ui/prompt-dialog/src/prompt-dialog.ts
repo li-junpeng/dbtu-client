@@ -52,7 +52,7 @@ export interface PromptDialogProp {
    * - 返回Promise.resolve(message), 关闭对话框，并调用MessageBox.me
    * - 返回Promise.reject(message), 不关闭对话框, 并调用MessageBox.error(message)打印错误内容
    */
-  confirm: (value: string) => Promise<string>
+  confirm: (value: string) => Promise<string | void>
 
   /**
    * 确定按钮文本

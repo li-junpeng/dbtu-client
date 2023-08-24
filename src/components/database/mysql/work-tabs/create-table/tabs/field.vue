@@ -243,7 +243,7 @@ const onChangeDataType = (row: TableColumn) => {
 
 const tableColumns = [
   {
-    prop: 'field',
+    prop: 'name',
     label: '字段名',
     width: '300px',
     component: 'input',
@@ -260,7 +260,7 @@ const tableColumns = [
     slotRef: selectRef
   },
   {
-    prop: 'maxLength',
+    prop: 'precision',
     label: '长度',
     width: '140px',
     component: 'input-number',
@@ -270,7 +270,7 @@ const tableColumns = [
     }
   },
   {
-    prop: 'decimalPoint',
+    prop: 'scale',
     label: '小数点',
     width: '140px',
     component: 'input-number',
@@ -284,13 +284,9 @@ const tableColumns = [
     label: '不是null',
     width: '80px',
     align: 'center',
-    component: 'checkbox',
-    checkbox: {
-      trueValue: 1,
-      falseValue: 0
-    }
+    component: 'checkbox'
   },
-  {
+  /* {
     prop: 'virtual',
     label: '虚拟',
     width: '80px',
@@ -300,7 +296,7 @@ const tableColumns = [
       trueValue: 1,
       falseValue: 0
     }
-  },
+  }, */
   {
     prop: 'pk',
     label: '主键',
@@ -389,11 +385,9 @@ onMounted(() => {
   </div>
   <div class="bottom-field-option">
     <el-scrollbar>
-      <!-- TODO 改成v-model -->
       <field-option
         v-if="getCurrentRow().value"
-        :field="getCurrentRow().value!"
-        @change-option="onChangeOption"
+        v-model="getCurrentRow().value as TableColumn"
       />
     </el-scrollbar>
   </div>

@@ -23,7 +23,24 @@ const props = defineProps<{
 
 // 注入顶级组件提供的数据库信息
 const database = inject<MySqlDatabaseInstance>(DATABASE_PROVIDE_KEY)
-const actionModes = ['CASCADE', 'NO ACTION', 'RESTRICT', 'SET NULL']
+const actionModes = [
+  {
+    key: 'CASCADE',
+    label: 'CASCADE'
+  },
+  {
+    key: 'NO_ACTION',
+    label: 'NO ACTION'
+  },
+  {
+    key: 'RESTRICT',
+    label: 'RESTRICT'
+  },
+  {
+    key: 'SET NULL',
+    label: 'SET_NULL'
+  }
+]
 
 const connectionSessionStore = useConnectionSessionStore()
 
@@ -101,14 +118,14 @@ const tableColumns = [
     }
   },
   {
-    prop: 'fields',
+    prop: 'referencingColumns',
     label: '字段',
     width: '250px',
     component: 'select',
     useSlot: true
   },
   {
-    prop: 'refDatabase',
+    prop: 'referencedSchema',
     label: '被引用的数据库',
     width: '200px',
     component: 'select',
@@ -128,7 +145,7 @@ const tableColumns = [
     }
   },
   {
-    prop: 'refTable',
+    prop: 'referencedTable',
     label: '被引用的表',
     width: '200px',
     component: 'select',
@@ -138,51 +155,57 @@ const tableColumns = [
     }
   },
   {
-    prop: 'refFields',
+    prop: 'referencedColumns',
     label: '被引用的字段',
     width: '200px',
     component: 'text',
     useSlot: true
   },
   {
-    prop: 'deleteMode',
+    prop: 'onDelete',
     label: '删除',
     width: '150px',
     component: 'select',
     select: {
       options: actionModes,
-      clearable: true
+      clearable: true,
+      labelKey: 'label',
+      valueKey: 'key'
     }
   },
   {
-    prop: 'updateMode',
+    prop: 'onUpdate',
     label: '更新',
     width: '150px',
     component: 'select',
     select: {
       options: actionModes,
-      clearable: true
+      clearable: true,
+      labelKey: 'label',
+      valueKey: 'key'
     }
   }
 ] as TableColumnOption[]
 
-const selectFieldColumns = [
-  {
-    prop: 'field',
-    label: '字段',
-    component: 'select',
-    select: {
-      options: props.tableFields.filter(item => item.name),
-      valueKey: 'field',
-      labelKey: 'field'
+const selectFieldColumns = computed<TableColumnOption[]>(() => {
+  return [
+    {
+      prop: 'name',
+      label: '字段',
+      component: 'select',
+      select: {
+        options: props.tableFields.filter(item => item.name),
+        valueKey: 'name',
+        labelKey: 'name'
+      }
     }
-  }
-] as TableColumnOption[]
+  ]
+})
 
-const getFieldText = (fields: { id: number; field: '' }[]) => {
+const getFieldText = (fields: { id: number; name: '' }[]) => {
   return fields
-    .filter(item => item.field)
-    .map(item => item.field)
+    .filter(item => item.name)
+    .map(item => item.name)
     .join(',')
 }
 
@@ -207,16 +230,16 @@ defineExpose({
         :columns="tableColumns"
       >
         <!-- 字段 -->
-        <template #column-fields="{ row }">
+        <template #column-referencingColumns="{ row }">
           <div style="width: 100%; display: flex; align-items: center">
             <div
               class="dbtu-text-ellipsis row-readonly-text"
               style="flex: 1"
             >
-              {{ getFieldText(row.fields) }}
+              {{ getFieldText(row.referencingColumns) }}
             </div>
             <EditableTablePopover
-              v-model="row.fields"
+              v-model="row.referencingColumns"
               :columns="selectFieldColumns"
               row-key="id"
               add-button-text="添加字段"
@@ -225,7 +248,7 @@ defineExpose({
                 () => {
                   return {
                     id: Date.now(),
-                    field: ''
+                    name: ''
                   }
                 }
               "
@@ -233,10 +256,10 @@ defineExpose({
           </div>
         </template>
         <!-- 被引用的表 -->
-        <template #column-refTable="{ row, isShowComponent }">
+        <template #column-referencedTable="{ row, isShowComponent }">
           <el-select
             v-if="isShowComponent()"
-            v-model="row.refTable"
+            v-model="row.referencedTable"
             clearable
             filterable
             placeholder=" "
@@ -253,11 +276,11 @@ defineExpose({
             v-else
             class="row-readonly-text"
           >
-            {{ row.refTable }}
+            {{ row.referencedTable }}
           </span>
         </template>
         <!-- 被引用的字段 -->
-        <template #column-refFields> 456 </template>
+        <template #column-referencedColumns> 456 </template>
       </EditableTable>
     </template>
   </el-auto-resizer>

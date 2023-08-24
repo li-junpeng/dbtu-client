@@ -19,7 +19,6 @@ import TriggerToolbox from './toolbox/trigger.vue'
 // tab-pane components
 import FieldTabPane from './tabs/field.vue'
 import TableOption from './tabs/table-option.vue'
-import { TableOptionDefault } from './tabs/table-option'
 import TableTrigger from './tabs/table-trigger.vue'
 import TableIndex from './tabs/table-index.vue'
 import TableForeignKeys from './tabs/table-foreign-keys.vue'
@@ -39,42 +38,28 @@ const tab = reactive({
 // 往下层组件提供当前的数据库信息
 provide(DATABASE_PROVIDE_KEY, props.database)
 
+// 表信息
 const tableInfo = reactive<MySqlTableInstance>({
   id: Date.now(),
-  database: props.database.name,
   name: 'Untitled',
-  autoIncrement: null,
+  autoIncrement: 0,
   updateTime: null,
   dataLength: 0,
   rowsNum: 0,
+  charSet: props.database.character,
+  collate: props.database.collate,
+  rowFormat: null,
+  database: props.database.name,
+  nodeType: 'table_instance',
   comment: null,
   engine: 'InnoDB',
-  fields: [],
+  columns: [],
   indexes: [],
-  foreignKeys: [],
-  option: {
-    engine: '',
-    autoIncrement: 0,
-    avgRowLength: 0,
-    maxRows: 0,
-    minRows: 0,
-    keyBlockSize: 0,
-    statsSamplePages: 0,
-    encryption: false
-  },
-  nodeType: 'table_instance'
+  foreignKeys: []
 })
 
-// 表字段
-const tableFields = reactive<TableColumn[]>([])
-// 索引
-const tableIndexes = reactive<MySqlTableIndex[]>([])
-// 外键
-const tableForeignKeys = reactive<MySqlTableForeignKey[]>([])
 // 表触发器
 const tableTriggers = reactive<TableTrigger[]>([])
-// 表注释内容
-const tableCommentText = ref('')
 
 // SQL预览的内容
 const sqlCode = ref('')
@@ -103,19 +88,6 @@ watch(
     }
   }
 )
-
-// 动态生成SQL预览内容
-/* const tableFieldSql = computed(() => {
-  return genCreateTableSql(props.database, tableFields)
-}) */
-
-/* watch(
-  () => [tableFieldSql.value],
-  () => {
-    sqlCode.value = ''
-    sqlCode.value += tableFieldSql.value
-  }
-) */
 </script>
 
 <template>
@@ -126,7 +98,7 @@ watch(
       link
       @click="
         () => {
-          console.log(tableTriggers)
+          console.log(tableInfo)
         }
       "
     >
@@ -169,7 +141,7 @@ watch(
       >
         <FieldTabPane
           ref="fieldTabPaneRef"
-          v-model="tableFields"
+          v-model="tableInfo.columns"
         />
       </el-tab-pane>
       <el-tab-pane
@@ -177,8 +149,8 @@ watch(
         :name="TabNames.index"
       >
         <TableIndex
-          v-model="tableIndexes"
-          :table-fields="tableFields"
+          v-model="(tableInfo.indexes as MySqlTableIndex[])"
+          :table-fields="tableInfo.columns"
           ref="tableIndexRef"
         />
       </el-tab-pane>
@@ -188,8 +160,8 @@ watch(
       >
         <TableForeignKeys
           ref="tableForeignKeysRef"
-          v-model="tableForeignKeys"
-          :table-fields="tableFields"
+          v-model="(tableInfo.foreignKeys as MySqlTableForeignKey[])"
+          :table-fields="tableInfo.columns"
         />
       </el-tab-pane>
       <el-tab-pane
@@ -213,7 +185,7 @@ watch(
         :name="TabNames.comment"
       >
         <el-input
-          v-model="tableCommentText"
+          v-model="tableInfo.comment"
           :maxlength="1000"
           show-word-limit
           type="textarea"

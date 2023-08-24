@@ -246,7 +246,7 @@ interface TableIndex {
   /**
    * 字段
    */
-  columns: { name: string; precision?: number }[]
+  columns: { id: number, name: string; precision?: number }[]
 
   /**
    * 索引类型
@@ -263,7 +263,6 @@ interface TableIndex {
  * 外键信息
  */
 interface TableForeignKey {
-  
   /**
    * id
    */
@@ -277,7 +276,7 @@ interface TableForeignKey {
   /**
    * 当前所属的表字段
    */
-  referencingColumns: string[]
+  referencingColumns: { id: number; name: string }[]
 
   /**
    * 被引用的模式
@@ -292,7 +291,7 @@ interface TableForeignKey {
   /**
    * 被引用的字段
    */
-  referencedColumns: string[]
+  referencedColumns: { id: number; name: string }[]
 
   /**
    * 注释

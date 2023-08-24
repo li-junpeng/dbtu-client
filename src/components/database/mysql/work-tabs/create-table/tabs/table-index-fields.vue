@@ -38,8 +38,8 @@ const columns = [
     component: 'select',
     select: {
       options: props.fields,
-      labelKey: 'field',
-      valueKey: 'field'
+      labelKey: 'name',
+      valueKey: 'name'
     }
   },
   {

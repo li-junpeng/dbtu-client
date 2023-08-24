@@ -94,7 +94,6 @@ const rowContextmenu = (row: MySqlTableIndex, column: TableColumn, event: MouseE
 
 // 生成用来描述的表字段文本
 const getFieldText = (fields: { name: string; precision?: number }[]) => {
-  console.log(fields)
   if (ArrayUtils.isEmpty(fields)) {
     return ''
   }

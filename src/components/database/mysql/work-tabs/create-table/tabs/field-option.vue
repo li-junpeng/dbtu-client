@@ -9,56 +9,42 @@ import { MySQLDataType } from '@/common/constants/DataTypeConstant'
 import CharacterAndCollate from '@/assets/data/mysql-character-collate.json'
 import SetEnumValuesPopover from '@/components/ui/set-enum-values-popover/index.vue'
 
-type FormDataType = Partial<Record<MySqlTableFieldOption | 'virtualType' | 'virtualExp', any>>
-
 defineOptions({
   name: 'MySQLCreateTableTabFieldOptionComponent'
 })
 
-const props = defineProps<{
-  field: TableColumn
-}>()
-const emits = defineEmits<{
-  (e: 'change-option', option: FormDataType): void
-}>()
-const formData = reactive<FormDataType>({
-  default_value: ''
+const columnInfo = defineModel<TableColumn>({
+  required: true,
+  default: {}
 })
+
 // 标识字段用到了哪些属性
 const optionsComFlags = computed(() => {
-  return MySQLDataType[props.field.dataType]?.options || []
+  return MySQLDataType[columnInfo.value.dataType]?.options || []
 })
 // 设置的枚举值
-const enumValues = ref<string[]>([])
-const onChangeEnums = (data: any, formData: FormDataType) => {
-  formData.enum_values = data.text
-  enumValues.value = data.text.split(',') || []
+const enumValuesText = ref('')
+const onChangeEnums = (data: any) => {
+  columnInfo.value.enums = data.enums.map((item: { id: number; enum: string }) => item.enum)
+  enumValuesText.value = data.text
 }
 
 const collates = computed<string[]>(() => {
-  return CharacterAndCollate[formData.character as keyof typeof CharacterAndCollate] || []
+  return CharacterAndCollate[columnInfo.value.charSet as keyof typeof CharacterAndCollate] || []
 })
 
 // 变更字段数据类型后需要情况默认值
 watch(
-  () => props.field.dataType,
+  () => columnInfo.value.dataType,
   () => {
-    formData.default_value = ''
+    columnInfo.value.defaultValue = ''
   }
 )
 
 watch(
-  () => formData,
+  () => columnInfo.value.charSet,
   () => {
-    emits('change-option', formData)
-  },
-  { deep: true }
-)
-
-watch(
-  () => formData.character,
-  () => {
-    formData.collate = null
+    columnInfo.value.collate = void 0
   }
 )
 </script>
@@ -69,7 +55,7 @@ watch(
     class="container"
   >
     <el-form
-      :model="formData"
+      :model="columnInfo"
       :label-width="80"
       label-position="left"
     >
@@ -108,11 +94,11 @@ watch(
       >
         <div style="width: 100%; display: flex; gap: 10px">
           <el-input
-            v-model="formData.enum_values"
+            v-model="enumValuesText"
             disabled
             style="flex: 1"
           />
-          <SetEnumValuesPopover @change-enums="data => onChangeEnums(data, formData)">
+          <SetEnumValuesPopover @change-enums="data => onChangeEnums(data)">
             <el-button type="info">设置</el-button>
           </SetEnumValuesPopover>
         </div>
@@ -125,7 +111,7 @@ watch(
         prop="default"
       >
         <el-select
-          v-model="formData.default_value"
+          v-model="columnInfo.defaultValue"
           clearable
           style="width: 100%"
           placeholder=" "
@@ -134,9 +120,7 @@ watch(
             v-for="item in [
               'EMPTY_STRING',
               'NULL',
-              ...(props.field.dataType === 'enum' || props.field.dataType === 'set'
-                ? enumValues
-                : [])
+              ...(columnInfo.dataType === 'enum' || columnInfo.dataType === 'set' ? (columnInfo.enums || []) : [])
             ]"
             :key="item"
             :value="item"
@@ -150,7 +134,7 @@ watch(
         label="自动递增"
         prop="auto_increment"
       >
-        <el-switch v-model="formData.auto_increment" />
+        <el-switch v-model="columnInfo.autoIncrement" />
       </el-form-item>
 
       <el-form-item
@@ -158,7 +142,7 @@ watch(
         label="无符号"
         prop="un_signed"
       >
-        <el-switch v-model="formData.un_signed" />
+        <el-switch v-model="columnInfo.unsigned" />
       </el-form-item>
 
       <el-form-item
@@ -166,7 +150,7 @@ watch(
         label="零填充"
         prop="zero_fill"
       >
-        <el-switch v-model="formData.zero_fill" />
+        <el-switch v-model="columnInfo.zeroFill" />
       </el-form-item>
 
       <el-form-item
@@ -174,7 +158,7 @@ watch(
         label="字符集"
       >
         <el-select
-          v-model="formData.character"
+          v-model="columnInfo.charSet"
           placeholder=" "
           filterable
           clearable
@@ -194,7 +178,7 @@ watch(
         label="排序规则"
       >
         <el-select
-          v-model="formData.collate"
+          v-model="columnInfo.collate"
           placeholder=" "
           filterable
           clearable
@@ -217,7 +201,7 @@ watch(
       >
         <el-input-number
           :controls="false"
-          :disabled="!props.field.pk"
+          :disabled="!columnInfo.pk"
           :precision="0"
           class="el-input-number__text-left"
           style="width: 100%"
@@ -229,7 +213,7 @@ watch(
         label="二进制"
         prop="binary"
       >
-        <el-switch v-model="formData.binary" />
+        <el-switch v-model="columnInfo.binary" />
       </el-form-item>
 
       <el-form-item
@@ -238,9 +222,7 @@ watch(
         prop="update_by_current_timestamp"
         :label-width="140"
       >
-        <el-switch
-          v-model="formData.update_by_current_timestamp"
-        />
+        <el-switch v-model="columnInfo.onUpdateTimestamp" />
       </el-form-item>
     </el-form>
   </div>

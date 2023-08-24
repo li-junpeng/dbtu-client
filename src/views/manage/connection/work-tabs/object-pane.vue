@@ -33,7 +33,7 @@ const workTabStore = useWorkTabStore()
 
   .table-list-wrapper {
     width: 100%;
-    height: calc(100% - 40px);
+    height: calc(100% - 74px);
     color: var(--dbtu-font-color);
     padding: 0 10px;
 
@@ -64,6 +64,20 @@ const workTabStore = useWorkTabStore()
         color: var(--dbtu-theme-color);
       }
     }
+  }
+
+  .bottom-tip {
+    width: 100%;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    padding: 0 10px;
+    color: var(--dbtu-font-color);
+    border-top: 1px solid var(--dbtu-divide-borer-color);
+    font-size: var(--dbtu-font-size);
+    line-height: 1;
+    cursor: default;
   }
 }
 </style>

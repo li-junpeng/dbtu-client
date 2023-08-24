@@ -6,10 +6,7 @@
 -->
 <script setup lang="ts">
 import type { ObjectPaneProps } from '@/views/manage/connection/work-tabs/object-pane'
-import type {
-  RowEventHandlerParams,
-  RowEventHandlers
-} from 'element-plus/es/components/table-v2/src/row'
+import type { RowEventHandlerParams, RowEventHandlers } from 'element-plus/es/components/table-v2/src/row'
 import type { Column, RowClassNameGetter } from 'element-plus'
 import type { MySQLConnectionSession } from '@/components/database/mysql/connection-session'
 import { useConnectionSessionStore } from '@/stores/ConnectionSessionStore'
@@ -85,9 +82,7 @@ const selectedRow = ref<MySqlTableInstance | null>(null)
 const searchName = ref('')
 // 连接会话
 const connectionSessionStore = useConnectionSessionStore()
-const connectionSession = connectionSessionStore.get(
-  props.data.sessionId!
-) as MySQLConnectionSession
+const connectionSession = connectionSessionStore.get(props.data.sessionId!) as MySQLConnectionSession
 
 // 表格数据
 const tableData = computed<MySqlTableInstance[]>(() => {
@@ -95,6 +90,8 @@ const tableData = computed<MySqlTableInstance[]>(() => {
   if (StringUtils.isEmpty(searchName.value)) {
     return array
   }
+
+  selectedRow.value = null
   return array.filter(item => item.name.indexOf(searchName.value) >= 0)
 })
 
@@ -167,6 +164,20 @@ const paneContextmenu = (event: MouseEvent) => {
 const openTable = () => {
   selectedRow.value && connectionSession.openTableInstance(selectedRow.value)
 }
+
+const bottomText = computed(() => {
+  let text = `${props.data.children?.length || 0} 个表`
+
+  if (props.data.children?.length !== tableData.value.length) {
+    text += `, 筛选 ${tableData.value.length} 个表`
+  }
+
+  if (selectedRow.value) {
+    text += `, 当前选中 ${selectedRow.value.name}`
+  }
+
+  return text
+})
 </script>
 
 <template>
@@ -214,6 +225,16 @@ const openTable = () => {
           <IconDelete />
         </template>
         <span>删除表</span>
+      </el-button>
+      <el-button
+        text
+        link
+        @click="connectionSession.loadTable(props.data.database)"
+      >
+        <template #icon>
+          <IconRefresh />
+        </template>
+        <span>刷新表</span>
       </el-button>
       <el-button
         text
@@ -293,6 +314,11 @@ const openTable = () => {
         </el-table-v2>
       </template>
     </el-auto-resizer>
+  </div>
+
+  <!-- 底部提示栏 -->
+  <div class="bottom-tip">
+    {{ bottomText }}
   </div>
 </template>
 

@@ -171,7 +171,7 @@ onMounted(() => {
     <el-button
       text
       link
-      @click="onSave"
+      @click="onSave()"
     >
       <template #icon>
         <IconCollection />

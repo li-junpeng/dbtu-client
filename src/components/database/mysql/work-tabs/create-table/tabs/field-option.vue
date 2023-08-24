@@ -194,7 +194,7 @@ watch(
         </el-select>
       </el-form-item>
 
-      <el-form-item
+      <!-- <el-form-item
         v-if="optionsComFlags.includes('key_length')"
         label="键长度"
         prop="key_length"
@@ -206,7 +206,7 @@ watch(
           class="el-input-number__text-left"
           style="width: 100%"
         />
-      </el-form-item>
+      </el-form-item> -->
 
       <el-form-item
         v-if="optionsComFlags.includes('binary')"

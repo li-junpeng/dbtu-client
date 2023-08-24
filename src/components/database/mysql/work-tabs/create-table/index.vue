@@ -71,6 +71,7 @@ const tableIndexRef = useComponentRef(TableIndex)
 
 // 加载生成SQL语句接口
 const loadGenerateSqlCode = async () => {
+  sqlCode.value = ''
   const { status, message, data } = await generateCreateTableSql(tableInfo, tableTriggers)
   if (status === 'success') {
     sqlCode.value = data!

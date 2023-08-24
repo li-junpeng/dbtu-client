@@ -37,6 +37,10 @@ const workTabStore = useWorkTabStore()
     color: var(--dbtu-font-color);
     padding: 0 10px;
 
+    &.no-bottom {
+      height: calc(100% - 40px);
+    }
+
     .table-list-v2 {
       .el-table-v2__header-row,
       .el-table-v2__row {

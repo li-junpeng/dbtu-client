@@ -34,6 +34,10 @@ const props = defineProps<CreateTableProp>()
 const tab = reactive({
   selected: TabNames.field
 })
+// 数据是否有变化
+const isChange = ref(false)
+// 是否需要重新请求来获取SQL预览数据
+const isReloadSqlCode = ref(false)
 
 // 往下层组件提供当前的数据库信息
 provide(DATABASE_PROVIDE_KEY, props.database)
@@ -70,8 +74,10 @@ const tableTriggerRef = useComponentRef(TableTrigger)
 const tableIndexRef = useComponentRef(TableIndex)
 
 // 加载生成SQL语句接口
-const loadGenerateSqlCode = async () => {
-  sqlCode.value = ''
+const loadGenerateSqlCode = async (force: boolean = false) => {
+  if (!isReloadSqlCode.value && !force) return
+
+  sqlCode.value = '-- 正在生成SQL语句，请稍等...'
   const { status, message, data } = await generateCreateTableSql(tableInfo, tableTriggers)
   if (status === 'success') {
     sqlCode.value = data!
@@ -79,6 +85,7 @@ const loadGenerateSqlCode = async () => {
     MessageBox.error(message)
     sqlCode.value = ''
   }
+  isReloadSqlCode.value = false
 }
 
 watch(
@@ -88,6 +95,15 @@ watch(
       loadGenerateSqlCode()
     }
   }
+)
+
+watch(
+  () => [tableInfo, tableTriggers],
+  () => {
+    isChange.value = true
+    isReloadSqlCode.value = true
+  },
+  { deep: true }
 )
 </script>
 
@@ -110,8 +126,19 @@ watch(
     </el-button>
     <div
       class="item-divided"
-      v-show="![TabNames.option, TabNames.comment, TabNames.sql_preview].includes(tab.selected)"
+      v-show="![TabNames.option, TabNames.comment].includes(tab.selected)"
     ></div>
+    <el-button
+      v-if="TabNames.sql_preview === tab.selected"
+      text 
+      link
+      @click="loadGenerateSqlCode(true)"
+    >
+      <template #icon>
+        <IconRefresh/>
+      </template>
+      <span>刷新</span>
+    </el-button>
     <field-toolbox
       v-show="tab.selected === TabNames.field"
       :tab-pane-ref="fieldTabPaneRef"
@@ -150,7 +177,7 @@ watch(
         :name="TabNames.index"
       >
         <TableIndex
-          v-model="(tableInfo.indexes as MySqlTableIndex[])"
+          v-model="tableInfo.indexes as MySqlTableIndex[]"
           :table-fields="tableInfo.columns"
           ref="tableIndexRef"
         />
@@ -161,7 +188,7 @@ watch(
       >
         <TableForeignKeys
           ref="tableForeignKeysRef"
-          v-model="(tableInfo.foreignKeys as MySqlTableForeignKey[])"
+          v-model="tableInfo.foreignKeys as MySqlTableForeignKey[]"
           :table-fields="tableInfo.columns"
         />
       </el-tab-pane>

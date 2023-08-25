@@ -5,13 +5,13 @@
  * @date 2023-07-26 16-53
 -->
 <script setup lang="ts">
-import type { Column } from 'element-plus'
 import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import SizerDrawer from '@/components/ui/sizer-drawer/index.vue'
 import DataSortDrawer from '@/components/ui/data-sort-drawer/index.vue'
 import { queryTableData } from '@/api/database/mysql-database-api'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
-import type { CSSProperties } from 'vue'
+import { dataTypeConvert } from '@/common/constants/DataTypeConvert'
+import DataGrid, { type DataGridColumn } from '@/components/ui/data-grid'
 
 defineExpose({
   name: 'MySQLWorkTabTableDataComponent'
@@ -36,7 +36,12 @@ const sqlExecuteResult = shallowRef<SQLExecuteResult>({
   executeTime: 0,
   originSql: ''
 })
+
+// 是否正在加载数据
 const isLoadData = ref(false)
+/**
+ * 请求后台接口获取表格数据
+ */
 const loadTableData = async () => {
   isLoadData.value = true
   const { sessionId, database, name } = props.tableInfo
@@ -55,62 +60,21 @@ const loadTableData = async () => {
   isLoadData.value = false
 }
 
-const columns = computed<Column[]>(() => {
-  const _columns = sqlExecuteResult.value.queryResult?.columns || []
-  const columns = [
-    {
-      key: '_____index',
-      dataKey: '_____index',
-      title: '#',
-      width: 46,
-      align: 'center',
-      cellRenderer: ({ rowIndex }) => {
-        return h(
-          'span',
-          {
-            style: {
-              color: 'var(--dbtu-font-color)',
-              cursor: 'default',
-              userSelect: 'none'
-            } as CSSProperties
-          },
-          rowIndex + 1
-        ) as any
-      }
-    }
-  ] as Column[]
-  _columns.forEach(_column => {
-    const name = _column.label
-    columns.push({
-      key: name,
-      dataKey: name,
-      title: name,
-      width: 150
+const columns = computed<DataGridColumn[]>(() => {
+  const array = [] as DataGridColumn[]
+  (sqlExecuteResult.value.queryResult?.columns || []).forEach(item => {
+    array.push({
+      key: item.name,
+      label: item.name,
+      dataType: dataTypeConvert(item.dataType)
     })
-    fields.push(name)
   })
-  return columns
+  return array
 })
 
-// 表格没有数据的标识(tableData.length === 0)
-const isNoneData = ref(false)
-const noneDataRow = computed(() => {
-  const row = {} as Record<string, string>
-  columns.value.forEach(column => {
-    row[column.key] = '(N/A)'
-  })
-  return row
-})
 // 表格的数据
 const tableData = computed(() => {
-  const rows = sqlExecuteResult.value.queryResult?.rows || []
-  if (rows.length >= 1) {
-    isNoneData.value = false
-    return rows
-  } else {
-    isNoneData.value = true
-    return [noneDataRow.value]
-  }
+  return sqlExecuteResult.value.queryResult?.rows || []
 })
 
 const openSizerDrawer = () => {
@@ -226,23 +190,10 @@ onMounted(() => {
     </div>
     <!-- 中间数据表格 -->
     <div class="center-table">
-      <el-auto-resizer>
-        <template #default="{ height, width }">
-          <el-table-v2
-            :columns="columns"
-            :data="tableData"
-            :width="width"
-            :height="height"
-            :header-height="34"
-            :row-height="34"
-            fixed
-            class="table-border"
-            :class="{
-              'is-none-data': isNoneData
-            }"
-          />
-        </template>
-      </el-auto-resizer>
+      <DataGrid
+        :columns="columns"
+        :data="tableData"
+      />
     </div>
     <!-- 底部工具栏和提示栏 -->
     <div class="bottom-toolbox">
@@ -291,7 +242,7 @@ onMounted(() => {
     border-top: 1px solid var(--dbtu-divide-borer-color);
     gap: 40px;
     height: 34px;
-    
+
     * {
       font-size: calc(var(--dbtu-font-size) - 2px);
     }
@@ -303,15 +254,6 @@ onMounted(() => {
     border-left: none;
     border-right: none;
     padding: 0 10px;
-  }
-}
-
-:deep(.el-table-v2) {
-  &.is-none-data {
-    &:not(.is-dynamic) .el-table-v2__cell-text {
-      color: var(--dbtu-font-color-disabled);
-      user-select: none;
-    }
   }
 }
 </style>

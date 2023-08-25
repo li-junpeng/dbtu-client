@@ -6,11 +6,12 @@
 -->
 <script setup lang="ts">
 import type { Column } from 'element-plus'
-import { TooltipShowAfter, useComponentRef } from '@/components/element-plus/element-plus-util'
+import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import SizerDrawer from '@/components/ui/sizer-drawer/index.vue'
 import DataSortDrawer from '@/components/ui/data-sort-drawer/index.vue'
 import { queryTableData } from '@/api/database/mysql-database-api'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
+import type { CSSProperties } from 'vue'
 
 defineExpose({
   name: 'MySQLWorkTabTableDataComponent'
@@ -56,7 +57,28 @@ const loadTableData = async () => {
 
 const columns = computed<Column[]>(() => {
   const _columns = sqlExecuteResult.value.queryResult?.columns || []
-  const columns = [] as Column[]
+  const columns = [
+    {
+      key: '_____index',
+      dataKey: '_____index',
+      title: '#',
+      width: 46,
+      align: 'center',
+      cellRenderer: ({ rowIndex }) => {
+        return h(
+          'span',
+          {
+            style: {
+              color: 'var(--dbtu-font-color)',
+              cursor: 'default',
+              userSelect: 'none'
+            } as CSSProperties
+          },
+          rowIndex + 1
+        ) as any
+      }
+    }
+  ] as Column[]
   _columns.forEach(_column => {
     const name = _column.label
     columns.push({
@@ -69,8 +91,26 @@ const columns = computed<Column[]>(() => {
   })
   return columns
 })
+
+// 表格没有数据的标识(tableData.length === 0)
+const isNoneData = ref(false)
+const noneDataRow = computed(() => {
+  const row = {} as Record<string, string>
+  columns.value.forEach(column => {
+    row[column.key] = '(N/A)'
+  })
+  return row
+})
+// 表格的数据
 const tableData = computed(() => {
-  return sqlExecuteResult.value.queryResult?.rows || []
+  const rows = sqlExecuteResult.value.queryResult?.rows || []
+  if (rows.length >= 1) {
+    isNoneData.value = false
+    return rows
+  } else {
+    isNoneData.value = true
+    return [noneDataRow.value]
+  }
 })
 
 const openSizerDrawer = () => {
@@ -90,6 +130,18 @@ onMounted(() => {
   <div class="table-data-container">
     <!-- 头部工具栏 -->
     <div class="header-toolbox">
+      <el-button
+        text
+        link
+        :loading="isLoadData"
+        @click="loadTableData"
+      >
+        <template #icon>
+          <IconRefreshRight />
+        </template>
+        <span>刷新</span>
+      </el-button>
+      <div class="button-divided"></div>
       <el-button
         text
         link
@@ -171,17 +223,6 @@ onMounted(() => {
         </template>
         <span>放弃更改</span>
       </el-button>
-      <el-button
-        text
-        link
-        :loading="isLoadData"
-        @click="loadTableData"
-      >
-        <template #icon>
-          <IconRefreshRight />
-        </template>
-        <span>刷新</span>
-      </el-button>
     </div>
     <!-- 中间数据表格 -->
     <div class="center-table">
@@ -196,6 +237,9 @@ onMounted(() => {
             :row-height="34"
             fixed
             class="table-border"
+            :class="{
+              'is-none-data': isNoneData
+            }"
           />
         </template>
       </el-auto-resizer>
@@ -236,7 +280,7 @@ onMounted(() => {
   .header-toolbox,
   .bottom-toolbox {
     width: 100%;
-    height: 40px;
+    height: 34px;
     padding: 0 10px;
     display: flex;
     align-items: center;
@@ -246,14 +290,28 @@ onMounted(() => {
   .bottom-toolbox {
     border-top: 1px solid var(--dbtu-divide-borer-color);
     gap: 40px;
+    height: 34px;
+    
+    * {
+      font-size: calc(var(--dbtu-font-size) - 2px);
+    }
   }
 
   .center-table {
     width: 100%;
-    height: calc(100% - 80px);
+    height: calc(100% - 68px);
     border-left: none;
     border-right: none;
     padding: 0 10px;
+  }
+}
+
+:deep(.el-table-v2) {
+  &.is-none-data {
+    &:not(.is-dynamic) .el-table-v2__cell-text {
+      color: var(--dbtu-font-color-disabled);
+      user-select: none;
+    }
   }
 }
 </style>

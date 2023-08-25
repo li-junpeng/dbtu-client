@@ -64,9 +64,9 @@ const columns = computed<DataGridColumn[]>(() => {
   const array = [] as DataGridColumn[]
   (sqlExecuteResult.value.queryResult?.columns || []).forEach(item => {
     array.push({
-      key: item.name,
-      label: item.name,
-      dataType: dataTypeConvert(item.dataType)
+      key: item.label,
+      label: item.label,
+      dataType: dataTypeConvert(item.dataTypeOfJava)
     })
   })
   return array

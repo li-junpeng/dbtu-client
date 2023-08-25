@@ -5,7 +5,7 @@
  * @date 2023-08-25 14:03
 -->
 <script setup lang="ts">
-import DataGrid, { type TableColumn } from '@/components/ui/data-grid'
+import DataGrid, { type DataGridColumn } from '@/components/ui/data-grid'
 
 defineOptions({
   name: 'name'
@@ -23,7 +23,7 @@ const columns = [
     width: 150,
     dataType: 'string'
   }
-] as TableColumn[]
+] as DataGridColumn[]
 const data = reactive([])
 </script>
 

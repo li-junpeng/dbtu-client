@@ -1,6 +1,6 @@
 
 
-export type TableColumn = {
+export type DataGridColumn = {
   /**
    * 字段的key
    */
@@ -22,7 +22,7 @@ export interface DataGridProp {
   /**
    * 表的列
    */
-  columns: TableColumn[]
+  columns: DataGridColumn[]
 
   /**
    * 表格数据

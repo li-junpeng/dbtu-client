@@ -8,6 +8,7 @@
 import { ref, type CSSProperties } from 'vue'
 import type { DataGridProp } from './data-grid'
 import type { Column as ElTableColumn } from 'element-plus'
+import { ArrayUtils } from '@/common/utils/ArrayUtils';
 
 defineOptions({
   name: 'DataGridComponent'
@@ -23,12 +24,10 @@ const props = withDefaults(defineProps<DataGridProp>(), {
 const isNoneData = ref(false)
 
 // 表字段
-const columns = ref<ElTableColumn[]>([])
-
-/**
- * 创建表字段
- */
-const createTableColumn = () => {
+const columns = computed(() => {
+  if (ArrayUtils.isEmpty(props.columns)) {
+    return []
+  }
   const array = [] as ElTableColumn[]
 
   // 序号列
@@ -54,7 +53,7 @@ const createTableColumn = () => {
       }
     })
   }
-
+  
   props.columns.forEach(item => {
     array.push({
       key: item.key,
@@ -63,9 +62,8 @@ const createTableColumn = () => {
       width: item.dataType === 'string' ? 300 : 150
     })
   })
-
-  columns.value = array
-}
+  return array
+})
 
 // 表格数据
 const tableData = computed(() => {
@@ -93,10 +91,6 @@ const createEmptyData = () => {
   })
   return row
 }
-
-onMounted(() => {
-  createTableColumn()
-})
 </script>
 
 <template>

@@ -81,6 +81,8 @@ export const getColumnWidth = (dataType: DbDataType): number => {
       return 200
     case 'datetime':
       return 190
+    case 'enum':
+      return 100
     default:
       return 150
   }

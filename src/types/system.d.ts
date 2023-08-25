@@ -1,7 +1,23 @@
 /**
  * 数据库的数据类型转成js的数据类型, 方便不同的数据库统一管理
  */
-type DbDataType = 'string' | 'number' | 'date' | 'time' | 'datetime' | 'blob' | 'enum'
+type DbDataType =
+  // 字符串
+  | 'string'
+  // 数值
+  | 'number'
+  // 日期
+  | 'date'
+  // 时间
+  | 'time'
+  // 日期时间
+  | 'datetime'
+  // blob
+  | 'blob'
+  // 枚举, 单选
+  | 'enum'
+  // set集合, 多选
+  | 'set'
 
 /**
  * 实体类基础字段

@@ -1,4 +1,9 @@
 /**
+ * 数据库的数据类型转成js的数据类型, 方便不同的数据库统一管理
+ */
+type DbDataType = 'string' | 'number' | 'date' | 'blob'
+
+/**
  * 实体类基础字段
  */
 interface BaseEntity {
@@ -124,3 +129,25 @@ interface IResponse<T> {
  * @param K 需要变成可选的字段名，比如: 'name' | 'age' | 'password'
  */
 type Optional<T, K extends typeof T> = Omit<T, K> & Partial<Pick<T, K>>
+
+type OptionalKeys<T> = {
+  [K in keyof T]-?: {} extends Pick<T, K> ? K : never
+}[keyof T]
+
+/**
+ * 将可选字段变为必填字段, 将必填字段变为可选字段
+ *
+ * @example
+ * interface Foo {
+ *    a: string
+ *    b?: string
+ * }
+ *
+ * type Bar = Flip<Foo>
+ * // 输出如下:
+ * type Bar = {
+ *    a?: string
+ *    b: string
+ * }
+ */
+type Flip<T> = Required<Pick<T, OptionalKeys<T>>> & Partial<Omit<T, OptionalKeys<T>>> extends infer O ? { [K in keyof O]: O[K] } : never

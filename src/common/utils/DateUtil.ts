@@ -5,7 +5,7 @@ export const DateUtil = {
    * @param timestamp 时间戳
    * @returns yyyy-MM-dd HH:mm:ss 格式的时间
    */
-  timestamp2Str(timestamp: number): string {
+  timestamp2Str(timestamp: number | string): string {
     return new Date(timestamp)
       .toLocaleString()
       .replace(/\//g, '-')

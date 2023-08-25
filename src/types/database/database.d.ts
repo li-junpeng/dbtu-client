@@ -29,13 +29,48 @@ interface SearchTableParam {
 }
 
 /**
+ * 查询表数据时的表字段信息(想要字段的其他属性信息, 参考TableColumn类)
+ */
+interface SearchTableField {
+  /**
+   * 在数据表中的字段名
+   */
+  name: string
+
+  /**
+   * SQL中为字段名起的别名
+   */
+  label: string
+
+  /**
+   * 在数据库中的数据类型
+   */
+  dataType: string
+
+  /**
+   * 在Java中的数据类型
+   */
+  dataTypeOfJava: string
+
+  /**
+   * 小数点
+   */
+  scale: number
+
+  /**
+   * 是否自增
+   */
+  autoIncrement: boolean
+}
+
+/**
  * SQL查询语句执行结果
  */
 interface SqlQueryResult {
   /**
    * 列信息
    */
-  columns: TableColumn[]
+  columns: SearchTableField[]
 
   /**
    * 行数据

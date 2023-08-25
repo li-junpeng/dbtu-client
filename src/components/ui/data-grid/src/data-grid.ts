@@ -1,4 +1,6 @@
-
+import { ArrayUtils } from '@/common/utils/ArrayUtils'
+import { DateUtil } from '@/common/utils/DateUtil'
+import dayjs from 'dayjs'
 
 export type DataGridColumn = {
   /**
@@ -15,7 +17,6 @@ export type DataGridColumn = {
    * 数据类型
    */
   dataType: DbDataType
-
 }
 
 export interface DataGridProp {
@@ -56,4 +57,54 @@ export interface DataGridProp {
    * @default (N/A)
    */
   noneDataValue?: string
+}
+
+/**
+ * 根据数据类型决定值的对齐方式
+ *
+ * @param dataType 数据类型
+ * @returns 对齐方式
+ */
+export const getAlignByDataType = (dataType: DbDataType): 'left' | 'center' | 'right' => {
+  switch (dataType) {
+    case 'number':
+      return 'right'
+    default:
+      return 'left'
+  }
+}
+
+export const getColumnWidth = (dataType: DbDataType): number => {
+  switch (dataType) {
+    case 'string':
+      return 300
+    case 'datetime':
+      return 190
+    default:
+      return 150
+  }
+}
+
+/**
+ * 根据数据类型解析值
+ *
+ * @param cellData 列的值
+ * @param column   列信息
+ * @returns 值
+ */
+export const parseValue = (cellData: any, column: DataGridColumn): string => {
+  switch (column.dataType) {
+    case 'datetime':
+      if (ArrayUtils.isArray(cellData) && cellData.length === 6) {
+        return dayjs(`${cellData[0]}-${cellData[1]}-${cellData[2]} ${cellData[3]}:${cellData[4]}:${cellData[5]}`).format(
+          'YYYY-MM-DD HH:mm:ss'
+        )
+      }
+      const str = dayjs(cellData).format('YYYY-MM-DD HH:mm:ss')
+      return str === 'Invalid Date' ? cellData : str
+    case 'date':
+      return dayjs('2023-08-25 00:00:00').format('YYYY-MM-DD')
+    default:
+      return cellData
+  }
 }

@@ -1,32 +1,25 @@
 // 数据类型转换器, 将数据库的数据库类型转换成前端需要的类型
 
+/**
+ * 转换数据类型
+ *
+ * @param str Java中的数据类型
+ * @returns ts中的类型
+ */
 export const dataTypeConvert = (str: string): DbDataType => {
   switch (str) {
-    case 'int':
-    case 'tinyint':
-    case 'mediumint':
-    case 'smallint':
-    case 'bigint':
-    case 'decimal':
-    case 'float':
-    case 'double':
-    case 'float':
+    case 'Long':
+    case 'Integer':
+    case 'Double':
+    case 'BigDecimal':
       return 'number'
-    case 'date':
+    case 'Date':
       return 'date'
-    case 'time':
+    case 'Time':
       return 'time'
-    case 'datetime':
-    case 'timestamp':
+    case 'LocalDateTime':
+    case 'Timestamp':
       return 'datetime'
-    case 'enum':
-    case 'set':
-      return 'enum'
-    case 'blob':
-    case 'longblob':
-    case 'mediumblob':
-    case 'tinyblob':
-      return 'blob'
     default:
       return 'string'
   }

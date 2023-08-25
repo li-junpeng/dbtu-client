@@ -7,8 +7,9 @@
 <script setup lang="ts">
 import { ref, type CSSProperties } from 'vue'
 import type { DataGridProp } from './data-grid'
+import { getAlignByDataType, getColumnWidth, parseValue } from './data-grid'
 import type { Column as ElTableColumn } from 'element-plus'
-import { ArrayUtils } from '@/common/utils/ArrayUtils';
+import { ArrayUtils } from '@/common/utils/ArrayUtils'
 
 defineOptions({
   name: 'DataGridComponent'
@@ -53,13 +54,29 @@ const columns = computed(() => {
       }
     })
   }
-  
+
   props.columns.forEach(item => {
     array.push({
       key: item.key,
       dataKey: item.key,
       title: item.label,
-      width: item.dataType === 'string' ? 300 : 150
+      width: getColumnWidth(item.dataType),
+      cellRenderer: ({ cellData }) => {
+        return h(
+          'span',
+          {
+            style: {
+              color: 'var(--dbtu-font-color)',
+              cursor: 'default',
+              userSelect: 'none',
+              textAlign: getAlignByDataType(item.dataType).toString(),
+              display: 'inline-block',
+              width: '100%'
+            } as CSSProperties
+          },
+          parseValue(cellData, item)
+        )
+      }
     })
   })
   return array

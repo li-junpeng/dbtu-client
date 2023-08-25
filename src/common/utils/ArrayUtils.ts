@@ -153,5 +153,12 @@ export const ArrayUtils = {
     }
     // 项不存在
     return false
+  },
+
+  /**、
+   * js实现判断是不是数组
+   */
+  isArray(obj: any): boolean {
+    return Object.prototype.toString.call(obj) === '[object Array]'
   }
 }

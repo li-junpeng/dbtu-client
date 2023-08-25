@@ -66,9 +66,7 @@ const columns = computed(() => {
           'span',
           {
             style: {
-              color: 'var(--dbtu-font-color)',
               cursor: 'default',
-              userSelect: 'none',
               textAlign: getAlignByDataType(item.dataType).toString(),
               display: 'inline-block',
               width: '100%'
@@ -133,10 +131,16 @@ const createEmptyData = () => {
 <style scoped lang="scss">
 :deep(.el-table-v2) {
   &.is-none-data {
-    &:not(.is-dynamic) .el-table-v2__cell-text {
+    &:not(.is-dynamic) .el-table-v2__cell-text,
+    &:not(.is-dynamic) .el-table-v2__row-cell span {
       color: var(--dbtu-font-color-disabled);
       user-select: none;
     }
   }
+
+  &:not(.is-dynamic) .el-table-v2__cell-text,
+    &:not(.is-dynamic) .el-table-v2__row-cell span {
+      color: var(--dbtu-font-color);
+    }
 }
 </style>

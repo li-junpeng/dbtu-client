@@ -75,9 +75,10 @@ export const getAlignByDataType = (dataType: DbDataType): 'left' | 'center' | 'r
 }
 
 export const getColumnWidth = (dataType: DbDataType): number => {
+  // TODO enum 和 set是错误的
   switch (dataType) {
     case 'string':
-      return 300
+      return 200
     case 'datetime':
       return 190
     default:
@@ -101,7 +102,7 @@ export const parseValue = (cellData: any, column: DataGridColumn): string => {
         )
       }
       const str = dayjs(cellData).format('YYYY-MM-DD HH:mm:ss')
-      return str === 'Invalid Date' ? cellData : str
+      return str === 'Invalid Date' ? cellData || '0000-00-00 00:00:00' : str
     case 'date':
       return dayjs('2023-08-25 00:00:00').format('YYYY-MM-DD')
     default:

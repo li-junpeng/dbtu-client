@@ -1,4 +1,40 @@
 /**
+ * 查询表数据时需要的筛选条件
+ */
+interface SearchTableFilterParam {
+  /**
+   * 字段名
+   */
+  field: string
+
+  /**
+   * 运算符
+   */
+  operator: string
+
+  /**
+   * 值
+   */
+  value: string | number | boolean
+
+  /**
+   * 与同级别的关系
+   */
+  relation: 'AND' | 'OR'
+
+  /**
+   * 子条件
+   */
+  children: SearchTableFilterParam[]
+
+  /**
+   * 与子条件的关系
+   */
+  childrenRelation?: 'AND' | 'OR'
+
+}
+
+/**
  * 查询表数据需要的参数
  */
 interface SearchTableParam {
@@ -30,30 +66,12 @@ interface SearchTableParam {
   /**
    * 筛选条件
    */
-  filters?: {
-
-    /**
-     * 字段名
-     */
-    field: string
-
-    /**
-     * 运算符
-     */
-    operator: string
-
-    /**
-     * 值
-     */
-    value: string
-    
-  }[]
+  filters?: SearchTableFilterParam[]
 
   /**
    * 排序规则
    */
   sorts?: {
-    
     /**
      * 字段名
      */
@@ -63,7 +81,6 @@ interface SearchTableParam {
      * 排序规则
      */
     rule: 'ASC' | 'DESC'
-
   }[]
 }
 

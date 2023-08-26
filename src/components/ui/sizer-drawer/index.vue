@@ -6,16 +6,12 @@
 -->
 <script setup lang="ts">
 import type { TreeNode } from 'element-plus/es/components/tree-v2/src/types'
-import {
-  type ConditionItem,
-  type SizerDrawerProp,
-  SizerDrawerPropDefault,
-  TreeV2Props
-} from '@/components/ui/sizer-drawer/define'
+import { type ConditionItem, type SizerDrawerProp, SizerDrawerPropDefault, TreeV2Props } from '@/components/ui/sizer-drawer/define'
 import { TooltipShowAfter, useComponentRef } from '@/components/element-plus/element-plus-util'
 import { JudgeConditions } from '@/common/constants/ConnectionConstant'
 import SqlCodePreview from '@/components/ui/sql-code-preview/index.vue'
 import Contextmenu from '@/components/ui/contextmenu'
+import { StringUtils } from '@/common/utils/StringUtils'
 
 defineOptions({
   name: 'SizerDrawerComponent'
@@ -33,7 +29,7 @@ const emits = defineEmits<{
    * @param e     event name
    * @param sql   sql code
    */
-  (e: 'apply-sizer', sql: string): void
+  (e: 'apply-sizer', data: { filters: SearchTableFilterParam[]; sql: string }): void
 }>()
 const conditions = reactive<ConditionItem[]>([])
 
@@ -175,7 +171,30 @@ const sql = computed(() => {
 })
 
 const onApply = () => {
-  emits('apply-sizer', sql.value)
+  const _filters = [] as SearchTableFilterParam[]
+
+  const dg = (array: ConditionItem[], _: SearchTableFilterParam[]) => {
+    array
+      .filter(item => item.use && StringUtils.isNotEmpty(item.field))
+      .forEach(item => {
+        const _child = {
+          field: item.field,
+          operator: item.condition,
+          value: item.value,
+          relation: item.relation,
+          children: [],
+          childrenRelation: item.childrenRelation
+        }
+        if (item.children && item.children.length >= 1) {
+          dg(item.children, _child.children)
+        }
+        _.push(_child)
+      })
+  }
+
+  dg(conditions, _filters)
+
+  emits('apply-sizer', { filters: _filters, sql: sql.value })
   drawer.visible = false
 }
 
@@ -205,6 +224,24 @@ const treeNodeContextmenu = (event: MouseEvent, node: TreeNode, data: ConditionI
   })
 }
 
+const onDisableAll = () => {
+  const dg = (_: ConditionItem[]) => {
+    _.forEach(item => {
+      item.use = 0
+      if (item.children && item.children.length >= 1) {
+        dg(item.children)
+      }
+    })
+  }
+  dg(conditions)
+}
+
+const onClearAll = () => {
+  for (let i = conditions.length - 1; i >= 0; i--) {
+    conditions.splice(i, 1)
+  }
+}
+
 defineExpose({
   open
 })
@@ -230,6 +267,26 @@ defineExpose({
         </template>
         <span>添加条件</span>
       </el-button>
+      <el-button
+        text
+        link
+        @click="onDisableAll()"
+      >
+        <template #icon>
+          <IconRemove />
+        </template>
+        <span>全部禁用</span>
+      </el-button>
+      <el-button
+        text
+        link
+        @click="onClearAll()"
+      >
+        <template #icon>
+          <DIconClear />
+        </template>
+        <span>清除条件</span>
+      </el-button>
     </div>
     <div style="width: 100%; height: calc(100% - 270px)">
       <el-scrollbar>
@@ -247,9 +304,7 @@ defineExpose({
               class="i-tree-node"
               @contextmenu.prevent.stop="treeNodeContextmenu($event, node, data)"
             >
-              <div
-                style="display: flex; gap: 10px; flex: 1; align-items: center; line-height: 40px"
-              >
+              <div style="display: flex; gap: 10px; flex: 1; align-items: center; line-height: 40px">
                 <el-checkbox
                   v-model="data.use"
                   :true-label="1"
@@ -259,12 +314,8 @@ defineExpose({
                   :style="{
                     display: 'flex',
                     gap: '10px',
-                    color: data.use
-                      ? 'var(--dbtu-font-color)'
-                      : 'var(--dbtu-border-disabled-color)',
-                    '--sizer-key-color': data.use
-                      ? 'var(--dbtu-theme-color)'
-                      : 'var(--dbtu-border-disabled-color)'
+                    color: data.use ? 'var(--dbtu-font-color)' : 'var(--dbtu-border-disabled-color)',
+                    '--sizer-key-color': data.use ? 'var(--dbtu-theme-color)' : 'var(--dbtu-border-disabled-color)'
                   }"
                 >
                   <!-- 与相邻节点的关系 -->
@@ -343,9 +394,7 @@ defineExpose({
                     :persistent="false"
                   >
                     <template #reference>
-                      <span :style="{ color: 'var(--sizer-key-color)' }">{{
-                        data.value || '?'
-                      }}</span>
+                      <span :style="{ color: 'var(--sizer-key-color)' }">{{ data.value || '?' }}</span>
                     </template>
                     <template #default>
                       <el-input v-model="data.value" />

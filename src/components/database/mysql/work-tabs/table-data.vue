@@ -29,8 +29,6 @@ const props = defineProps({
 const sizerDrawerRef = useComponentRef(SizerDrawer)
 const dataSortDrawerRef = useComponentRef(DataSortDrawer)
 const fields = [] as string[]
-// 查询条件
-const whereSql = ref('')
 // 查询结果
 const sqlExecuteResult = shallowRef<SQLExecuteResult>({
   success: false,
@@ -83,6 +81,11 @@ const tableData = computed(() => {
 
 const openSizerDrawer = () => {
   sizerDrawerRef.value?.open()
+}
+
+const applyFilter = (data: { filters: SearchTableFilterParam[], sql: string }) => {
+  searchParam.filters = data.filters
+  loadTableData()
 }
 
 const openDataSort = () => {
@@ -224,7 +227,7 @@ onMounted(() => {
     ref="sizerDrawerRef"
     title="数据筛选"
     :fields="fields"
-    @apply-sizer="sql => (whereSql = sql)"
+    @apply-sizer="applyFilter"
   />
 
   <data-sort-drawer

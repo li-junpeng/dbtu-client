@@ -8,10 +8,12 @@
 import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import SizerDrawer from '@/components/ui/sizer-drawer/index.vue'
 import DataSortDrawer from '@/components/ui/data-sort-drawer/index.vue'
+import { type DataSortItem } from '@/components/ui/data-sort-drawer/define'
 import { queryTableData } from '@/api/database/mysql-database-api'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import { dataTypeConvert } from '@/common/constants/DataTypeConvert'
 import DataGrid, { type DataGridColumn } from '@/components/ui/data-grid'
+import { StringUtils } from '@/common/utils/StringUtils'
 
 defineExpose({
   name: 'MySQLWorkTabTableDataComponent'
@@ -29,12 +31,20 @@ const dataSortDrawerRef = useComponentRef(DataSortDrawer)
 const fields = [] as string[]
 // 查询条件
 const whereSql = ref('')
-// 排序语句
-const sortSql = ref('')
+// 查询结果
 const sqlExecuteResult = shallowRef<SQLExecuteResult>({
   success: false,
   executeTime: 0,
   originSql: ''
+})
+
+// 查询参数
+const searchParam = reactive<SearchTableParam>({
+  sessionId: props.tableInfo.sessionId!,
+  databaseName: props.tableInfo.database,
+  tableName: props.tableInfo.name,
+  current: 1,
+  page: 1000
 })
 
 // 是否正在加载数据
@@ -44,14 +54,7 @@ const isLoadData = ref(false)
  */
 const loadTableData = async () => {
   isLoadData.value = true
-  const { sessionId, database, name } = props.tableInfo
-  const { status, message, data } = await queryTableData({
-    sessionId: sessionId!,
-    databaseName: database,
-    tableName: name,
-    current: 1,
-    page: 1000
-  })
+  const { status, message, data } = await queryTableData(searchParam)
   if (status === 'success') {
     sqlExecuteResult.value = data!
   } else {
@@ -62,7 +65,7 @@ const loadTableData = async () => {
 
 const columns = computed<DataGridColumn[]>(() => {
   const array = [] as DataGridColumn[]
-  (sqlExecuteResult.value.queryResult?.columns || []).forEach(item => {
+  ;(sqlExecuteResult.value.queryResult?.columns || []).forEach(item => {
     array.push({
       key: item.label,
       label: item.label,
@@ -82,8 +85,21 @@ const openSizerDrawer = () => {
   sizerDrawerRef.value?.open()
 }
 
-const openDataFilter = () => {
+const openDataSort = () => {
   dataSortDrawerRef.value?.open()
+}
+
+const applyDataSort = (data: { sorts: DataSortItem[]; sql: string }) => {
+  const _sorts = data.sorts
+    .filter(item => StringUtils.isNotEmpty(item.field) && item.use)
+    .map(item => {
+      return {
+        field: item.field,
+        rule: item.rule
+      }
+    })
+  searchParam.sorts = _sorts
+  loadTableData()
 }
 
 onMounted(() => {
@@ -120,7 +136,7 @@ onMounted(() => {
       <el-button
         text
         link
-        @click="openDataFilter()"
+        @click="openDataSort()"
       >
         <template #icon>
           <DIconSort />
@@ -214,7 +230,7 @@ onMounted(() => {
   <data-sort-drawer
     ref="dataSortDrawerRef"
     :fields="fields"
-    @apply-sort="sql => (sortSql = sql)"
+    @apply-sort="applyDataSort"
   />
 </template>
 

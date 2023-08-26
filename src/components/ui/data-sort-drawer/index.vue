@@ -21,7 +21,7 @@ const drawer = reactive({
 })
 const props = withDefaults(defineProps<DataSortDrawerProp>(), DataSortDrawerPropDefault)
 const emits = defineEmits<{
-  (e: 'apply-sort', sql: string): void
+  (e: 'apply-sort', data: { sorts: DataSortItem[], sql: string }): void
 }>()
 const sorts = reactive<DataSortItem[]>([])
 const sql = computed(() => {
@@ -57,7 +57,10 @@ const onChangeRule = (item: DataSortItem) => {
 }
 
 const onApply = () => {
-  emits('apply-sort', sql.value)
+  emits('apply-sort', {
+    sorts,
+    sql: sql.value
+  })
   drawer.visible = false
 }
 

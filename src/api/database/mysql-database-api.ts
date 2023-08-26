@@ -68,9 +68,7 @@ export const queryTableList = (sessionId: number, databaseName: string) => {
  * @returns 查询表数据SQL执行结果
  */
 export const queryTableData = (searchParam: SearchTableParam) => {
-  return IRequest.get<SQLExecuteResult>('/database/mysql/table-data', {
-    params: searchParam
-  })
+  return IRequest.post<SQLExecuteResult>('/database/mysql/query/table-data', searchParam)
 }
 
 /**

@@ -26,6 +26,45 @@ interface SearchTableParam {
    * 分页参数, 每页的记录数
    */
   page?: number
+
+  /**
+   * 筛选条件
+   */
+  filters?: {
+
+    /**
+     * 字段名
+     */
+    field: string
+
+    /**
+     * 运算符
+     */
+    operator: string
+
+    /**
+     * 值
+     */
+    value: string
+    
+  }[]
+
+  /**
+   * 排序规则
+   */
+  sorts?: {
+    
+    /**
+     * 字段名
+     */
+    field: string
+
+    /**
+     * 排序规则
+     */
+    rule: 'ASC' | 'DESC'
+
+  }[]
 }
 
 /**
@@ -246,7 +285,7 @@ interface TableIndex {
   /**
    * 字段
    */
-  columns: { id: number, name: string; precision?: number }[]
+  columns: { id: number; name: string; precision?: number }[]
 
   /**
    * 索引类型

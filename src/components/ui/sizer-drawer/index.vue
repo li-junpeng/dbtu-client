@@ -149,6 +149,7 @@ const sql = computed(() => {
 
   let sql = ''
   const dg = (array: ConditionItem[]) => {
+    let _sql = ''
     let flag = 1
     array.forEach((item, index) => {
       if (!item.use) {
@@ -156,17 +157,19 @@ const sql = computed(() => {
         return
       }
       if (index >= flag) {
-        sql += `${item.relation.toUpperCase()} `
+        _sql += `${item.relation.toUpperCase()} `
       }
-      sql += `\`${item.field}\` ${getValue(item)} `
+      _sql += `\`${item.field}\` ${getValue(item)} `
       if (item.children && item.children.length >= 1) {
-        sql += `${item.childrenRelation!.toUpperCase()} ( `
-        dg(item.children)
-        sql += `) `
+        const _childSql = dg(item.children)
+        if (_childSql) {
+          _sql += `${item.childrenRelation!.toUpperCase()} ( ${_childSql})`
+        }
       }
     })
+    return _sql
   }
-  dg(conditions)
+  sql += dg(conditions)
   return sql
 })
 

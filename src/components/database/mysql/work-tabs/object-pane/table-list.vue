@@ -282,6 +282,7 @@ const bottomText = computed(() => {
           :row-height="34"
           :row-event-handlers="tableRowEvents"
           :row-class="tableRowClass"
+          fixed
           class="table-list-v2"
           @click.stop="selectedRow = null"
           @contextmenu.prevent="paneContextmenu($event)"

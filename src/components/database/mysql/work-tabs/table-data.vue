@@ -68,6 +68,7 @@ const columns = computed<DataGridColumn[]>(() => {
       label: item.label,
       dataType: dataTypeConvert(item.dataType)
     })
+    fields.push(item.label)
   })
   return array
 })

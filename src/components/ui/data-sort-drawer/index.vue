@@ -21,7 +21,7 @@ const drawer = reactive({
 })
 const props = withDefaults(defineProps<DataSortDrawerProp>(), DataSortDrawerPropDefault)
 const emits = defineEmits<{
-  (e: 'apply-sort', data: { sorts: DataSortItem[], sql: string }): void
+  (e: 'apply-sort', data: { sorts: DataSortItem[]; sql: string }): void
 }>()
 const sorts = reactive<DataSortItem[]>([])
 const sql = computed(() => {
@@ -68,6 +68,24 @@ const onDeleteSort = (index: number) => {
   sorts.splice(index, 1)
 }
 
+/**
+ * 全部禁用
+ */
+const onDisableAll = () => {
+  sorts.forEach(item => {
+    item.use = 0
+  })
+}
+
+/**
+ * 清空全部
+ */
+const onClearAll = () => {
+  for (let i = sorts.length - 1; i >= 0; i--) {
+    sorts.splice(i, 1)
+  }
+}
+
 const sortItemContextmenu = (event: MouseEvent, index: number) => {
   Contextmenu({
     event,
@@ -107,6 +125,26 @@ defineExpose({
           <DIconSort />
         </template>
         <span>添加排序</span>
+      </el-button>
+      <el-button
+        text
+        link
+        @click="onDisableAll()"
+      >
+        <template #icon>
+          <IconRemove />
+        </template>
+        <span>全部禁用</span>
+      </el-button>
+      <el-button
+        text
+        link
+        @click="onClearAll()"
+      >
+        <template #icon>
+          <DIconClear />
+        </template>
+        <span>清空排序</span>
       </el-button>
     </div>
 

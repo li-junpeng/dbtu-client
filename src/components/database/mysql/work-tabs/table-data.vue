@@ -63,6 +63,11 @@ const loadTableData = async () => {
 
 const columns = computed<DataGridColumn[]>(() => {
   const array = [] as DataGridColumn[]
+  // 清除fields
+  for (let i = fields.length - 1; i >= 0; i--) {
+    fields.splice(i, 1)
+  }
+
   ;(sqlExecuteResult.value.queryResult?.columns || []).forEach(item => {
     array.push({
       key: item.label,
@@ -83,7 +88,7 @@ const openSizerDrawer = () => {
   sizerDrawerRef.value?.open()
 }
 
-const applyFilter = (data: { filters: SearchTableFilterParam[], sql: string }) => {
+const applyFilter = (data: { filters: SearchTableFilterParam[]; sql: string }) => {
   searchParam.filters = data.filters
   loadTableData()
 }

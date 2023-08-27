@@ -54,7 +54,12 @@ const loadTableData = async () => {
   isLoadData.value = true
   const { status, message, data } = await queryTableData(searchParam)
   if (status === 'success') {
-    sqlExecuteResult.value = data!
+    if (data!.success) {
+      // TODO 先查询表头信息，然后再查表数据, 这样即使查询数据的SQL执行失败，表头也能正常显示
+      sqlExecuteResult.value = data!
+    } else {
+      MessageBox.error(data!.message!)
+    }
   } else {
     MessageBox.error(message)
   }

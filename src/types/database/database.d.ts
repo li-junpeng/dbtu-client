@@ -18,7 +18,7 @@ interface SearchTableFilterParam {
   value: string | number | boolean
 
   /**
-   * 与同级别的关系
+   * 与上一个同级别条件的关系
    */
   relation: 'AND' | 'OR'
 

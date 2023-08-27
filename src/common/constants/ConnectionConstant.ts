@@ -191,7 +191,7 @@ export const JudgeConditions: Record<string, string> = {
   is_blank: '是空的',
   not_is_blank: '不是空的',
   between: '介于',
-  noe_between: '不介于',
+  not_between: '不介于',
   in: '在列表',
   not_in: '不在列表'
 }

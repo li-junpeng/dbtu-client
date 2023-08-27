@@ -227,7 +227,11 @@ onMounted(() => {
     </div>
     <!-- 底部工具栏和提示栏 -->
     <div class="bottom-toolbox">
-      <div>
+      <div
+        class="dbtu-text-ellipsis"
+        style="width: 50%;cursor: default;"
+        :title="sqlExecuteResult.originSql || ''"
+      >
         {{ sqlExecuteResult.originSql || '' }}
       </div>
     </div>

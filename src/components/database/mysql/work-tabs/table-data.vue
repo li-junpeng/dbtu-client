@@ -5,7 +5,7 @@
  * @date 2023-07-26 16-53
 -->
 <script setup lang="ts">
-import { useComponentRef } from '@/components/element-plus/element-plus-util'
+import { TooltipShowAfter, useComponentRef } from '@/components/element-plus/element-plus-util'
 import SizerDrawer from '@/components/ui/sizer-drawer/index.vue'
 import DataSortDrawer from '@/components/ui/data-sort-drawer/index.vue'
 import { type DataSortItem } from '@/components/ui/data-sort-drawer/define'
@@ -98,6 +98,8 @@ const applyFilter = (data: { filters: SearchTableFilterParam[]; sql: string }) =
   loadTableData()
 }
 
+const filterNum = computed(() => searchParam.filters?.length || 0)
+
 const openDataSort = () => {
   dataSortDrawerRef.value?.open()
 }
@@ -114,6 +116,8 @@ const applyDataSort = (data: { sorts: DataSortItem[]; sql: string }) => {
   searchParam.sorts = _sorts
   loadTableData()
 }
+
+const sortNumber = computed(() => searchParam.sorts?.length || 0)
 
 onMounted(() => {
   loadTableData()
@@ -136,26 +140,44 @@ onMounted(() => {
         <span>刷新</span>
       </el-button>
       <div class="button-divided"></div>
-      <el-button
-        text
-        link
-        @click="openSizerDrawer()"
+      <el-tooltip
+        :content="`应用 ${filterNum} 个筛选条件`"
+        :enterable="false"
+        :show-after="TooltipShowAfter"
       >
-        <template #icon>
-          <DIconSizer />
-        </template>
-        <span>筛选</span>
-      </el-button>
-      <el-button
-        text
-        link
-        @click="openDataSort()"
+        <el-button
+          text
+          link
+          @click="openSizerDrawer()"
+        >
+          <template #icon>
+            <DIconSizer />
+          </template>
+          <span>
+            筛选
+            <span style="color: var(--dbtu-font-color-disabled); font-size: 12px">( {{ filterNum }} )</span>
+          </span>
+        </el-button>
+      </el-tooltip>
+      <el-tooltip
+        :content="`应用 ${sortNumber} 个排序`"
+        :enterable="false"
+        :show-after="TooltipShowAfter"
       >
-        <template #icon>
-          <DIconSort />
-        </template>
-        <span>排序</span>
-      </el-button>
+        <el-button
+          text
+          link
+          @click="openDataSort()"
+        >
+          <template #icon>
+            <DIconSort />
+          </template>
+          <span>
+            排序
+            <span style="color: var(--dbtu-font-color-disabled); font-size: 12px">( {{ sortNumber }} )</span>
+          </span>
+        </el-button>
+      </el-tooltip>
       <el-button
         text
         link
@@ -229,7 +251,7 @@ onMounted(() => {
     <div class="bottom-toolbox">
       <div
         class="dbtu-text-ellipsis"
-        style="width: 50%;cursor: default;"
+        style="width: 50%; cursor: default"
         :title="sqlExecuteResult.originSql || ''"
       >
         {{ sqlExecuteResult.originSql || '' }}

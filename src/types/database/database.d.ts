@@ -55,6 +55,8 @@ interface SearchTableParam {
 
   /**
    * 分页参数, 当前页码, 从1开始计数
+   * 
+   * -100 表示最后一页, 需要后端自己计算
    */
   current?: number
 

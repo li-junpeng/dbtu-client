@@ -13,6 +13,7 @@ import { queryTableData } from '@/api/database/mysql-database-api'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import { dataTypeConvert } from '@/common/constants/DataTypeConvert'
 import DataGrid, { type DataGridColumn } from '@/components/ui/data-grid'
+import Pagination, { type PageChangeType } from '@/components/ui/pagination'
 import { StringUtils } from '@/common/utils/StringUtils'
 
 defineExpose({
@@ -118,6 +119,28 @@ const applyDataSort = (data: { sorts: DataSortItem[]; sql: string }) => {
 }
 
 const sortNumber = computed(() => searchParam.sorts?.length || 0)
+
+const onChangePage = async (currentPage: number, action: PageChangeType): Promise<number> => {
+  switch (action) {
+    case 'first':
+      searchParam.current = 1
+      break
+    case 'prev':
+      searchParam.current = currentPage - 1
+      break
+    case 'next':
+      searchParam.current = currentPage + 1
+      break
+    case 'last':
+      searchParam.current = -100
+      break
+    default:
+      // nothing 
+  }
+
+  await loadTableData()
+  return Promise.resolve(sqlExecuteResult.value.current!)
+}
 
 onMounted(() => {
   loadTableData()
@@ -261,6 +284,7 @@ onMounted(() => {
     </div>
     <!-- 底部工具栏和提示栏 -->
     <div class="bottom-toolbox">
+      <!-- SQL预览 -->
       <div
         class="dbtu-text-ellipsis"
         style="width: 50%; cursor: default"
@@ -268,6 +292,8 @@ onMounted(() => {
       >
         {{ sqlExecuteResult.originSql || '' }}
       </div>
+      <!-- 分页 -->
+      <Pagination :change-page="onChangePage" />
     </div>
   </div>
 
@@ -310,6 +336,7 @@ onMounted(() => {
     border-top: 1px solid var(--dbtu-divide-borer-color);
     gap: 40px;
     height: 34px;
+    justify-content: space-between;
 
     * {
       font-size: calc(var(--dbtu-font-size) - 2px);

@@ -144,6 +144,7 @@ onMounted(() => {
         :content="`应用 ${filterNum} 个筛选条件`"
         :enterable="false"
         :show-after="TooltipShowAfter"
+        :disabled="filterNum === 0"
       >
         <el-button
           text
@@ -155,7 +156,12 @@ onMounted(() => {
           </template>
           <span>
             筛选
-            <span style="color: var(--dbtu-font-color-disabled); font-size: 12px">( {{ filterNum }} )</span>
+            <span
+              v-show="filterNum >= 1"
+              style="color: var(--dbtu-font-color-disabled); font-size: 12px"
+            >
+              ( {{ filterNum }} )
+            </span>
           </span>
         </el-button>
       </el-tooltip>
@@ -163,6 +169,7 @@ onMounted(() => {
         :content="`应用 ${sortNumber} 个排序`"
         :enterable="false"
         :show-after="TooltipShowAfter"
+        :disabled="sortNumber === 0"
       >
         <el-button
           text
@@ -174,7 +181,12 @@ onMounted(() => {
           </template>
           <span>
             排序
-            <span style="color: var(--dbtu-font-color-disabled); font-size: 12px">( {{ sortNumber }} )</span>
+            <span
+              v-show="sortNumber"
+              style="color: var(--dbtu-font-color-disabled); font-size: 12px"
+            >
+              ( {{ sortNumber }} )
+            </span>
           </span>
         </el-button>
       </el-tooltip>

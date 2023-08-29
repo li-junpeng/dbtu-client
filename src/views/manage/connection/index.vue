@@ -5,6 +5,7 @@ import CreateGroup from './create-group.vue'
 import WorkTabs from './work-tabs/index.vue'
 import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import { InjectionKey } from '@/common/constants/ConnectionConstant'
+import vResizer from '@/components/ui/vue-directives/dom-resizer'
 
 defineOptions({
   name: 'ConnectionPage'
@@ -14,11 +15,7 @@ const createConnectionRef = useComponentRef(CreateConnection)
 const createGroupRef = useComponentRef(CreateGroup)
 const connectionListRef = useComponentRef(ConnectionList)
 
-const openCreateConnection = (
-  data?: ConnectionInfo<BaseConnectionDetail>,
-  db: DatabaseIdent = 'mysql',
-  groupId?: number
-) => {
+const openCreateConnection = (data?: ConnectionInfo<BaseConnectionDetail>, db: DatabaseIdent = 'mysql', groupId?: number) => {
   createConnectionRef.value?.open(data, db, groupId)
 }
 
@@ -36,7 +33,15 @@ provide(InjectionKey.openCreateGroup, openCreateGroup)
 
 <template>
   <div class="connection-container">
-    <div class="connection-list">
+    <div
+      class="connection-list"
+      v-resizer="{
+        position: ['right', 'left'],
+        minWidth: 100,
+        maxWidth: 500
+      }"
+      style="position: relative"
+    >
       <connection-list ref="connectionListRef" />
     </div>
 

@@ -27,9 +27,11 @@
     "nocheck",
     "pinia",
     "postgre",
+    "Resizer",
     "tinyblob",
     "tinyint",
     "unplugin",
+    "vnode",
     "vueuse"
   ],
   

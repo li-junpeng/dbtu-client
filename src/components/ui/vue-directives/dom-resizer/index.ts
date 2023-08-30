@@ -39,6 +39,15 @@ export type ResizerProp = {
    * 最大高度
    */
   maxHeight?: number
+
+  /**
+   * 当尺寸改变时的回调函数
+   * 
+   * @param width  宽度
+   * @param height 高度
+   * @returns void
+   */
+  onChange?: (width: string, height: string) => void
 }
 
 const setDomStyle = (el: HTMLElement, styles: CSSProperties) => {
@@ -110,7 +119,7 @@ const domResizerDirective = {
 
         const moveFun = (e2: MouseEvent) => {
           e2.preventDefault()
-
+          
           if (position === 'right' || position === 'left') {
             const width = el.offsetWidth + e2.movementX
             if (props.minWidth && width <= props.minWidth) {
@@ -130,6 +139,8 @@ const domResizerDirective = {
             }
             el.style.height = `${height}px`
           }
+
+          props.onChange?.(`${el.offsetWidth}px`, `${el.offsetHeight}px`)
         }
 
         const removeFun = () => {

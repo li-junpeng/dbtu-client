@@ -16,24 +16,38 @@ export const DateUtil = {
    * 毫秒转成秒或分钟或小时
    */
   ms2Str(ms: number): string {
-    if (ms < 1000) {
-      return `${ms} 毫秒`
-    } else if (ms < 60 * 1000) {
-      return `${ms / 1000} 秒`
-    } else {
-      const seconds = Math.floor(ms / 1000)
-      const minutes = Math.floor(seconds / 60)
-      const remainingSeconds = seconds % 60
-      const remainingMilliseconds = ms % 1000
-      let str = `${minutes} 分 `
-      if (remainingSeconds > 0) {
-        str += `${remainingSeconds} 秒 `
-      }
-      if (remainingMilliseconds > 0) {
-        str += `${remainingMilliseconds} 毫秒`
-      }
-      return str
+    // 计算天数
+    const days = Math.floor(ms / (1000 * 60 * 60 * 24))
+    ms %= 1000 * 60 * 60 * 24
+
+    // 计算小时数
+    const hours = Math.floor(ms / (1000 * 60 * 60))
+    ms %= 1000 * 60 * 60
+
+    // 计算分钟数
+    const minutes = Math.floor(ms / (1000 * 60))
+    ms %= 1000 * 60
+
+    // 计算秒数
+    const seconds = Math.floor(ms / 1000)
+    ms %= 1000
+
+    let str = ''
+    if (ms > 0) {
+      str = `${ms}毫秒`
     }
-    return ''
+    if (seconds > 0) {
+      str = `${seconds}秒 ${str}`
+    }
+    if (minutes > 0) {
+      str = `${minutes}分钟 ${str}`
+    }
+    if (hours > 0) {
+      str = `${hours}小时 ${str}`
+    }
+    if (days > 0) {
+      str = `${days}天 ${str}`
+    }
+    return str
   }
 }

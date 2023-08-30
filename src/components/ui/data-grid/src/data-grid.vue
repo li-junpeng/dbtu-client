@@ -37,7 +37,7 @@ const columns = computed(() => {
       key: '__dbtu__table__column__index',
       dataKey: '__dbtu__table__column__index',
       title: props.indexColumnTitle,
-      width: 60,
+      width: props.data.length < 1000 ? 40 : 60,
       align: 'center',
       cellRenderer: ({ rowIndex }) => {
         return h(
@@ -62,18 +62,32 @@ const columns = computed(() => {
       title: item.label,
       width: getColumnWidth(item.dataType),
       cellRenderer: ({ cellData }) => {
-        return h(
-          'span',
-          {
-            style: {
-              cursor: 'default',
-              textAlign: getAlignByDataType(item.dataType).toString(),
-              display: 'inline-block',
-              width: '100%'
-            } as CSSProperties
-          },
-          parseValue(cellData, item)
-        )
+        if (cellData === null) {
+          return h(
+            'span',
+            {
+              style: {
+                cursor: 'default',
+                color: 'var(--dbtu-font-color-disabled)',
+                userSelect: 'none'
+              } as CSSProperties
+            },
+            '(NULL)'
+          )
+        } else {
+          return h(
+            'span',
+            {
+              style: {
+                cursor: 'default',
+                textAlign: getAlignByDataType(item.dataType).toString(),
+                display: 'inline-block',
+                width: '100%'
+              } as CSSProperties
+            },
+            parseValue(cellData, item)
+          )
+        }
       }
     })
   })
@@ -139,8 +153,8 @@ const createEmptyData = () => {
   }
 
   &:not(.is-dynamic) .el-table-v2__cell-text,
-    &:not(.is-dynamic) .el-table-v2__row-cell span {
-      color: var(--dbtu-font-color);
-    }
+  &:not(.is-dynamic) .el-table-v2__row-cell span {
+    color: var(--dbtu-font-color);
+  }
 }
 </style>

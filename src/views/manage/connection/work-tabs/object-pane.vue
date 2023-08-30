@@ -16,9 +16,14 @@ const workTabStore = useWorkTabStore()
 
 <template>
   <component
+    v-if="workTabStore.objectPaneComponent"
     :is="workTabStore.objectPaneComponent"
     :data="workTabStore.objectPaneProps"
   />
+  <div
+    v-else
+    class="dbtu-main"
+  >DBTu</div>
 </template>
 
 <style lang="scss">
@@ -83,5 +88,16 @@ const workTabStore = useWorkTabStore()
     line-height: 1;
     cursor: default;
   }
+}
+
+.dbtu-main {
+  width: 100%;
+  height: 100%;
+  font-size: 80px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.1;
 }
 </style>

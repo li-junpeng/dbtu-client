@@ -15,6 +15,7 @@ import { dataTypeConvert } from '@/common/constants/DataTypeConvert'
 import DataGrid, { type DataGridColumn } from '@/components/ui/data-grid'
 import Pagination, { type PageChangeType } from '@/components/ui/pagination'
 import { StringUtils } from '@/common/utils/StringUtils'
+import { DateUtil } from '@/common/utils/DateUtil'
 
 defineExpose({
   name: 'MySQLWorkTabTableDataComponent'
@@ -135,7 +136,7 @@ const onChangePage = async (currentPage: number, action: PageChangeType): Promis
       searchParam.current = -100
       break
     default:
-      // nothing 
+    // nothing
   }
 
   await loadTableData()
@@ -292,8 +293,12 @@ onMounted(() => {
       >
         {{ sqlExecuteResult.originSql || '' }}
       </div>
-      <!-- 分页 -->
-      <Pagination :change-page="onChangePage" />
+      <div style="display: flex;align-items: center;gap: 20px;">
+        <div class="dbtu-un-user-select">运行时间: {{ DateUtil.ms2Str(sqlExecuteResult.executeTime) }}</div>
+        <div class="dbtu-un-user-select">共 {{ tableData.length }} 记录( 于第 {{ sqlExecuteResult.current }} 页 )</div>
+        <!-- 分页 -->
+        <Pagination :change-page="onChangePage" />
+      </div>
     </div>
   </div>
 

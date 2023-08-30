@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import type { CSSProperties } from 'vue'
 import ConnectionList from './components/connection-list.vue'
 import CreateConnection from './create-connection.vue'
 import CreateGroup from './create-group.vue'
 import WorkTabs from './work-tabs/index.vue'
 import { useComponentRef } from '@/components/element-plus/element-plus-util'
 import { InjectionKey } from '@/common/constants/ConnectionConstant'
+import { useSystemSettingStore } from '@/stores/SystemSettingStore'
 import vResizer from '@/components/ui/vue-directives/dom-resizer'
 
 defineOptions({
@@ -29,18 +31,31 @@ const loadConnection = () => {
 
 provide(InjectionKey.openCreateConnection, openCreateConnection)
 provide(InjectionKey.openCreateGroup, openCreateGroup)
+
+const systemSettingStore = useSystemSettingStore()
+const connectionListStyle = computed(() => {
+  return {
+    position: 'relative',
+    width: systemSettingStore.connectionListSize.width,
+    height: systemSettingStore.connectionListSize.height
+  } as CSSProperties
+})
 </script>
 
 <template>
   <div class="connection-container">
     <div
+      ref="connectionListRef"
       class="connection-list"
       v-resizer="{
-        position: ['right', 'left'],
-        minWidth: 100,
-        maxWidth: 500
+        position: 'right',
+        minWidth: 300,
+        maxWidth: 800,
+        onChange: (width) => {
+          systemSettingStore.connectionListSize.width = width
+        }
       }"
-      style="position: relative"
+      :style="connectionListStyle"
     >
       <connection-list ref="connectionListRef" />
     </div>
@@ -67,8 +82,6 @@ provide(InjectionKey.openCreateGroup, openCreateGroup)
   display: flex;
 
   .connection-list {
-    width: 300px;
-    height: 100%;
     overflow: auto;
     border-right: 1px solid var(--dbtu-divide-borer-color);
     flex-shrink: 0;

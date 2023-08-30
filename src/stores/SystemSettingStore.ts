@@ -5,12 +5,12 @@ import { TinyColor } from '@ctrl/tinycolor'
 import { FONT_SIZE_DEFAULT, FONT_SIZE_MAX, FONT_SIZE_MIN } from '@/common/constants/SystemConstant'
 import { useDark } from '@vueuse/core'
 
-// region icons start //
+// #region icons start //
 import IconTheme from '@/icons/svg/theme.vue'
 import IconProxy from '@/icons/svg/proxy.vue'
 import IconKeymap from '@/icons/svg/keymap.vue'
 import IconSecurity from '@/icons/svg/security.vue'
-// endregion icons end //
+// #endregion icons end //
 
 export const navTabs = [
   {
@@ -47,7 +47,15 @@ export const useSystemSettingStore = defineStore('useSystemSettingStore', {
       // 系统设置对话框的可见性
       visible: ref(false),
       // 当前激活的选项卡
-      activeTab: ref<SystemSettingTabItem | null>(null)
+      activeTab: ref<SystemSettingTabItem | null>(null),
+
+      /**
+       * 数据源连接列表区域的宽度和高度
+       */
+      connectionListSize: {
+        width: '300px',
+        height: '100%'
+      }
     }
   },
 
@@ -58,9 +66,7 @@ export const useSystemSettingStore = defineStore('useSystemSettingStore', {
      * @param tabKey  默认选中的选项卡标识
      */
     open(tabKey?: SystemSettingTabKey) {
-      let tabItem = StringUtils.isNotEmpty(tabKey as string)
-        ? navTabs.find(tab => tab.key === tabKey)
-        : this.activeTab
+      let tabItem = StringUtils.isNotEmpty(tabKey as string) ? navTabs.find(tab => tab.key === tabKey) : this.activeTab
       if (!tabItem) {
         tabItem = navTabs[0]
       }
@@ -160,7 +166,7 @@ export const useSystemSettingStore = defineStore('useSystemSettingStore', {
   persist: {
     key: '__dbtu_system_setting',
     storage: localStorage,
-    paths: ['setting']
+    paths: ['setting', 'connectionListSize']
   }
 })
 

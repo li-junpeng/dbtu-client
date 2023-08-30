@@ -2,6 +2,7 @@
   position: absolute;
   transition: all 200ms;
 
+  &.is-resize,
   &:hover {
     transition-delay: 300ms;
     background-color: #0078d4;

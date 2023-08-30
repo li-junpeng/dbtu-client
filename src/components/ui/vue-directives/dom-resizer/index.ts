@@ -1,10 +1,15 @@
+import type { CSSProperties, Directive, DirectiveBinding, VNode } from 'vue'
+import { useEventListener } from '@vueuse/core'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
-import type { CSSProperties, DirectiveBinding, VNode } from 'vue'
 import './index.scss'
 
 export type ResizerPosition = 'top' | 'right' | 'bottom' | 'left'
 
 export type ResizerProp = {
+
+  /**
+   * 手柄的位置
+   */
   position: ResizerPosition | ResizerPosition[]
 
   lineSize?: number
@@ -17,6 +22,8 @@ export type ResizerProp = {
 
   maxHeight?: number
 }
+
+
 
 const setDomStyle = (el: HTMLElement, styles: CSSProperties) => {
   for (const key in styles) {
@@ -75,8 +82,8 @@ const domResizerDirective = {
         }
       }
 
-      // TODO 在组件卸载的时候记得清掉这个事件监听
-      $div.addEventListener('mousedown', e => {
+      useEventListener($div, 'mousedown', e => {
+        $div.classList.add('is-resize')
         const position = (e.target as HTMLElement)?.dataset.position as ResizerPosition
 
         const moveFun = (e2: MouseEvent) => {
@@ -91,10 +98,20 @@ const domResizerDirective = {
               return
             }
             el.style.width = `${width}px`
+          } else if (position === 'top' || position === 'bottom') {
+            const height = el.offsetHeight + e2.movementY
+            if (props.minHeight && height <= props.minHeight) {
+              return
+            }
+            if (props.maxHeight && height >= props.maxHeight) {
+              return
+            }
+            el.style.height = `${height}px`
           }
         }
 
         const removeFun = () => {
+          $div.classList.remove('is-resize')
           document.removeEventListener('mousemove', moveFun)
           document.removeEventListener('mouseup', removeFun)
         }
@@ -106,7 +123,7 @@ const domResizerDirective = {
       el.appendChild($div)
     })
   }
-}
+} as Directive<HTMLElement, ResizerProp>
 
 export const vResizer = domResizerDirective
 export default vResizer

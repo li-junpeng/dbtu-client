@@ -83,7 +83,9 @@ const columns = computed(() => {
                 textAlign: getAlignByDataType(item.dataType).toString(),
                 display: 'inline-block',
                 width: '100%'
-              } as CSSProperties
+              } as CSSProperties,
+              class: 'dbtu-text-ellipsis',
+              title: parseValue(cellData, item)
             },
             parseValue(cellData, item)
           )

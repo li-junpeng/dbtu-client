@@ -3,27 +3,43 @@ import { useEventListener } from '@vueuse/core'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
 import './index.scss'
 
-export type ResizerPosition = 'top' | 'right' | 'bottom' | 'left'
+/**
+ * 手柄出现的位置
+ */
+export type ResizerHandPosition = 'top' | 'right' | 'bottom' | 'left'
 
 export type ResizerProp = {
 
   /**
    * 手柄的位置
    */
-  position: ResizerPosition | ResizerPosition[]
+  position: ResizerHandPosition | ResizerHandPosition[]
 
-  lineSize?: number
+  /**
+   * 手柄大小
+   */
+  handSize?: number
 
+  /**
+   * 最小宽度
+   */
   minWidth?: number
 
+  /**
+   * 最大宽度
+   */
   maxWidth?: number
 
+  /**
+   * 最小高度
+   */
   minHeight?: number
 
+  /**
+   * 最大高度
+   */
   maxHeight?: number
 }
-
-
 
 const setDomStyle = (el: HTMLElement, styles: CSSProperties) => {
   for (const key in styles) {
@@ -35,10 +51,11 @@ const setDomStyle = (el: HTMLElement, styles: CSSProperties) => {
 const domResizerDirective = {
   mounted: (el: HTMLElement, binding: DirectiveBinding<ResizerProp>, vnode: VNode) => {
     const props = binding.value || {}
-    if (!props.lineSize) {
-      props.lineSize = 3
+    if (!props.handSize) {
+      props.handSize = 3
     }
 
+    // 校验props是否合法
     const { position } = window.getComputedStyle(el)
     if (!['fixed', 'absolute', 'relative', 'sticky'].includes(position)) {
       throw new Error('v-resizer must be used on a positioned element')
@@ -49,17 +66,20 @@ const domResizerDirective = {
     }
 
     if (!ArrayUtils.isArray(props.position)) {
-      props.position = [props.position] as ResizerPosition[]
+      props.position = [props.position] as ResizerHandPosition[]
     }
 
-    ;(props.position as ResizerPosition[]).forEach(position => {
+    ;(props.position as ResizerHandPosition[]).forEach(position => {
+      // 创建手柄
       const $div = document.createElement('div')
-      $div.className = 'dbtu-dom-resizer'
+      $div.className = 'dom-resizer-hand'
       $div.dataset.position = position
+
+      // #region 初始化手柄位置
       if (position === 'left' || position === 'right') {
         setDomStyle($div, {
           cursor: 'ew-resize',
-          width: `${props.lineSize}px`,
+          width: `${props.handSize}px`,
           height: '100%',
           top: '0'
         })
@@ -72,7 +92,7 @@ const domResizerDirective = {
         setDomStyle($div, {
           cursor: 'ns-resize',
           width: '100%',
-          height: `${props.lineSize}px`,
+          height: `${props.handSize}px`,
           left: '0'
         })
         if (position === 'top') {
@@ -81,10 +101,12 @@ const domResizerDirective = {
           setDomStyle($div, { bottom: '0' })
         }
       }
+      // #endregion
 
+      // #region 拖拽手柄修改绑定dom的size
       useEventListener($div, 'mousedown', e => {
         $div.classList.add('is-resize')
-        const position = (e.target as HTMLElement)?.dataset.position as ResizerPosition
+        const position = (e.target as HTMLElement)?.dataset.position as ResizerHandPosition
 
         const moveFun = (e2: MouseEvent) => {
           e2.preventDefault()
@@ -119,6 +141,7 @@ const domResizerDirective = {
         document.addEventListener('mousemove', moveFun)
         document.addEventListener('mouseup', removeFun)
       })
+      // #endregion
 
       el.appendChild($div)
     })

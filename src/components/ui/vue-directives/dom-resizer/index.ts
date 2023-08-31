@@ -9,7 +9,6 @@ import './index.scss'
 export type ResizerHandPosition = 'top' | 'right' | 'bottom' | 'left'
 
 export type ResizerProp = {
-
   /**
    * 手柄的位置
    */
@@ -41,10 +40,18 @@ export type ResizerProp = {
   maxHeight?: number
 
   /**
+   * 当拖拽时是否修改被绑定指令dom的尺寸.
+   *
+   * - true: 当拖拽时修改绑定该指令的dom尺寸
+   * - false: 不修改
+   */
+  isChangeSelf?: boolean
+
+  /**
    * 当尺寸改变时的回调函数
-   * 
-   * @param width  宽度
-   * @param height 高度
+   *
+   * @param width  拖拽后的宽度, 当`isChangeSelf = false`时, 这个值是MouseEvent.movementX()
+   * @param height 拖拽后的高度, 当`isChangeSelf = false`时, 这个值是MouseEvent.movementY()
    * @returns void
    */
   onChange?: (width: string, height: string) => void
@@ -120,6 +127,10 @@ const domResizerDirective = {
         const moveFun = (e2: MouseEvent) => {
           e2.preventDefault()
           
+          if (props.isChangeSelf !== undefined && props.isChangeSelf === false) {
+            props.onChange?.(`${e2.movementX}px`, `${e2.movementY}px`)
+            return
+          }
           if (position === 'right' || position === 'left') {
             const width = el.offsetWidth + e2.movementX
             if (props.minWidth && width <= props.minWidth) {

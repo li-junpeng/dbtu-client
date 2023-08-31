@@ -2,9 +2,9 @@
   position: absolute;
   transition: all 200ms;
 
-  &.is-resize,
-  &:hover {
+  &:not(.is-hide-color).is-resize,
+  &:not(.is-hide-color):hover {
     transition-delay: 300ms;
-    background-color: #0078d4;
+    background-color: var(--dbtu-theme-color);
   }
 }

@@ -40,6 +40,11 @@ export type ResizerProp = {
   maxHeight?: number
 
   /**
+   * 是否隐藏手柄颜色
+   */
+  hideColor?: boolean
+
+  /**
    * 当拖拽时是否修改被绑定指令dom的尺寸.
    *
    * - true: 当拖拽时修改绑定该指令的dom尺寸
@@ -88,7 +93,7 @@ const domResizerDirective = {
     ;(props.position as ResizerHandPosition[]).forEach(position => {
       // 创建手柄
       const $div = document.createElement('div')
-      $div.className = 'dom-resizer-hand'
+      $div.className = `dom-resizer-hand ${props.hideColor && 'is-hide-color'}`
       $div.dataset.position = position
 
       // #region 初始化手柄位置

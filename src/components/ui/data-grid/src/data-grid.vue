@@ -10,6 +10,7 @@ import type { DataGridProp } from './data-grid'
 import { getAlignByDataType, getColumnWidth, parseValue } from './data-grid'
 import type { Column as ElTableColumn } from 'element-plus'
 import { ArrayUtils } from '@/common/utils/ArrayUtils'
+import vResizer from '@/components/ui/vue-directives/dom-resizer'
 
 defineOptions({
   name: 'DataGridComponent'
@@ -25,7 +26,9 @@ const props = withDefaults(defineProps<DataGridProp>(), {
 const isNoneData = ref(false)
 
 // 表字段
-const columns = computed(() => {
+const columns = ref<ElTableColumn[]>([])
+// 初始化列
+const initColumns = () => {
   if (ArrayUtils.isEmpty(props.columns)) {
     return []
   }
@@ -93,8 +96,9 @@ const columns = computed(() => {
       }
     })
   })
-  return array
-})
+
+  columns.value = array
+}
 
 // 表格数据
 const tableData = computed(() => {
@@ -122,6 +126,29 @@ const createEmptyData = () => {
   })
   return row
 }
+
+/**
+ * 修改列的宽度
+ *
+ * @param width         横向拖拽了几个像素
+ * @param columnIndex   拖拽的列在`columns`中的索引
+ */
+const onChangeColumnWidth = (width: string, columnIndex: number) => {
+  const _width = columns.value[columnIndex].width + parseInt(width)
+  if (_width >= 60) {
+    columns.value[columnIndex].width = _width
+  }
+}
+
+onMounted(() => {
+  initColumns()
+})
+
+watch(
+  () => props.columns,
+  () => initColumns(),
+  { deep: true }
+)
 </script>
 
 <template>
@@ -139,13 +166,43 @@ const createEmptyData = () => {
         :class="{
           'is-none-data': isNoneData
         }"
-      />
+      >
+        <template #header-cell="{ columns, column, columnIndex, headerIndex, style }">
+          <div
+            v-resizer="{
+              position: 'right',
+              handSize: 8,
+              hideColor: true,
+              isChangeSelf: false,
+              onChange: width => {
+                onChangeColumnWidth(width, columnIndex)
+              }
+            }"
+            class="el-table-v2__resize-cell"
+            style="position: relative"
+          >
+            {{ column.title }}
+          </div>
+        </template>
+      </el-table-v2>
     </template>
   </el-auto-resizer>
 </template>
 
 <style scoped lang="scss">
 :deep(.el-table-v2) {
+  .el-table-v2__header-cell {
+    padding: 0;
+    .el-table-v2__resize-cell {
+      width: 100%;
+      height: 100%;
+      padding: 0 8px;
+      display: flex;
+      align-items: center;
+      color: var(--dbtu-font-color);
+    }
+  }
+
   &.is-none-data {
     &:not(.is-dynamic) .el-table-v2__cell-text,
     &:not(.is-dynamic) .el-table-v2__row-cell span {

@@ -97,8 +97,9 @@ export const getColumnWidth = (dataType: DbDataType): number => {
 export const parseValue = (cellData: any, column: DataGridColumn): string => {
   switch (column.dataType) {
     case 'datetime':
-      if (ArrayUtils.isArray(cellData) && cellData.length === 6) {
-        return dayjs(`${cellData[0]}-${cellData[1]}-${cellData[2]} ${cellData[3]}:${cellData[4]}:${cellData[5]}`).format(
+      // fix: 日期显示错误的BUG, issues#3
+      if (ArrayUtils.isArray(cellData) && cellData.length >= 5) {
+        return dayjs(`${cellData[0]}-${cellData[1]}-${cellData[2]} ${cellData[3]}:${cellData[4]}:${cellData[5] || 0}`).format(
           'YYYY-MM-DD HH:mm:ss'
         )
       }

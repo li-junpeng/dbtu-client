@@ -68,7 +68,8 @@ const onRemoveTab = (name: TabPaneName) => {
           </el-tooltip>
         </template>
         <component
-          :is="tab.component"
+          v-if="tab._component && typeof tab._component !== 'string'"
+          :is="tab._component"
           v-bind="tab.props"
         />
       </el-tab-pane>
@@ -108,9 +109,7 @@ const onRemoveTab = (name: TabPaneName) => {
       }
     }
 
-    &.el-tabs--top.el-tabs--border-card
-      > .el-tabs__header
-      .el-tabs__item:nth-child(2):not(.is-active).is-closable:hover {
+    &.el-tabs--top.el-tabs--border-card > .el-tabs__header .el-tabs__item:nth-child(2):not(.is-active).is-closable:hover {
       padding-left: 20px;
     }
 

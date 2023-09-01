@@ -317,33 +317,3 @@ interface WorkTabItemProp {
 
   [key: string]: any
 }
-
-interface WorkTabItem {
-  /**
-   * ID
-   * 建议使用下面规则设置ID:
-   * ${功能, 比如: createTable、queryTable等驼峰命名}_${connectionId | sessionId}_${databaseName}_${table_id}
-   * 建议直接调用workTabStore.generateId()函数生成ID
-   */
-  id: string
-
-  /**
-   * tab标签的名称
-   */
-  label: string
-
-  /**
-   * 是否需要保存的标识，值 = true时，在标签左侧显示*字符
-   */
-  saveFlag?: boolean
-
-  /**
-   * tab的内容组件
-   */
-  component: () => Promise<{}> | {}
-
-  /**
-   * 传入组件的数据, 系统会自动往props里面添加`workTabId`(当前选项卡的ID)
-   */
-  props?: WorkTabItemProp
-}

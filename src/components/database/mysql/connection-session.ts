@@ -372,7 +372,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
       {
         id: tabId,
         label: `表 - ${data.name} @${data.database} (${this.connection.name})`,
-        component: () => import('@/components/database/mysql/work-tabs/table-data.vue')
+        componentKey: 'MYSQL_TABLE_DATA'
       },
       {
         tableInfo: data
@@ -395,7 +395,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
       {
         id: workTabStore.generateId('createTable', database.sessionId!, [databaseName]),
         label: `创建表 - 无标题 @${database.name} (${this.connection.name})`,
-        component: () => import('@/components/database/mysql/work-tabs/create-table/index.vue')
+        componentKey: 'MYSQL_CREATE_TABLE'
       },
       {
         database

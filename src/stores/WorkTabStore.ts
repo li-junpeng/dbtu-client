@@ -16,7 +16,61 @@ const ObjectPanelComponentDefine = {
   MYSQL_TABLE_LIST: () => import('@/components/database/mysql/work-tabs/object-pane/table-list.vue')
 }
 
+/**
+ * work-tab组件定义
+ * 
+ * - key: 唯一的key,
+ * - value: 对应的组件
+ */
+const WorkTabComponentDefine = {
+  /**
+   * MySQL查看表数据
+   */
+  MYSQL_TABLE_DATA: () => import('@/components/database/mysql/work-tabs/table-data.vue'),
+
+  /**
+   * MySQL创建表
+   */
+  MYSQL_CREATE_TABLE: () => import('@/components/database/mysql/work-tabs/create-table/index.vue')
+}
+
 export type ObjectPanelComponentKey = keyof typeof ObjectPanelComponentDefine
+export type WorkTabComponentKey = keyof typeof WorkTabComponentDefine
+
+interface WorkTabItem {
+  /**
+   * ID
+   * 建议使用下面规则设置ID:
+   * ${功能, 比如: createTable、queryTable等驼峰命名}_${connectionId | sessionId}_${databaseName}_${table_id}
+   * 建议直接调用workTabStore.generateId()函数生成ID
+   */
+  id: string
+
+  /**
+   * tab标签的名称
+   */
+  label: string
+
+  /**
+   * 是否需要保存的标识，值 = true时，在标签左侧显示*字符
+   */
+  saveFlag?: boolean
+
+  /**
+   * tab的内容组件
+   */
+  componentKey: WorkTabComponentKey
+
+  /**
+   * tab的内容组件, 不需要手动传入
+   */
+  _component?: () => Promise<{}> | {}
+
+  /**
+   * 传入组件的数据, 系统会自动往props里面添加`workTabId`(当前选项卡的ID)
+   */
+  props?: WorkTabItemProp
+}
 
 export const useWorkTabStore = defineStore('useWorkTabStore', {
   state: () => {
@@ -37,7 +91,6 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
      * @param componentKey 组件在`ObjectPanelComponentDefine`中的key
      * @param isForce      强制更新对象面板
      */
-    // setObjectPane(option: ObjectPaneOption): void {
     setObjectPane(data: ConnectionTreeNode, componentKey: ObjectPanelComponentKey, isForce: boolean = false): void {
       // 防止重复点击
       if (this.objectPaneProps.id === data.id && !isForce) {
@@ -125,7 +178,7 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
         option.props = props as WorkTabItemProp
         this.tabs[option.id] = option
         this.activeTabId = option.id
-        this.tabs[option.id].component = loadAsyncComponent(option.component as () => Promise<{}>, true)
+        this.tabs[option.id]._component = loadAsyncComponent(WorkTabComponentDefine[option.componentKey], true)
       } catch {
         MessageBox.error('MySQL表数据组件加载失败，请刷新页面后再试。').then()
       }
@@ -161,18 +214,32 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
           this.closeById(tabId)
         }
       })
+    },
+
+    /**
+     * 初始化work-tab
+     */
+    _initWorkTab() {
+      // 循环this.tabs，获取key和value
+      for (let key in this.tabs) {
+        this.tabs[key]._component = loadAsyncComponent(WorkTabComponentDefine[this.tabs[key].componentKey], true)
+      }
     }
   },
 
   persist: {
     key: '__dbtu_work_tab',
     storage: sessionStorage,
-    paths: ['objectPaneProps', 'objectPaneComponentKey'],
+    paths: ['objectPaneProps', 'objectPaneComponentKey', 'tabs', 'activeTabId'],
     afterRestore: () => {
       const store = useWorkTabStore()
-      if (!store.objectPaneComponentKey) return
 
+      // 初始化对象面板
+      if (!store.objectPaneComponentKey) return
       store.setObjectPane(store.objectPaneProps, store.objectPaneComponentKey!, true)
+
+      // 初始化work-tab
+      store._initWorkTab()
     }
   }
 })

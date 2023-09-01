@@ -82,11 +82,24 @@ const selectedRow = ref<MySqlTableInstance | null>(null)
 const searchName = ref('')
 // 连接会话
 const connectionSessionStore = useConnectionSessionStore()
-const connectionSession = connectionSessionStore.get(props.data.sessionId!) as MySQLConnectionSession
+const getConnectionSession = () => {
+  return connectionSessionStore.get(props.data.sessionId!) as MySQLConnectionSession
+}
 
 // 表格数据
 const tableData = computed<MySqlTableInstance[]>(() => {
-  const array = (props.data.children || []) as MySqlTableInstance[]
+  selectedRow.value = null
+
+  const session = getConnectionSession()
+  if (!session) return []
+
+  const database = session.connection.children?.find(item => item.name === props.data.database) as MySqlDatabaseInstance
+  if (!database) return []
+
+  const tableNode = database.children?.find(item => item.nodeType === 'table')
+  if (!tableNode) return []
+  
+  const array = (tableNode.children || []) as MySqlTableInstance[]
   if (StringUtils.isEmpty(searchName.value)) {
     return array
   }
@@ -103,7 +116,7 @@ const tableRowEvents: RowEventHandlers = {
   },
   onContextmenu(params: RowEventHandlerParams) {
     selectedRow.value = params.rowData
-    connectionSession.nodeContextmenu(params.event as MouseEvent, params.rowData)
+    getConnectionSession().nodeContextmenu(params.event as MouseEvent, params.rowData)
     params.event.preventDefault()
     params.event.stopPropagation()
   }
@@ -116,7 +129,7 @@ const tableRowClass = ({ rowData }: Parameters<RowClassNameGetter<any>>[0]) => {
 
 // 打开创建表work-tab
 const toCreateTable = () => {
-  connectionSession.openCreateTable(props.data.database)
+  getConnectionSession().openCreateTable(props.data.database)
 }
 
 const paneContextmenu = (event: MouseEvent) => {
@@ -154,7 +167,7 @@ const paneContextmenu = (event: MouseEvent) => {
       {
         label: '刷新',
         onClick: () => {
-          connectionSession.loadTable(props.data.database)
+          getConnectionSession().loadTable(props.data.database)
         }
       }
     ]
@@ -162,7 +175,7 @@ const paneContextmenu = (event: MouseEvent) => {
 }
 
 const openTable = () => {
-  selectedRow.value && connectionSession.openTableInstance(selectedRow.value)
+  selectedRow.value && getConnectionSession().openTableInstance(selectedRow.value)
 }
 
 const bottomText = computed(() => {
@@ -219,7 +232,7 @@ const bottomText = computed(() => {
         text
         link
         :disabled="!selectedRow"
-        @click="connectionSession.deleteTable(selectedRow!)"
+        @click="getConnectionSession().deleteTable(selectedRow!)"
       >
         <template #icon>
           <IconDelete />
@@ -229,7 +242,7 @@ const bottomText = computed(() => {
       <el-button
         text
         link
-        @click="connectionSession.loadTable(props.data.database)"
+        @click="getConnectionSession().loadTable(props.data.database)"
       >
         <template #icon>
           <IconRefresh />

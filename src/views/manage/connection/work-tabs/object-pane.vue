@@ -20,10 +20,8 @@ const workTabStore = useWorkTabStore()
     :is="workTabStore.objectPaneComponent"
     :data="workTabStore.objectPaneProps"
   />
-  <div
-    v-else
-    class="dbtu-main"
-  >DBTu</div>
+  <!-- prettier-ignore -->
+  <div v-else class="dbtu-main">DBTu</div>
 </template>
 
 <style lang="scss">

@@ -929,9 +929,6 @@ const TreeNodeContextmenu = {
 
 const ClickNode = {
   table: (data: TableNode<MySqlTableInstance>) => {
-    workTabStore.setObjectPane({
-      props: data,
-      component: () => import('@/components/database/mysql/work-tabs/object-pane/table-list.vue')
-    })
+    workTabStore.setObjectPane(data, 'MYSQL_TABLE_LIST')
   }
 }

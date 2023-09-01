@@ -3,14 +3,25 @@ import { shallowRef } from 'vue'
 import { MessageBox } from '@/components/element-plus/el-feedback-util'
 import { loadAsyncComponent } from '@/common/utils/AsyncLoadComponent'
 
-type ObjectPaneOption = {
-  props: ConnectionTreeNode
-  component: () => Promise<{}>
+/**
+ * 对象面板组件定义
+ *
+ * - key: 唯一key,
+ * - value: 对应的组件
+ */
+const ObjectPanelComponentDefine = {
+  /**
+   * MySQL表列表
+   */
+  MYSQL_TABLE_LIST: () => import('@/components/database/mysql/work-tabs/object-pane/table-list.vue')
 }
+
+export type ObjectPanelComponentKey = keyof typeof ObjectPanelComponentDefine
 
 export const useWorkTabStore = defineStore('useWorkTabStore', {
   state: () => {
     return {
+      objectPaneComponentKey: null as ObjectPanelComponentKey | null,
       objectPaneComponent: shallowRef(),
       objectPaneProps: {} as ConnectionTreeNode,
       tabs: {} as Record<string, WorkTabItem>,
@@ -22,16 +33,20 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
     /**
      * 设置对象面板内容
      *
-     * @param option    配置项
+     * @param props        传递的数据
+     * @param componentKey 组件在`ObjectPanelComponentDefine`中的key
+     * @param isForce      强制更新对象面板
      */
-    setObjectPane(option: ObjectPaneOption): void {
+    // setObjectPane(option: ObjectPaneOption): void {
+    setObjectPane(data: ConnectionTreeNode, componentKey: ObjectPanelComponentKey, isForce: boolean = false): void {
       // 防止重复点击
-      if (this.objectPaneProps.id === option.props.id) {
+      if (this.objectPaneProps.id === data.id && !isForce) {
         return
       }
 
-      this.objectPaneProps = option.props
-      this.objectPaneComponent = loadAsyncComponent(option.component)
+      this.objectPaneProps = data
+      this.objectPaneComponent = loadAsyncComponent(ObjectPanelComponentDefine[componentKey])
+      this.objectPaneComponentKey = componentKey
     },
 
     /**
@@ -128,7 +143,7 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
 
     /**
      * 根据传入的str使用tabId.indexOf()做比较, 如果满足条件则关闭这个work-tab
-     * 
+     *
      * @param str                   可能会出现在tabId中的字符
      * @param objectPanelPropField  在对象面板中可能出现的prop字段名，如果满足则关闭对象面板，不需要关闭对象面板的不需要传入该字段
      */
@@ -146,6 +161,18 @@ export const useWorkTabStore = defineStore('useWorkTabStore', {
           this.closeById(tabId)
         }
       })
+    }
+  },
+
+  persist: {
+    key: '__dbtu_work_tab',
+    storage: sessionStorage,
+    paths: ['objectPaneProps', 'objectPaneComponentKey'],
+    afterRestore: () => {
+      const store = useWorkTabStore()
+      if (!store.objectPaneComponentKey) return
+
+      store.setObjectPane(store.objectPaneProps, store.objectPaneComponentKey!, true)
     }
   }
 })

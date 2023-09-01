@@ -172,7 +172,9 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
             },
             {
               label: '刷新',
-              disabled: true
+              onClick: () => {
+                this.loadTable((data as MySqlTableInstance).database)
+              }
             },
             {
               label: '对象信息',

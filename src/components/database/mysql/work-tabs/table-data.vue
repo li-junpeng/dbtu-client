@@ -16,6 +16,7 @@ import DataGrid, { type DataGridColumn } from '@/components/ui/data-grid'
 import Pagination, { type PageChangeType } from '@/components/ui/pagination'
 import { StringUtils } from '@/common/utils/StringUtils'
 import { DateUtil } from '@/common/utils/DateUtil'
+import { useWorkTabStore } from '@/stores/WorkTabStore'
 
 defineExpose({
   name: 'MySQLWorkTabTableDataComponent'
@@ -28,6 +29,7 @@ const props = defineProps({
     required: true
   }
 })
+const workTabStore = useWorkTabStore()
 const sizerDrawerRef = useComponentRef(SizerDrawer)
 const dataSortDrawerRef = useComponentRef(DataSortDrawer)
 const fields = [] as string[]
@@ -35,7 +37,8 @@ const fields = [] as string[]
 const sqlExecuteResult = shallowRef<SQLExecuteResult>({
   success: false,
   executeTime: 0,
-  originSql: ''
+  originSql: '',
+  current: 1
 })
 
 // 查询参数
@@ -59,6 +62,8 @@ const loadTableData = async () => {
     if (data!.success) {
       // TODO 先查询表头信息，然后再查表数据, 这样即使查询数据的SQL执行失败，表头也能正常显示
       sqlExecuteResult.value = data!
+      // 存储到缓存中
+      workTabStore.tabs[props.workTabId!].data = data
     } else {
       MessageBox.error(data!.message!)
     }
@@ -66,6 +71,18 @@ const loadTableData = async () => {
     MessageBox.error(message)
   }
   isLoadData.value = false
+}
+
+/**
+ * 从缓存中读取数据
+ */
+const loadTableDataByCache = () => {
+  const data = workTabStore.tabs[props.workTabId!].data
+  if (!data) {
+    return
+  }
+
+  sqlExecuteResult.value = data
 }
 
 const columns = computed<DataGridColumn[]>(() => {
@@ -144,7 +161,11 @@ const onChangePage = async (currentPage: number, action: PageChangeType): Promis
 }
 
 onMounted(() => {
-  loadTableData()
+  if (!workTabStore.tabs[props.workTabId!].data) {
+    loadTableData()
+  } else {
+    loadTableDataByCache()
+  }
 })
 </script>
 
@@ -293,11 +314,14 @@ onMounted(() => {
       >
         {{ sqlExecuteResult.originSql || '' }}
       </div>
-      <div style="display: flex;align-items: center;gap: 20px;">
+      <div style="display: flex; align-items: center; gap: 20px">
         <div class="dbtu-un-user-select">运行时间: {{ DateUtil.ms2Str(sqlExecuteResult.executeTime) }}</div>
         <div class="dbtu-un-user-select">共 {{ tableData.length }} 记录( 于第 {{ sqlExecuteResult.current }} 页 )</div>
         <!-- 分页 -->
-        <Pagination :change-page="onChangePage" />
+        <Pagination
+          :change-page="onChangePage"
+          :current="sqlExecuteResult.current"
+        />
       </div>
     </div>
   </div>

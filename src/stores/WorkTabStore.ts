@@ -70,6 +70,11 @@ interface WorkTabItem {
    * 传入组件的数据, 系统会自动往props里面添加`workTabId`(当前选项卡的ID)
    */
   props?: WorkTabItemProp
+
+  /**
+   * 数据持久化
+   */
+  data?: any
 }
 
 export const useWorkTabStore = defineStore('useWorkTabStore', {

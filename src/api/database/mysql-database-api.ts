@@ -96,6 +96,18 @@ export const deleteTable = (sessionId: number, databaseName: string, tableName: 
 }
 
 /**
+ * 截断表数据
+ *
+ * @param sessionId     数据库连接会话ID
+ * @param databaseName  数据库名
+ * @param tableName     要删除的表名
+ * @returns void
+ */
+export const truncateTable = (sessionId: number, databaseName: string, tableName: string) => {
+  return IRequest.post<void>('/database/mysql/truncate-table', { sessionId, databaseName, tableName })
+}
+
+/**
  * 生成SQL语句
  * 
  * @param tableInfo 表信息

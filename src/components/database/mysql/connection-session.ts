@@ -6,7 +6,7 @@ import { useDynamicDialogStore } from '@/stores/DynamicDialogStore'
 import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
 import { openConnection, closeConnection, refreshConnection } from '@/api/connection-api'
-import { deleteDatabase, getDatabaseObject, dropTable, deleteTable, queryTableList } from '@/api/database/mysql-database-api'
+import { deleteDatabase, getDatabaseObject, dropTable, deleteTable, truncateTable, queryTableList } from '@/api/database/mysql-database-api'
 
 const connectionStore = useConnectionStore()
 const workTabStore = useWorkTabStore()
@@ -116,7 +116,9 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
             },
             {
               label: '截断表',
-              disabled: true
+              onClick: () => {
+                this.truncateTable(data as MySqlTableInstance)
+              }
             },
             {
               label: '复制表',
@@ -344,7 +346,7 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
           if (this.connection.children![i].id === data.id) {
             // 关闭对应的work-tab
             workTabStore.closeByStr(data.name, 'database')
-            
+
             this.connection.children!.splice(i, 1)
             // TODO 需要判断该数据库下有没有已经打开的work-tab
             connectionStore.refreshConnectionTree()
@@ -454,12 +456,30 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
 
   /**
    * 清空表数据
-   * 
+   *
    * @param data 表信息
    */
   deleteTable(data: MySqlTableInstance) {
     MessageBox.deleteConfirm(TextConstant.confirm('清空', data.name), async done => {
       const { status, message } = await deleteTable(data.sessionId!, data.database, data.name)
+      if (status === 'success') {
+        Message.success(message)
+      } else {
+        MessageBox.error(message)
+      }
+
+      done()
+    })
+  }
+
+  /**
+   * 截断表数据
+   *
+   * @param data 表信息
+   */
+  truncateTable(data: MySqlTableInstance) {
+    MessageBox.deleteConfirm(TextConstant.confirm('截断', data.name), async done => {
+      const { status, message } = await truncateTable(data.sessionId!, data.database, data.name)
       if (status === 'success') {
         Message.success(message)
       } else {

@@ -67,8 +67,9 @@ const onRemoveTab = (name: TabPaneName) => {
             </span>
           </el-tooltip>
         </template>
+        <!-- prettier-ignore -->
         <component
-          v-if="tab._component && typeof tab._component !== 'string'"
+          v-if="tab._component && (typeof tab._component !== 'string')"
           :is="tab._component"
           v-bind="tab.props"
         />

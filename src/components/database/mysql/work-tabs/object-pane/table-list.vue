@@ -132,6 +132,15 @@ const toCreateTable = () => {
   getConnectionSession().openCreateTable(props.data.database)
 }
 
+// 正在刷新表
+const isRefresh = ref(false)
+// 刷新表
+const refreshTable = async () => {
+  isRefresh.value = true
+  await getConnectionSession().loadTable(props.data.database)
+  isRefresh.value = false
+}
+
 const paneContextmenu = (event: MouseEvent) => {
   // 清空选择的表
   selectedRow.value = null
@@ -167,7 +176,7 @@ const paneContextmenu = (event: MouseEvent) => {
       {
         label: '刷新',
         onClick: () => {
-          getConnectionSession().loadTable(props.data.database)
+          refreshTable()
         }
       }
     ]
@@ -242,7 +251,8 @@ const bottomText = computed(() => {
       <el-button
         text
         link
-        @click="getConnectionSession().loadTable(props.data.database)"
+        :loading="isRefresh"
+        @click="refreshTable"
       >
         <template #icon>
           <IconRefresh />

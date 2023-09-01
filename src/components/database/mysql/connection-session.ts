@@ -440,6 +440,8 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
       if (status === 'success') {
         this.loadTable(data.database)
         Message.success(message)
+        // 关闭work-tab
+        workTabStore.closeByStr(data.id + '')
       } else {
         MessageBox.error(message)
       }

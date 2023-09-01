@@ -1,6 +1,12 @@
 export type PageChangeType = 'first' | 'prev' | 'next' | 'last' | 'input'
 
 export interface PaginationProp {
+
+  /**
+   * 默认页码
+   */
+  current?: number
+
   /**
    * 修改页码
    *

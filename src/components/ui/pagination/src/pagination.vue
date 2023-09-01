@@ -12,11 +12,12 @@ defineOptions({
   name: 'PaginationComponent'
 })
 
+const props = defineProps<PaginationProp>()
+
 // 当前的页码
 const currentPage = ref(1)
 // 是在执行props.changePage()
 const isCallChangeFn = ref(false)
-const props = defineProps<PaginationProp>()
 const inputNumberRef = useComponentRef(ElInputNumber)
 
 const onChangePage = async (action: PageChangeType) => {
@@ -72,6 +73,10 @@ const onInputEnter = () => {
   inputNumberRef.value?.blur()
   onChangePage('input')
 }
+
+onMounted(() => {
+  setTimeout(() => props.current && (currentPage.value = props.current), 100)
+})
 </script>
 
 <template>

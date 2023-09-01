@@ -50,7 +50,7 @@ export const getDatabaseObject = (sessionId: number, databaseName: string) => {
 
 /**
  * 查询指定数据库下的所有表信息
- * 
+ *
  * @param sessionId     sessionId
  * @param databaseName  数据库名
  * @returns 表信息集合
@@ -108,8 +108,21 @@ export const truncateTable = (sessionId: number, databaseName: string, tableName
 }
 
 /**
- * 生成SQL语句
+ * 重命名表名
  * 
+ * @param sessionId    sessionId
+ * @param databaseName 数据库名
+ * @param oldTableName 旧表名
+ * @param newTableName 新表名
+ * @returns void
+ */
+export const renameTable = (sessionId: number, databaseName: string, oldTableName: string, newTableName: string) => {
+  return IRequest.post<void>('/database/mysql/rename-table', { sessionId, databaseName, oldTableName, newTableName })
+}
+
+/**
+ * 生成SQL语句
+ *
  * @param tableInfo 表信息
  * @param triggers  触发器信息
  * @returns SQL语句
@@ -120,7 +133,7 @@ export const generateCreateTableSql = (tableInfo: MySqlTableInstance, triggers: 
 
 /**
  * 创建表
- * 
+ *
  * @param tableInfo 表信息
  * @param triggers  触发器
  * @returns void

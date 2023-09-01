@@ -164,13 +164,11 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
               disabled: true
             },
             {
-              label: '复制',
-              disabled: true
-            },
-            {
               label: '重命名',
               divided: true,
-              disabled: true
+              onClick: () => {
+                this.renameTable(data as MySqlTableInstance)
+              }
             },
             {
               label: '刷新',
@@ -488,6 +486,53 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
 
       done()
     })
+  }
+
+  /**
+   * 重命名表名
+   *
+   * @param data 表信息
+   */
+  renameTable(data: MySqlTableInstance) {
+    dynamicDialogStore.open(
+      {
+        title: '重命名',
+        width: 500,
+        props: {
+          tableInfo: data
+        },
+        footerButtons: [
+          {
+            type: 'info',
+            text: '取消',
+            onClick: (): Promise<void> => {
+              dynamicDialogStore.close()
+              return Promise.resolve()
+            }
+          },
+          {
+            type: 'primary',
+            text: '保存',
+            enableLoading: true,
+            loadingText: '正在保存',
+            onClick: async (): Promise<void> => {
+              try {
+                const bo = await dynamicDialogStore.ref.onSubmit?.()
+                if (bo) {
+                  dynamicDialogStore.close()
+                  this.loadTable(data.database)
+                }
+                return Promise.resolve()
+              } catch (e) {
+                MessageBox.error(e as string)
+                return Promise.reject()
+              }
+            }
+          }
+        ]
+      },
+      () => import('@/components/database/mysql/rename-table.vue')
+    )
   }
 
   // endregion 数据表相关操作 end //

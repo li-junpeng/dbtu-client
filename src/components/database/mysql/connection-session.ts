@@ -6,7 +6,7 @@ import { useDynamicDialogStore } from '@/stores/DynamicDialogStore'
 import { Message, MessageBox } from '@/components/element-plus/el-feedback-util'
 import { TextConstant } from '@/common/constants/TextConstant'
 import { openConnection, closeConnection, refreshConnection } from '@/api/connection-api'
-import { deleteDatabase, getDatabaseObject, deleteTable, queryTableList } from '@/api/database/mysql-database-api'
+import { deleteDatabase, getDatabaseObject, dropTable, deleteTable, queryTableList } from '@/api/database/mysql-database-api'
 
 const connectionStore = useConnectionStore()
 const workTabStore = useWorkTabStore()
@@ -105,12 +105,14 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
             {
               label: '删除表',
               onClick: () => {
-                this.deleteTable(data as MySqlTableInstance)
+                this.dropTable(data as MySqlTableInstance)
               }
             },
             {
               label: '清空表',
-              disabled: true
+              onClick: () => {
+                this.deleteTable(data as MySqlTableInstance)
+              }
             },
             {
               label: '截断表',
@@ -434,9 +436,9 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
    *
    * @param data  表信息
    */
-  deleteTable(data: MySqlTableInstance) {
+  dropTable(data: MySqlTableInstance) {
     MessageBox.deleteConfirm(TextConstant.deleteConfirm(data.name), async done => {
-      const { status, message } = await deleteTable(data.sessionId!, data.database, data.name)
+      const { status, message } = await dropTable(data.sessionId!, data.database, data.name)
       if (status === 'success') {
         this.loadTable(data.database)
         Message.success(message)
@@ -448,6 +450,24 @@ export class MySQLConnectionSession implements ConnectionSession<MySQLConnection
 
       done()
     }).then(() => {})
+  }
+
+  /**
+   * 清空表数据
+   * 
+   * @param data 表信息
+   */
+  deleteTable(data: MySqlTableInstance) {
+    MessageBox.deleteConfirm(TextConstant.confirm('清空', data.name), async done => {
+      const { status, message } = await deleteTable(data.sessionId!, data.database, data.name)
+      if (status === 'success') {
+        Message.success(message)
+      } else {
+        MessageBox.error(message)
+      }
+
+      done()
+    })
   }
 
   // endregion 数据表相关操作 end //

@@ -6,5 +6,9 @@ export const TextConstant = {
    */
   deleteConfirm: (text: string): string => {
     return `你确定要删除 "${text}" 吗?`
+  },
+
+  confirm: (actionText: string, text: string): string => {
+    return `你确定要${actionText} "${text}" 吗?`
   }
 }

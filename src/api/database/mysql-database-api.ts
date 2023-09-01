@@ -79,8 +79,20 @@ export const queryTableData = (searchParam: SearchTableParam) => {
  * @param tableName     要删除的表名
  * @returns void
  */
-export const deleteTable = (sessionId: number, databaseName: string, tableName: string) => {
+export const dropTable = (sessionId: number, databaseName: string, tableName: string) => {
   return IRequest.post<void>('/database/mysql/drop-table', { sessionId, databaseName, tableName })
+}
+
+/**
+ * 清空表数据
+ *
+ * @param sessionId     数据库连接会话ID
+ * @param databaseName  数据库名
+ * @param tableName     要删除的表名
+ * @returns void
+ */
+export const deleteTable = (sessionId: number, databaseName: string, tableName: string) => {
+  return IRequest.post<void>('/database/mysql/delete-table', { sessionId, databaseName, tableName })
 }
 
 /**

@@ -241,7 +241,7 @@ const bottomText = computed(() => {
         text
         link
         :disabled="!selectedRow"
-        @click="getConnectionSession().deleteTable(selectedRow!)"
+        @click="getConnectionSession().dropTable(selectedRow!)"
       >
         <template #icon>
           <IconDelete />
